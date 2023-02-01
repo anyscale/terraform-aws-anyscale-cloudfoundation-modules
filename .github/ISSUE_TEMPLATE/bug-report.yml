@@ -1,0 +1,77 @@
+name: Bug Report
+description: Issue/Bug with the Terraform Modules. Please include repro steps!
+title: "[Bug]: "
+labels: ["bug", "P1", "terraform-modules"]
+assignees: ["brent-anyscale"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to file a bug report.
+        Please make sure to search for existing issues before filing a new one.
+
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: An email address that we can reach out to you if we need more information.
+      placeholder: ex. email@example.com
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect to happen? (provide screenshots if possible)
+      value: "A bug happened!"
+    validations:
+      required: true
+  - type: input
+    id: which-module
+    attributes:
+      label: Which module?
+      description: "Which module(s) are you having problems with?"
+      value: "ex. Root, S3, EFS, IAM, VPC, S3-Policy, SecurityGroup"
+  - type: dropdown
+    id: version
+    attributes:
+      label: Module version
+      description: What version of the modules are you using?
+      options:
+        - 0.1.0 (Default)
+    validations:
+      required: true
+  - type: dropdown
+    id: terraform_version
+    attributes:
+      label: Terraform version
+      description: What version of Terraform are you using?
+      options:
+        - 1.3.x (Default)
+        - 1.2.x
+        - 1.1.x
+        - 1.0.x
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: blocking_work
+    attributes:
+      label: Is it blocking work?
+      description: Please choose one?
+      options:
+        - "no"
+        - "yes"
+    validations:
+      required: true
+
+# - [ ] I searched the [issues](https://github.com/anyscale/terraform-cloudfoundation-modules/issues) and found no similar issues.
+
+### Terraform Module (EFS, IAM, S3, S3-Policy, SecurityGroups, VPC)
+
+### What happened + What you expected to happen (provide screenshots if possible)
+
+### Versions / Dependencies (Terraform, AWS Provider, Modules, etc)
+
+### Reproduction script
+
+### Anything else
