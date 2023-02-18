@@ -13,18 +13,6 @@ variable "anyscale_deploy_env" {
   }
 }
 
-variable "cloud_provider" {
-  description = "(Required) Which cloud provider would you like to run this module on? Valid options are `aws` or `gcp`. Default is `aws`."
-  type        = string
-  default     = "aws"
-  validation {
-    condition = (
-      var.cloud_provider == "aws" || var.cloud_provider == "gcp"
-    )
-    error_message = "The cloud_provider variable only allows `aws` or `gcp`"
-  }
-}
-
 variable "security_group_ingress_allow_access_from_cidr_range" {
   description = <<-EOT
     (Required) Comma delimited string of IPv4 CIDR range to allow access to anyscale resources.
@@ -56,9 +44,33 @@ variable "anyscale_cloud_id" {
 }
 
 variable "tags" {
-  description = "(Optional) A map of tags to all resources that accept tags."
+  description = <<-EOT
+    (Optional)
+    A map of default tags to be added to all resources that accept tags.
+    Resource dependent tags will be appended to this list.
+    ex:
+    tags = {
+      application = "Anyscale",
+      environment = "prod"
+    }
+    Default is an empty map.
+  EOT
   type        = map(string)
   default     = {}
+}
+
+variable "general_prefix" {
+  description = <<-EOT
+    (Optional)
+    A general prefix to add to resources created (where prefixes are allowed). This applies to:
+      - S3 Buckets
+      - IAM Resources
+      - Security Groups
+    Resource specific prefixes override this variable.
+    Default is `null`
+  EOT
+  type        = string
+  default     = null
 }
 
 #--------------------------------------------
@@ -69,30 +81,81 @@ variable "existing_vpc_id" {
   type        = string
   default     = null
 }
-variable "existing_subnet_ids" {
+variable "existing_vpc_subnet_ids" {
   description = "(Optional) Existing subnet IDs to create Anyscale resources in. If provided, this will skip creating resources with the Anyscale VPC module. VPC ID is also required is this is provided. Default is an empty list."
   type        = list(string)
   default     = []
 }
+variable "existing_vpc_route_table_ids" {
+  description = <<-EOT
+    (Optional)
+    Existing VPC Route Table IDs.
+    If provided, this will map new subnets to these route table IDs. If no new subnets are created, these route tables will be used to create VPC Endpoint(s).
+  EOT
+  type        = list(string)
+  default     = []
+}
+
 variable "anyscale_vpc_name" {
   description = "(Optional) VPC name. Will default to `vpc_<anyscale_cloud_id>`."
   type        = string
   default     = null
 }
+
 variable "anyscale_vpc_cidr_block" {
   description = "(Optional) The IPv4 CIDR block for the VPC. CIDR can be explicitly set or it can be derived from IPAM using `ipv4_netmask_length` & `ipv4_ipam_pool_id`. Default is `10.0.0.0/16`"
   type        = string
   default     = "10.0.0.0/16"
 }
+
 variable "anyscale_vpc_public_subnets" {
   description = "(Optional) A list of public subnets inside the VPC. Default is an empty list."
   type        = list(string)
   default     = []
 }
+
 variable "anyscale_vpc_private_subnets" {
   description = "(Optional) A list of private subnets inside the VPC. Default is an empty list."
   type        = list(string)
   default     = []
+}
+
+variable "anyscale_vpc_tags" {
+  description = <<-EOT
+    (Optional)
+    A map of tags for VPC resources.
+    Duplicate tags found in the "tags" variable will get duplicated on the resource.
+    ex:
+    anyscale_vpc_tags = {
+      "purpose" : "networking",
+      "criticality" : "critical"
+    }
+    Default is an empty map.
+  EOT
+  type        = map(string)
+  default     = {}
+}
+
+variable "anyscale_gateway_vpc_endpoints" {
+  description = <<-EOT
+    A map of Gateway VPC Endpoints to provision into the VPC. This is a map of objects with the following attributes:
+    - `name`: Short service name (either "s3" or "dynamodb")
+    - `policy` = A policy (as JSON string) to attach to the endpoint that controls access to the service. May be `null` for full access.
+    See the submodule variable for a full example.
+    It is Anyscale's recommendation to have an S3 VPC Endpoint to minimize S3 costs and maximize S3 performance.
+    Set to an empty map `{}` to skip creating VPC Endpoints.
+    Default is S3 with an empty (full access) policy.
+  EOT
+  type = map(object({
+    name   = string
+    policy = string
+  }))
+  default = {
+    "s3" = {
+      name   = "s3"
+      policy = null
+    }
+  }
 }
 
 #--------------------------------------------
@@ -114,11 +177,35 @@ variable "anyscale_iam_access_role_name_prefix" {
   description = <<-EOT
     (Optional, forces creation of new resource)
     The prefix for the Anyscale IAM access role.
-    The variable, anyscale_iam_access_role_name, will override this variable.
-    Default is `anyscale-iam-role-`.
+    If `anyscale_iam_access_role_name_prefix` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `anyscale-iam-role-` in a local variable.
   EOT
   type        = string
-  default     = "anyscale-iam-role-"
+  default     = null
+}
+
+variable "anyscale_access_steadystate_policy_name" {
+  description = <<-EOT
+    (Optional)
+    Name for the Anyscale default steady state IAM policy.
+    If left `null`, will default to `anyscale_access_steadystate_policy_prefix`
+    If provided, overrides the `anyscale_access_steadystate_policy_prefix` variable.
+    Default is `null`.
+  EOT
+  type        = string
+  default     = null
+}
+variable "anyscale_access_steadystate_policy_prefix" {
+  description = <<-EOT
+    (Optional)
+    Name prefix for the Anyscale default steady state IAM policy.
+    If `anyscale_access_steadystate_policy_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `anyscale-steady_state-` in a local variable.
+  EOT
+  type        = string
+  default     = null
 }
 
 variable "anyscale_iam_cluster_node_role_name" {
@@ -135,11 +222,28 @@ variable "anyscale_iam_cluster_node_role_name_prefix" {
   description = <<-EOT
     (Optional, forces creation of new resource)
     The prefix of the Anyscale Cluster Node IAM role.
-    The variable, anyscale_iam_cluster_node_role_name, will override this variable.
-    Default is `anyscale-cluster-node-`.
+    If `anyscale_iam_cluster_node_role_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `anyscale-cluster-node-` in a local variable.
   EOT
   type        = string
-  default     = "anyscale-cluster-node-"
+  default     = null
+}
+
+variable "anyscale_iam_tags" {
+  description = <<-EOT
+    (Optional)
+    A map of tags for IAM resources.
+    Duplicate tags found in the "tags" variable will get duplicated on the resource.
+    ex:
+    anyscale_iam_tags = {
+      "purpose" : "iam",
+      "criticality" : "critical"
+    }
+    Default is an empty map.
+  EOT
+  type        = map(string)
+  default     = {}
 }
 
 #--------------------------------------------
@@ -155,9 +259,16 @@ variable "security_group_name" {
 }
 
 variable "security_group_name_prefix" {
-  description = "(Optional) The name prefix for the security group. Conflicts with security_group_name. Default is `anyscale-security-group-`."
+  description = <<-EOT
+    (Optional)
+    The name prefix for the security group.
+    If `security_group_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+
+    Default is `null` but is set to `anyscale-security-group-` in a local variable.
+  EOT
   type        = string
-  default     = "anyscale-security-group-"
+  default     = null
 }
 variable "security_group_create_anyscale_public_ingress" {
   type        = bool
@@ -210,6 +321,22 @@ variable "security_group_override_ingress_from_cidr_map" {
     Default is an empty list.
   EOT
   default     = []
+}
+
+variable "anyscale_securitygroup_tags" {
+  description = <<-EOT
+    (Optional)
+    A map of tags for Security Group resources.
+    Duplicate tags found in the "tags" variable will get duplicated on the resource.
+    ex:
+    anyscale_iam_tags = {
+      "purpose" : "security",
+      "criticality" : "critical"
+    }
+    Default is an empty map.
+  EOT
+  type        = map(string)
+  default     = {}
 }
 
 #--------------------------------------------
@@ -266,7 +393,39 @@ variable "efs_lifecycle_transition_to_primary_storage_class" {
   }
 }
 
+variable "anyscale_efs_tags" {
+  description = <<-EOT
+    (Optional)
+    A map of tags for EFS resources.
+    Duplicate tags found in the "tags" variable will get duplicated on the resource.
+    ex:
+    anyscale_iam_tags = {
+      "purpose" : "storage",
+      "criticality" : "critical"
+    }
+    Default is an empty map.
+  EOT
+  type        = map(string)
+  default     = {}
+}
+
+#--------------------------------------------
 # S3 Variables
+#--------------------------------------------
+variable "existing_s3_bucket_arn" {
+  description = <<-EOT
+    (Optional)
+    The name of an existing S3 bucket that you'd like to use.
+    Please make sure that it meets the minimum requirements for Anyscale including:
+      - Bucket Policy
+      - CORS Policy
+      - Encryption configuration
+    Default is `null`
+  EOT
+  type        = string
+  default     = null
+}
+
 variable "anyscale_s3_bucket_name" {
   description = <<-EOT
     (Optional - forces new resource)
@@ -284,8 +443,86 @@ variable "anyscale_s3_bucket_prefix" {
     (Optional - forces new resource)
     Creates a unique bucket name beginning with the specified prefix.
     If `anyscale_s3_bucket_name` is provided, it will override this variable.
-    Default is `anyscale-`.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `anyscale-` in a local variable.
   EOT
   type        = string
-  default     = "anyscale-"
+  default     = null
+}
+
+variable "anyscale_s3_server_side_encryption" {
+  description = <<-EOT
+    (Optional)
+    Configuration to enforce server side encryption (KMS or AES256).
+    If you are using KMS, you must proivde the KMS Key ID.
+    ex using kms:
+    apply_server_side_encryption_by_default = {
+      kms_master_key_id = "1234abcd-12ab-34cd-56ef-1234567890ab"
+      sse_algorithm     = "aws:kms"
+    }
+    Default is `{ sse_algorithm = "AES256" }`
+  EOT
+  type        = map(string)
+  default = {
+    sse_algorithm = "AES256"
+  }
+}
+
+variable "anyscale_s3_force_destroy" {
+  description = <<-EOT
+    (Optional)
+    Set to true to delete all objects from the bucket so that the bucket can be destroyed without error.
+    If set to true and bucket is destroyed, objects are not recoverable.
+    Default is `false`.
+    Note: With this default, you need to empty the bucket if there are objects before `terraform destroy` can be completed succesfully.
+  EOT
+  type        = bool
+  default     = false
+}
+
+# S3 Bucket Policy Variables
+# ex policy:
+# data "aws_iam_policy_document" "bucket_policy" {
+#  statement {
+#     principals {
+#       type        = "AWS"
+#       identifiers = [aws_iam_role.this.arn]
+#     }
+#
+#    actions = [
+#      "s3:ListBucket",
+#    ]
+#
+#    resources = [
+#      "module.aws_anyscale_s3.s3_bucket_arn,
+#    ]
+#  }
+# }
+# anyscale_custom_s3_policy = data.aws_iam_policy_document.bucket_policy.json
+variable "anyscale_custom_s3_policy" {
+  description = <<-EOT
+    (Optional)
+    A valid bucket policy in JSON. This will be an additional S3 bucket policy to the required Anyscale policy.
+    For more information about building AWS IAM policy documents with Terraform, see the AWS IAM Policy Document Guide.
+    And for more additional examples, please look at the s3-policy sub-module examples folder.
+    Default is `null`.
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_s3_tags" {
+  description = <<-EOT
+    (Optional)
+    A map of tags for S3 resources.
+    Duplicate tags found in the "tags" variable will get duplicated on the resource.
+    ex:
+    anyscale_iam_tags = {
+      "purpose" : "storage",
+      "criticality" : "critical"
+    }
+    Default is an empty map.
+  EOT
+  type        = map(string)
+  default     = {}
 }

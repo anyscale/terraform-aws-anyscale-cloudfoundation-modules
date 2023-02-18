@@ -37,7 +37,7 @@ output "public_route_table_ids" {
 # Private Subnets and related resources
 output "private_subnet_ids" {
   description = "IDs of the private subnets"
-  value       = try(aws_subnet.private[*].id, [])
+  value       = try(aws_subnet.private[*].id, var.existing_private_subnet_ids, [])
 }
 output "private_subnet_cidrs" {
   description = "IPv4 CIDR blocks for the private subnets"

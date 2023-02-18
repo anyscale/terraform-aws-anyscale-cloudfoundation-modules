@@ -69,7 +69,11 @@ variable "acl" {
 # }
 
 variable "force_destroy" {
-  description = "(Optional) Set to true to delete all objects from the bucket so that the bucket can be destroyed without error. These objects are not recoverable. Default is `false`."
+  description = <<-EOT
+    (Optional) Set to true to delete all objects from the bucket so that the bucket can be destroyed without error.
+    These objects are not recoverable.
+    Default is `false`. With this default, you need to empty the bucket if there are objects before `terraform destroy` can be completed.
+  EOT
   type        = bool
   default     = false
 }
@@ -84,7 +88,12 @@ variable "force_destroy" {
 #   max_age_seconds = 3000
 # }
 variable "cors_rule" {
-  description = "(Optional) Object containing a rule of Cross-Origin Resource Sharing. Default allows console.anyscale.com"
+  description = <<-EOT
+    (Optional)
+    Object containing a rule of Cross-Origin Resource Sharing.
+    The default allows GET access for the purpose of viewing logs
+    from Anyscale Clusters from the Anyscale Web UI (console.anyscale.com).
+  EOT
   type        = any
   default = {
     allowed_headers = ["*"]

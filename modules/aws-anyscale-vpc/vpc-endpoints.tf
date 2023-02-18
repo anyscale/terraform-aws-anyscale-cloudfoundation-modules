@@ -1,5 +1,5 @@
 locals {
-  gateway_endpoints_enabled = var.module_enabled && length(var.gateway_vpc_endpoints) > 0 && (local.public_subnet_count > 0 || local.private_subnet_count > 0) ? true : false
+  gateway_endpoints_enabled = var.module_enabled && length(var.gateway_vpc_endpoints) > 0 && (local.public_subnet_count > 0 || local.private_subnet_count > 0 || length(var.existing_route_table_ids) > 0) ? true : false
   route_table_associations_list = flatten([for k, v in var.gateway_vpc_endpoints : [
     for i, route_id in local.all_route_table_ids : {
       key            = "${k}[${i}]"

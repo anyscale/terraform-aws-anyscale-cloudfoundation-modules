@@ -3,7 +3,9 @@ locals {
   vpc_name          = coalesce(var.anyscale_vpc_name, local.vpc_name_cloud_id, "vpc-anyscale")
 
   # Use `local.vpc_id` to let Terraform know that subnets should be deleted before secondary CIDR blocks can be released.
-  vpc_id = try(aws_vpc_ipv4_cidr_block_association.anyscale_vpc[0].vpc_id, aws_vpc.anyscale_vpc[0].id, "")
+  new_vpc_id = try(aws_vpc_ipv4_cidr_block_association.anyscale_vpc[0].vpc_id, aws_vpc.anyscale_vpc[0].id, "")
+  vpc_id     = var.existing_vpc_id == null ? local.new_vpc_id : var.existing_vpc_id
+  create_vpc = var.existing_vpc_id == null && var.module_enabled ? true : false
 
   # --------------------------------------------------------------------
   # Determine the set of availability zones in which to deploy subnets
@@ -45,7 +47,7 @@ locals {
 
   subnet_az_count = var.module_enabled ? length(local.subnet_availability_zones) : 0
 
-  all_route_table_ids = concat(local.private_route_table_ids, local.public_route_table_ids, [])
+  all_route_table_ids = concat(local.private_route_table_ids, local.public_route_table_ids, var.existing_route_table_ids, [])
 
   module_tags = tomap({
     tf_sub_module = "aws-anyscale-vpc"
@@ -60,7 +62,7 @@ locals {
 resource "aws_vpc" "anyscale_vpc" {
   #checkov:skip=CKV2_AWS_12:Not managing the default security group in this module
   #checkov:skip=CKV2_AWS_11:Flow logs can be enabled via a boolean variable. Ignoring this alert.
-  count = var.module_enabled ? 1 : 0
+  count = local.create_vpc ? 1 : 0
 
   cidr_block          = var.use_ipam_pool ? null : var.cidr_block
   ipv4_ipam_pool_id   = var.ipv4_ipam_pool_id

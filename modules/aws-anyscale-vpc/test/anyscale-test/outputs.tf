@@ -72,6 +72,18 @@ output "public_private_nat_gateway_ids" {
   value       = module.public_private_vpc.nat_gateway_ids
 }
 
+# --------------------------------
+# New Subnets - Existing VPC Test
+# --------------------------------
+output "new_subnets_existing_vpc_vpc_id" {
+  description = "The ID of the anyscale resource."
+  value       = module.existing_vpc_new_subnets.vpc_id
+}
+output "new_subnets_existing_vpc_subnet_cidrs" {
+  description = "The private subnet cidrs of the anyscale new subnets existing vpc test"
+  value       = module.kitchen_sink.private_subnet_cidrs
+}
+
 # ------------------
 # Kitchen Sink Test
 # ------------------

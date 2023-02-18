@@ -6,6 +6,47 @@ Requirements:
 
 More info can be found [here](https://terratest.gruntwork.io/docs/getting-started/quick-start/)
 
+## Tests Breakdown
+
+### anyscale-v1-test
+
+This will create two sets of resources for an Anyscale v1.0 Stack.
+
+The first includes as many defaults as possible including:
+   - IAM Roles
+   - S3 Bucket
+   - VPC with publicly routed subnets (no internal)
+   - VPC Security Group allowing public from Anyscale and 0.0.0.0/0
+   - EFS
+
+The second utilizes an existing VPC and creates:
+   - IAM Roles
+   - S3 Bucket
+   - VPC Security Group allowing public from Anyscale and 0.0.0.0/0
+   - EFS
+
+### anyscale-v2-test - NOT DONE
+
+This will create three sets of resources for Anyscale v2.0 Stacks.
+
+The first includes as many defaults as possible and duplicates the v1 Stack resources above minus the Anyscale Public Ingress:
+   - IAM Roles
+   - S3 Bucket
+   - VPC with publicly routed subnets (no internal)
+   - VPC Security Group allowing access from a customer defined public IP
+   - EFS
+
+The second utilizes an existing VPC and is meant to be testing the v2 Customer Defined Networking solution with no public IPs and locked down ingress in the security group configuration. It creates:
+   - IAM Roles
+   - S3 Bucket
+   - VPC Security Group that is locked down with no public access and no access from Anyscale IPs
+   - EFS
+
+The third creates resources for an Anyscale v2.0 Stack with an existing VPC and an existing S3 bucket. This is still utilizing an existing VPC and is meant to be testing v2 Customer Defined Networking, an existing S3, etc. It creates:
+   - IAM Roles
+   - VPC Security Group that is locked down with no public access and no access from Anyscale IPs
+   - EFS
+
 #### Manual execution
 Manully running the go tests can save time during initial development. Requires active aws credentials.
 ```
