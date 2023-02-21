@@ -1,0 +1,5 @@
+# See https://github.com/actions/labeler for details
+# "dependencies" label for any changes in dependency files
+# Add 'repo' label to any root file changes
+repo:
+- '*'
