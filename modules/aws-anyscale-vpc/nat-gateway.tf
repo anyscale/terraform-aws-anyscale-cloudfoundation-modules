@@ -2,7 +2,7 @@
 # NAT Gateway Creation
 # ---------------------
 locals {
-  nat_gateway_count = var.create_nat_gateway && local.private_subnet_count > 0 ? min(local.subnet_az_count, var.max_nat_gateway_count) : 0
+  nat_gateway_count = var.create_ngw && local.private_subnet_count > 0 ? min(local.subnet_az_count, var.max_nat_gateway_count) : 0
 }
 
 # --------------------

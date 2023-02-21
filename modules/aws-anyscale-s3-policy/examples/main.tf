@@ -18,12 +18,12 @@ locals {
 # Create an S3 buckets for module testing
 # ---------------------------------------------------------------------------------------------------------------------
 module "s3_bucket_defaults" {
-  source = "../../../aws-anyscale-s3"
+  source = "../../aws-anyscale-s3"
   tags   = local.full_tags
 }
 
 module "s3_bucket_custom_policy" {
-  source = "../../../aws-anyscale-s3"
+  source = "../../aws-anyscale-s3"
   tags   = local.full_tags
 }
 
@@ -31,15 +31,15 @@ module "s3_bucket_custom_policy" {
 # Create IAM Roles for module testing
 # ---------------------------------------------------------------------------------------------------------------------
 module "iam_roles" {
-  source = "../../../aws-anyscale-iam"
+  source = "../../aws-anyscale-iam"
   tags   = local.full_tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Create an S3 bucket policy with no optional parameters
 # ---------------------------------------------------------------------------------------------------------------------
-module "all_defaults" {
-  source = "../../"
+module "anyscale_s3_bucket_policy" {
+  source = "../"
 
   anyscale_bucket_name               = module.s3_bucket_defaults.s3_bucket_id
   anyscale_iam_access_role_arn       = module.iam_roles.iam_anyscale_access_role_arn
@@ -47,13 +47,13 @@ module "all_defaults" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Create an S3 bucket policy with a custom JSON policy
+# Create an S3 bucket policy using all variables
 # ---------------------------------------------------------------------------------------------------------------------
-module "kitchen_sink" {
-  source                             = "../../"
+module "anyscale_s3_bucket_policy_complete" {
+  source                             = "../"
   anyscale_bucket_name               = module.s3_bucket_custom_policy.s3_bucket_id
-  anyscale_iam_access_role_arn       = null
-  anyscale_iam_cluster_node_role_arn = null
+  anyscale_iam_access_role_arn       = module.iam_roles.iam_anyscale_access_role_arn
+  anyscale_iam_cluster_node_role_arn = module.iam_roles.iam_cluster_node_role_arn
   custom_s3_policy                   = data.aws_iam_policy_document.custom_s3_policy.json
 
 }
@@ -77,16 +77,4 @@ data "aws_iam_policy_document" "custom_s3_policy" {
       identifiers = ["*"]
     }
   }
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# Do not create any resources
-# ---------------------------------------------------------------------------------------------------------------------
-module "test_no_resources" {
-  source = "../.."
-
-  module_enabled                     = false
-  anyscale_bucket_name               = module.s3_bucket_defaults.s3_bucket_id
-  anyscale_iam_access_role_arn       = module.iam_roles.iam_anyscale_access_role_arn
-  anyscale_iam_cluster_node_role_arn = module.iam_roles.iam_cluster_node_role_arn
 }

@@ -31,7 +31,7 @@ module "all_defaults" {
 #   Should be executed in us-east-2
 # ---------------------------------------------------------------------------------------------------------------------
 module "minimum_anyscale_vpc_requirements" {
-  source = "../.."
+  source = "../../"
 
   anyscale_vpc_name = "tftest-minimum_anyscale_vpc"
   cidr_block        = "172.21.0.0/16"
@@ -47,12 +47,52 @@ module "minimum_anyscale_vpc_requirements" {
 #   Should be executed in us-east-2
 # ---------------------------------------------------------------------------------------------------------------------
 module "public_private_vpc" {
-  source = "../.."
+  source = "../../"
 
   anyscale_vpc_name = "tftest-publicprivate_anyscale_vpc"
   cidr_block        = "172.22.0.0/16"
   public_subnets    = ["172.22.101.0/24", "172.22.102.0/24"]
   private_subnets   = ["172.22.20.0/24", "172.22.21.0/24"]
+
+  module_enabled = true
+  tags           = local.full_tags
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Create new Subnets within an existing VPC
+#   CIDR blocks do not already exist in this VPC
+#   Using existing private route table - tested with both one and two route tables
+#   Do not create a new VPC Endpoint and related resources
+# ---------------------------------------------------------------------------------------------------------------------
+module "existing_vpc_new_subnets" {
+  source = "../../"
+
+  existing_vpc_id = "vpc-086408b268f481027"
+
+  private_subnets          = ["10.0.20.0/24", "10.0.21.0/24"]
+  existing_route_table_ids = ["rtb-02d75c4d4bf4c6dd1"]
+
+  create_igw = false # We will assume this is already there
+  create_ngw = false # We will assume this is already there
+
+  gateway_vpc_endpoints = {}
+
+  module_enabled = true
+  tags           = local.full_tags
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Create just the Gateway Endpoints within an existing VPC and existing Subnets
+#   Create a new VPC Endpoint and related resources
+# ---------------------------------------------------------------------------------------------------------------------
+module "existing_vpc_create_endpoints" {
+  source = "../../"
+
+  existing_vpc_id          = "vpc-01e570eea1c7258ae"
+  existing_route_table_ids = ["rtb-0745f6378288c2836"]
+
+  create_igw = false # We will assume this is already there
+  create_ngw = false # We will assume this is already there
 
   module_enabled = true
   tags           = local.full_tags
@@ -78,8 +118,8 @@ module "kitchen_sink" {
 
   availability_zones = ["us-east-2a", "us-east-2b", "us-east-2c"]
 
-  create_nat_gateway = true
-  create_igw         = true
+  create_ngw = true
+  create_igw = true
 
   enable_vpc_flow_logs                            = true
   create_flow_log_cloudwatch_log_group            = true

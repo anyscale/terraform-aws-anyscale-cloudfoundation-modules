@@ -44,6 +44,17 @@ variable "tags" {
 #--------------
 # VPC Resource
 #--------------
+variable "existing_vpc_id" {
+  description = <<-EOT
+    (Optional)
+    An existing VPC ID. If provided, this will skip creating an Anyscale VPC.
+    If no existing Subnet IDs are provided (`existing_subnet_ids`), but `existing_vpc_id` is provided, then new subnets will be created in this VPC.
+    Default is `null`.
+  EOT
+  type        = string
+  default     = null
+}
+
 variable "cidr_block" {
   description = "(Optional) The IPv4 CIDR block for the VPC. CIDR can be explicitly set or it can be derived from IPAM using `ipv4_netmask_length` & `ipv4_ipam_pool_id`. Default is `10.0.0.0/16`"
   type        = string
@@ -102,7 +113,15 @@ variable "ipv4_netmask_length" {
 # ex:
 # public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 variable "public_subnets" {
-  description = "(Optional) A list of public subnets inside the VPC. Default is an empty list."
+  description = <<-EOT
+    (Optional)
+    A list of public subnets inside the VPC.
+    If you are creating subnets in an existing VPC (using existing_vpc_id),
+    please make sure that the number of subnets in the list is less than or
+    equal to the number of AZ's in the region.
+
+    Default is an empty list.
+  EOT
   type        = list(string)
   default     = []
 }
@@ -126,7 +145,15 @@ variable "map_public_ip_on_launch" {
 # ex:
 # private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
 variable "private_subnets" {
-  description = "(Optional) A list of private subnets inside the VPC. Default is an empty list."
+  description = <<-EOT
+    (Optional)
+    A list of private subnets inside a VPC.
+    If you are creating subnets in an existing VPC (using existing_vpc_id),
+    please make sure that the number of subnets in the list is less than or
+    equal to the number of AZ's in the region.
+
+    Default is an empty list.
+  EOT
   type        = list(string)
   default     = []
 }
@@ -137,6 +164,32 @@ variable "private_subnet_suffix" {
 }
 variable "private_subnet_names" {
   description = "(Optional) Explicit values to use in the Name tag on private subnets. If empty, Name tags are generated. Default is an empty list."
+  type        = list(string)
+  default     = []
+}
+variable "existing_route_table_ids" {
+  description = <<-EOT
+    (Optional)
+    A list of existing Route Tables.
+    If you are creating new private subnets in an existing VPC, this will provide the mapping from
+    subnet to route table. If only 1 is provided, all new subnets will be associated with that one.
+    If more than one, please make sure that you provide the same number of route tables as subnets.
+
+    Default is an empty list.
+  EOT
+  type        = list(string)
+  default     = []
+}
+
+variable "existing_private_subnet_ids" {
+  description = <<-EOT
+    (Optional)
+    A list of existing private subnets.
+    If this variable and var.existing_vpc_id are both provided, the aws-anyscale-vpc sub-module will not create a VPC or Subnets.
+    It will only create VPC Endpoints if the gateway_vpc_endpoints variable is defined.
+
+    Default is an empty list.
+  EOT
   type        = list(string)
   default     = []
 }
@@ -161,7 +214,7 @@ variable "max_az_count" {
 # -------------------
 # NAT Gateways (NGW)
 # -------------------
-variable "create_nat_gateway" {
+variable "create_ngw" {
   description = "(Optional) Determines if a NAT Gateway should be created for private networks. Depends on Public/Private Subnets being created. Default is `true`."
   type        = bool
   default     = true
@@ -269,6 +322,7 @@ variable "gateway_vpc_endpoints" {
     A map of Gateway VPC Endpoints to provision into the VPC. This is a map of objects with the following attributes:
     - `name`: Short service name (either "s3" or "dynamodb")
     - `policy` = A policy (as JSON string) to attach to the endpoint that controls access to the service. May be `null` for full access.
+    Set to an empty map `{}` to skip creating VPC Endpoints.
     Default is S3 with an empty (full access) policy.
     EOD
   default = {

@@ -1,17 +1,5 @@
-name: "Pull Request Labeler"
-on: [pull_request]
-
-permissions: read-all
-
-jobs:
-  add-label:
-    permissions:
-      contents: read
-      pull-requests: write
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/labeler@v4
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        configuration-path: ".github/labeler.yml"
-        sync-labels: true
+# See https://github.com/actions/labeler for details
+# "dependencies" label for any changes in dependency files
+# Add 'repo' label to any root file changes
+repo:
+- '*'
