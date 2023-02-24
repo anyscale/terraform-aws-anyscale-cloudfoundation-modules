@@ -11,21 +11,25 @@ body:
         Thank you for taking the time to request a new feature.
         Please make sure to search for existing issues before filing a new one.
   - type: textarea
-    id: new-feature
     attributes:
       label: What are you looking for?
       description: Please provide a detailed explanation of the new feature request you are looking for.
       placeholder: "Feature request!!"
     validations:
       required: true
-  - type: input
-    id: which-module
+  - type: checkboxes
     attributes:
-      label: Which module?
-      description: "Which module(s) are you having problems with?"
-      placeholder: "ex. Root, S3, EFS, IAM, VPC, S3-Policy, SecurityGroup"
+      label: Which module(s)?
+      description: "Please select which module(s) this issue impacts."
+      options:
+        - label: Root Anyscale Module
+        - label: aws-anyscale-efs
+        - label: aws-anyscale-iam
+        - label: aws-anyscale-s3
+        - label: aws-anyscale-s3-policy
+        - label: aws-anyscale-securitygroups
+        - label: aws-anyscale-vpc
   - type: dropdown
-    id: blocking_work
     attributes:
       label: Is it blocking work?
       description: Please choose one?
@@ -36,7 +40,6 @@ body:
     validations:
       required: true
   - type: dropdown
-    id: terraform_version
     attributes:
       label: Terraform version
       description: What version of Terraform are you using?
@@ -49,15 +52,3 @@ body:
         - Other
     validations:
       required: false
-
-# - [ ] I searched the [issues](https://github.com/anyscale/terraform-cloudfoundation-modules/issues) and found no similar issues.
-
-### Terraform Module (EFS, IAM, S3, S3-Policy, SecurityGroups, VPC)
-
-### What happened + What you expected to happen (provide screenshots if possible)
-
-### Versions / Dependencies (Terraform, AWS Provider, Modules, etc)
-
-### Reproduction script
-
-### Anything else

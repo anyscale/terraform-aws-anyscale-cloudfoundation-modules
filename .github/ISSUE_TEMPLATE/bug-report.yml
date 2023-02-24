@@ -1,6 +1,6 @@
 name: Bug Report
 description: Issue/Bug with the Terraform Modules. Please include repro steps!
-title: "[Bug]: "
+title: "[bug]: "
 labels: ["bug", "P1", "terraform-modules"]
 assignees: ["brent-anyscale"]
 
@@ -11,31 +11,46 @@ body:
         Thank you for taking the time to file a bug report.
         Please make sure to search for existing issues before filing a new one.
   - type: textarea
-    id: what-happened
     attributes:
-      label: What happened?
-      description: What did you expect to happen? (provide screenshots if possible)
-      placeholder: "A bug happened!"
+      label: Current Behavior
+      description: A clear description of what the bug is and how it manifests.
     validations:
       required: true
-  - type: input
-    id: which-module
+  - type: textarea
     attributes:
-      label: Which module?
-      description: "Which module(s) are you having problems with?"
-      placeholder: "ex. Root, S3, EFS, IAM, VPC, S3-Policy, SecurityGroup"
+      label: Expected Behavior
+      description: A clear description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to Reproduce
+      description: Please explain the steps required to duplicate this issue.
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Which module(s)?
+      description: "Please select which module(s) this issue impacts."
+      options:
+        - label: Root Anyscale Module
+        - label: aws-anyscale-efs
+        - label: aws-anyscale-iam
+        - label: aws-anyscale-s3
+        - label: aws-anyscale-s3-policy
+        - label: aws-anyscale-securitygroups
+        - label: aws-anyscale-vpc
   - type: dropdown
-    id: version
     attributes:
-      label: Module version
+      label: Anyscale Terraform Module version
       description: What version of the modules are you using?
       multiple: false
       options:
-        - 0.1.0 (Default)
+        - v0.2.x (Default)
+        - v0.1.x
     validations:
       required: true
   - type: dropdown
-    id: terraform_version
     attributes:
       label: Terraform version
       description: What version of Terraform are you using?
@@ -49,7 +64,6 @@ body:
     validations:
       required: true
   - type: dropdown
-    id: blocking_work
     attributes:
       label: Is it blocking work?
       description: Please choose one?
@@ -59,15 +73,7 @@ body:
         - "yes"
     validations:
       required: true
-
-# - [ ] I searched the [issues](https://github.com/anyscale/terraform-cloudfoundation-modules/issues) and found no similar issues.
-
-### Terraform Module (EFS, IAM, S3, S3-Policy, SecurityGroups, VPC)
-
-### What happened + What you expected to happen (provide screenshots if possible)
-
-### Versions / Dependencies (Terraform, AWS Provider, Modules, etc)
-
-### Reproduction script
-
-### Anything else
+  - type: textarea
+    attributes:
+      label: Additional Information
+      description: List any other information that is relevant to your issue.

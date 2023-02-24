@@ -59,18 +59,37 @@ variable "tags" {
   default     = {}
 }
 
-variable "general_prefix" {
+variable "common_prefix" {
   description = <<-EOT
     (Optional)
-    A general prefix to add to resources created (where prefixes are allowed). This applies to:
+    A common prefix to add to resources created (where prefixes are allowed).
+    If paired with `use_common_name`, this will apply to all resources.
+    If this is not paired with `use_common_name`, this applies to:
       - S3 Buckets
       - IAM Resources
       - Security Groups
     Resource specific prefixes override this variable.
+    Max length is 30 characters.
     Default is `null`
   EOT
   type        = string
   default     = null
+  validation {
+    condition     = var.common_prefix == null || try(length(var.common_prefix) <= 30, false)
+    error_message = "common_prefix must either be `null` or less than 30 characters."
+  }
+}
+
+variable "use_common_name" {
+  description = <<-EOT
+    (Optional)
+    Determines if a standard name should be used across all resources.
+    If set to true and `common_prefix` is also provided, the `common_prefix` will be used prefixed to a common name.
+    If set to true and `common_prefix` is not provided, the prefix will be `anyscale-`
+    Default is `false`
+  EOT
+  type        = bool
+  default     = false
 }
 
 #--------------------------------------------
@@ -342,7 +361,7 @@ variable "anyscale_securitygroup_tags" {
 #--------------------------------------------
 # EFS Variables
 #--------------------------------------------
-variable "efs_name" {
+variable "anyscale_efs_name" {
   description = <<-EOT
     (Optional) Elastic file system name. Will default to `efs_anyscale` if this var `null` and anyscale_cloud_id is also `null`.
     Default is `null`.

@@ -63,31 +63,6 @@ module "aws_anyscale_v2_existing_vpc" {
   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges
 }
 
-
-# ---------------------------------------------------------------------------------------------------------------------
-# Create core Anyscale v2 Stack with existing VPC and S3 Bucket
-#   Creates a v2 stack including
-#     - IAM Roles
-#     - VPC Security Groups
-#     - EFS
-#     - VPC Gateway Endpoint for S3 (not needed in this VPC but for testing purposes)
-# ---------------------------------------------------------------------------------------------------------------------
-
-# module "aws_anyscale_v2_existing_vpc_existing_s3" {
-#   source = "../../"
-#   tags   = local.full_tags
-
-#   anyscale_deploy_env = var.anyscale_deploy_env
-#   anyscale_cloud_id   = var.anyscale_cloud_id
-
-#   # VPC Related
-#   existing_vpc_id         = local.existing_vpc_id
-#   existing_vpc_subnet_ids = local.existing_subnet_ids
-
-#   # Security Group Related
-#   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges
-# }
-
 # ---------------------------------------------------------------------------------------------------------------------
 # Create core Anyscale v2 Stack resources with Private VPC
 #   Should be executed in us-east-2
@@ -105,9 +80,9 @@ locals {
 }
 
 module "aws_anyscale_v2_private_vpc" {
-  source         = "../../"
-  tags           = local.full_tags
-  general_prefix = "private-vpc-"
+  source        = "../../"
+  tags          = local.full_tags
+  common_prefix = "private-vpc-"
 
   anyscale_deploy_env = var.anyscale_deploy_env
   anyscale_cloud_id   = var.anyscale_cloud_id
@@ -140,3 +115,63 @@ module "aws_anyscale_v2_private_vpc" {
     "sg_tag_test" = "private_vpc"
   }
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Create core Anyscale v2 Stack resources with minimal parameters but a common name
+#   Should be executed in us-east-2
+#   Creates a v2 stack including
+#     - IAM Roles
+#     - S3 Bucket
+#     - VPC with publicly routed subnets (no private subnets)
+#     - VPC Security Groups
+#     - EFS
+# ---------------------------------------------------------------------------------------------------------------------
+
+locals {
+  common_name_cidr_block      = "172.24.0.0/16"
+  common_name_public_subnets  = ["172.24.21.0/24", "172.24.22.0/24", "172.24.23.0/24"]
+  common_name_private_subnets = ["172.24.101.0/24", "172.24.102.0/24", "172.24.103.0/24"]
+}
+
+module "aws_anyscale_v2_common_name" {
+  source = "../.."
+  tags   = local.full_tags
+
+  anyscale_deploy_env = var.anyscale_deploy_env
+  anyscale_cloud_id   = var.anyscale_cloud_id
+
+  # VPC Related
+  anyscale_vpc_cidr_block      = local.common_name_cidr_block
+  anyscale_vpc_public_subnets  = local.common_name_public_subnets
+  anyscale_vpc_private_subnets = local.common_name_private_subnets
+
+  common_prefix   = "brent-pfx-test-"
+  use_common_name = true
+
+  # Security Group Related
+  security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Create core Anyscale v2 Stack with existing VPC and S3 Bucket
+#   Creates a v2 stack including
+#     - IAM Roles
+#     - VPC Security Groups
+#     - EFS
+#     - VPC Gateway Endpoint for S3 (not needed in this VPC but for testing purposes)
+# ---------------------------------------------------------------------------------------------------------------------
+
+# module "aws_anyscale_v2_existing_vpc_existing_s3" {
+#   source = "../../"
+#   tags   = local.full_tags
+
+#   anyscale_deploy_env = var.anyscale_deploy_env
+#   anyscale_cloud_id   = var.anyscale_cloud_id
+
+#   # VPC Related
+#   existing_vpc_id         = local.existing_vpc_id
+#   existing_vpc_subnet_ids = local.existing_subnet_ids
+
+#   # Security Group Related
+#   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges
+# }
