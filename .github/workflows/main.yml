@@ -13,15 +13,6 @@ permissions: read-all
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  pre-commit:
-    runs-on: ubuntu-latest
-    name: Static pre-commit analysis
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Run a one-line script
-        run: echo "pre-commit (not active)"
   unit-tests:
     runs-on: ubuntu-latest
     name: Terraform Unit Tests

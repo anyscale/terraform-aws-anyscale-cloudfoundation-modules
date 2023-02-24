@@ -26,8 +26,14 @@ requirements that they've already implemented and just need to plug in the remai
 
 ### Examples
 The examples folder has a couple common use cases that have been tested. These include:
-* Build everything - this mimics the existing cloudformation script, but in Terraform.
-* Pass in an existing VPC and Subnets - build everything else.
+* Anyscale v1
+  * Build everything - this mimics the existing cloudformation script, but in Terraform.
+  * Pass in an existing VPC and Subnets - build everything else.
+* Anyscale v2
+  * Build everything - this mimics the existing cloudformation script
+  * Build everything - use a common name for all resources
+  * Pass in an existing VPC and Subnets - build everything else
+  * Build everything, but only provide Anyscale access to private subnets that are behind a NAT GW
 
 Additional examples can be requested via a [issues] ticket.
 
@@ -46,10 +52,13 @@ v2 Stack is currently untested.
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.0 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_random"></a> [random](#provider\_random) | 3.4.3 |
 
 ## Modules
 
@@ -64,7 +73,9 @@ No providers.
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [random_id.common_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
 
 ## Inputs
 
@@ -75,6 +86,7 @@ No resources.
 | <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID. Default is `null`. | `string` | `null` | no |
 | <a name="input_anyscale_custom_s3_policy"></a> [anyscale\_custom\_s3\_policy](#input\_anyscale\_custom\_s3\_policy) | (Optional)<br>A valid bucket policy in JSON. This will be an additional S3 bucket policy to the required Anyscale policy.<br>For more information about building AWS IAM policy documents with Terraform, see the AWS IAM Policy Document Guide.<br>And for more additional examples, please look at the s3-policy sub-module examples folder.<br>Default is `null`. | `string` | `null` | no |
 | <a name="input_anyscale_deploy_env"></a> [anyscale\_deploy\_env](#input\_anyscale\_deploy\_env) | (Required) Anyscale deploy environment. Used in resource names and tags. | `string` | n/a | yes |
+| <a name="input_anyscale_efs_name"></a> [anyscale\_efs\_name](#input\_anyscale\_efs\_name) | (Optional) Elastic file system name. Will default to `efs_anyscale` if this var `null` and anyscale\_cloud\_id is also `null`.<br>Default is `null`. | `string` | `null` | no |
 | <a name="input_anyscale_efs_tags"></a> [anyscale\_efs\_tags](#input\_anyscale\_efs\_tags) | (Optional)<br>A map of tags for EFS resources.<br>Duplicate tags found in the "tags" variable will get duplicated on the resource.<br>ex:<br>anyscale\_iam\_tags = {<br>  "purpose" : "storage",<br>  "criticality" : "critical"<br>}<br>Default is an empty map. | `map(string)` | `{}` | no |
 | <a name="input_anyscale_gateway_vpc_endpoints"></a> [anyscale\_gateway\_vpc\_endpoints](#input\_anyscale\_gateway\_vpc\_endpoints) | A map of Gateway VPC Endpoints to provision into the VPC. This is a map of objects with the following attributes:<br>- `name`: Short service name (either "s3" or "dynamodb")<br>- `policy` = A policy (as JSON string) to attach to the endpoint that controls access to the service. May be `null` for full access.<br>See the submodule variable for a full example.<br>It is Anyscale's recommendation to have an S3 VPC Endpoint to minimize S3 costs and maximize S3 performance.<br>Set to an empty map `{}` to skip creating VPC Endpoints.<br>Default is S3 with an empty (full access) policy. | <pre>map(object({<br>    name   = string<br>    policy = string<br>  }))</pre> | <pre>{<br>  "s3": {<br>    "name": "s3",<br>    "policy": null<br>  }<br>}</pre> | no |
 | <a name="input_anyscale_iam_access_role_name"></a> [anyscale\_iam\_access\_role\_name](#input\_anyscale\_iam\_access\_role\_name) | (Optional, forces creation of new resource)<br>The name of the Anyscale IAM access role.<br>If left `null`, will default to anyscale\_iam\_access\_role\_name\_prefix.<br>If provided, overrides the anyscale\_iam\_access\_role\_name\_prefix variable.<br>Default is `null`. | `string` | `null` | no |
@@ -93,15 +105,14 @@ No resources.
 | <a name="input_anyscale_vpc_private_subnets"></a> [anyscale\_vpc\_private\_subnets](#input\_anyscale\_vpc\_private\_subnets) | (Optional) A list of private subnets inside the VPC. Default is an empty list. | `list(string)` | `[]` | no |
 | <a name="input_anyscale_vpc_public_subnets"></a> [anyscale\_vpc\_public\_subnets](#input\_anyscale\_vpc\_public\_subnets) | (Optional) A list of public subnets inside the VPC. Default is an empty list. | `list(string)` | `[]` | no |
 | <a name="input_anyscale_vpc_tags"></a> [anyscale\_vpc\_tags](#input\_anyscale\_vpc\_tags) | (Optional)<br>A map of tags for VPC resources.<br>Duplicate tags found in the "tags" variable will get duplicated on the resource.<br>ex:<br>anyscale\_vpc\_tags = {<br>  "purpose" : "networking",<br>  "criticality" : "critical"<br>}<br>Default is an empty map. | `map(string)` | `{}` | no |
+| <a name="input_common_prefix"></a> [common\_prefix](#input\_common\_prefix) | (Optional)<br>A common prefix to add to resources created (where prefixes are allowed).<br>If paired with `use_common_name`, this will apply to all resources.<br>If this is not paired with `use_common_name`, this applies to:<br>  - S3 Buckets<br>  - IAM Resources<br>  - Security Groups<br>Resource specific prefixes override this variable.<br>Max length is 30 characters.<br>Default is `null` | `string` | `null` | no |
 | <a name="input_efs_creation_token"></a> [efs\_creation\_token](#input\_efs\_creation\_token) | (Optional) A unique token used as reference when creating the Elastic File System to ensure idempotent file system creation.<br>Default is `null` which forces Terraform to generate it. | `string` | `null` | no |
 | <a name="input_efs_lifecycle_transition_to_ia"></a> [efs\_lifecycle\_transition\_to\_ia](#input\_efs\_lifecycle\_transition\_to\_ia) | (Optional) Indicates how long it takes to transition files to Infrequent Access storage class.<br>No value, or an empty list, means never.<br>Must either be an empty list or one of "AFTER\_7\_DAYS", "AFTER\_14\_DAYS", "AFTER\_30\_DAYS", "AFTER\_60\_DAYS", "AFTER\_90\_DAYS".<br>Default is `AFTER_60_DAYS` which will transition to IA after 60 days. | `list(string)` | <pre>[<br>  "AFTER_60_DAYS"<br>]</pre> | no |
 | <a name="input_efs_lifecycle_transition_to_primary_storage_class"></a> [efs\_lifecycle\_transition\_to\_primary\_storage\_class](#input\_efs\_lifecycle\_transition\_to\_primary\_storage\_class) | (Optional) Indicates the policy used to transition a file from Infrequent Access (IA) storage to primary storage.<br>Must either be an empty list or `AFTER_1_ACCESS`.<br>Default is `AFTER_1_ACCESS`. | `list(string)` | <pre>[<br>  "AFTER_1_ACCESS"<br>]</pre> | no |
-| <a name="input_efs_name"></a> [efs\_name](#input\_efs\_name) | (Optional) Elastic file system name. Will default to `efs_anyscale` if this var `null` and anyscale\_cloud\_id is also `null`.<br>Default is `null`. | `string` | `null` | no |
 | <a name="input_existing_s3_bucket_arn"></a> [existing\_s3\_bucket\_arn](#input\_existing\_s3\_bucket\_arn) | (Optional)<br>The name of an existing S3 bucket that you'd like to use.<br>Please make sure that it meets the minimum requirements for Anyscale including:<br>  - Bucket Policy<br>  - CORS Policy<br>  - Encryption configuration<br>Default is `null` | `string` | `null` | no |
 | <a name="input_existing_vpc_id"></a> [existing\_vpc\_id](#input\_existing\_vpc\_id) | (Optional) An existing VPC ID. If provided, this will skip creating resources with the Anyscale VPC module. Subnet IDs is also required if this is provided. Default is `null`. | `string` | `null` | no |
 | <a name="input_existing_vpc_route_table_ids"></a> [existing\_vpc\_route\_table\_ids](#input\_existing\_vpc\_route\_table\_ids) | (Optional)<br>Existing VPC Route Table IDs.<br>If provided, this will map new subnets to these route table IDs. If no new subnets are created, these route tables will be used to create VPC Endpoint(s). | `list(string)` | `[]` | no |
 | <a name="input_existing_vpc_subnet_ids"></a> [existing\_vpc\_subnet\_ids](#input\_existing\_vpc\_subnet\_ids) | (Optional) Existing subnet IDs to create Anyscale resources in. If provided, this will skip creating resources with the Anyscale VPC module. VPC ID is also required is this is provided. Default is an empty list. | `list(string)` | `[]` | no |
-| <a name="input_general_prefix"></a> [general\_prefix](#input\_general\_prefix) | (Optional)<br>A general prefix to add to resources created (where prefixes are allowed). This applies to:<br>  - S3 Buckets<br>  - IAM Resources<br>  - Security Groups<br>Resource specific prefixes override this variable.<br>Default is `null` | `string` | `null` | no |
 | <a name="input_security_group_create_anyscale_public_ingress"></a> [security\_group\_create\_anyscale\_public\_ingress](#input\_security\_group\_create\_anyscale\_public\_ingress) | (Optional) Determines if public ingress rules should be created. Default is `false`. | `bool` | `false` | no |
 | <a name="input_security_group_ingress_allow_access_from_cidr_range"></a> [security\_group\_ingress\_allow\_access\_from\_cidr\_range](#input\_security\_group\_ingress\_allow\_access\_from\_cidr\_range) | (Required) Comma delimited string of IPv4 CIDR range to allow access to anyscale resources.<br>This should be the list of CIDR ranges that have access to the clusters. If using Anyscale v1,<br>this should be public IPs. If using Anyscale v2, public or private IPs are supported. SSH and HTTPs<br>ports will be opened to these CIDR ranges.<br>ex: "10.0.1.0/24,24.1.24.24/32" | `string` | n/a | yes |
 | <a name="input_security_group_ingress_with_existing_security_groups_map"></a> [security\_group\_ingress\_with\_existing\_security\_groups\_map](#input\_security\_group\_ingress\_with\_existing\_security\_groups\_map) | (Optional) List of security groups and rules to allow ingress from. Default is an empty list. | `list(map(string))` | `[]` | no |
@@ -109,6 +120,7 @@ No resources.
 | <a name="input_security_group_name_prefix"></a> [security\_group\_name\_prefix](#input\_security\_group\_name\_prefix) | (Optional)<br>The name prefix for the security group.<br>If `security_group_name` is provided, it will override this variable.<br>The variable `general_prefix` is a fall-back prefix if this is not provided.<br><br>Default is `null` but is set to `anyscale-security-group-` in a local variable. | `string` | `null` | no |
 | <a name="input_security_group_override_ingress_from_cidr_map"></a> [security\_group\_override\_ingress\_from\_cidr\_map](#input\_security\_group\_override\_ingress\_from\_cidr\_map) | (Optional) List of ingress rules to create with cidr ranges.<br>If this variable is provided/populated, the default rules will not be created. At a minimum, https and ssh need<br>to be allowed from a IPv4 CIDR block that allows access for the users who are using Anyscale.<br>Default is an empty list. | `list(map(string))` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional)<br>A map of default tags to be added to all resources that accept tags.<br>Resource dependent tags will be appended to this list.<br>ex:<br>tags = {<br>  application = "Anyscale",<br>  environment = "prod"<br>}<br>Default is an empty map. | `map(string)` | `{}` | no |
+| <a name="input_use_common_name"></a> [use\_common\_name](#input\_use\_common\_name) | (Optional)<br>Determines if a standard name should be used across all resources.<br>If set to true and `common_prefix` is also provided, the `common_prefix` will be used prefixed to a common name.<br>If set to true and `common_prefix` is not provided, the prefix will be `anyscale-`<br>Default is `false` | `bool` | `false` | no |
 
 ## Outputs
 
@@ -129,8 +141,8 @@ No resources.
 
 <!-- References -->
 [Terraform]: https://www.terraform.io
-[Issues]: https://github.com/anyscale/sa-sandbox-terraform/issues
-[badge-build]: https://github.com/anyscale/sa-sandbox-terraform/workflows/CI/CD%20Pipeline/badge.svg
+[Issues]: https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/issues
+[badge-build]: https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/workflows/CI/CD%20Pipeline/badge.svg
 [badge-terraform]: https://img.shields.io/badge/terraform-1.x%20-623CE4.svg?logo=terraform
 [badge-tf-aws]: https://img.shields.io/badge/AWS-4.+-F8991D.svg?logo=terraform
-[build-status]: https://github.com/anyscale/sa-sandbox-terraform/actions
+[build-status]: https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/actions

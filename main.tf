@@ -27,12 +27,37 @@ locals {
   create_nat_gw               = local.create_new_vpc ? true : false
   execute_vpc_sub_module      = local.create_new_vpc || local.create_vpc_subnets || local.create_vpc_gateway_endpoint ? true : false
 
-  s3_bucket_prefix                  = coalesce(var.anyscale_s3_bucket_prefix, var.general_prefix, "anyscale-")
-  iam_access_role_name_prefix       = coalesce(var.anyscale_iam_access_role_name_prefix, var.general_prefix, "anyscale-iam-role-")
-  iam_cluster_node_role_name_prefix = coalesce(var.anyscale_iam_cluster_node_role_name_prefix, var.general_prefix, "anyscale-cluster-node-")
-  security_group_name_prefix        = coalesce(var.security_group_name_prefix, var.general_prefix, "anyscale-security-group-")
-  steadystate_policy_prefix         = coalesce(var.anyscale_access_steadystate_policy_prefix, var.general_prefix, "anyscale-steady_state-")
+  s3_bucket_prefix                  = coalesce(var.anyscale_s3_bucket_prefix, var.common_prefix, "anyscale-")
+  iam_access_role_name_prefix       = coalesce(var.anyscale_iam_access_role_name_prefix, var.common_prefix, "anyscale-iam-role-")
+  iam_cluster_node_role_name_prefix = coalesce(var.anyscale_iam_cluster_node_role_name_prefix, var.common_prefix, "anyscale-cluster-node-")
+  security_group_name_prefix        = coalesce(var.security_group_name_prefix, var.common_prefix, "anyscale-security-group-")
+  steadystate_policy_prefix         = coalesce(var.anyscale_access_steadystate_policy_prefix, var.common_prefix, "anyscale-steady_state-")
 
+  common_name_prefix = var.use_common_name ? coalesce(var.common_prefix, "anyscale-") : null
+}
+
+# ------------------------------
+# Common Name Random ID
+# ------------------------------
+resource "random_id" "common_name" {
+  count = var.use_common_name ? 1 : 0
+
+  byte_length = 6
+  prefix      = local.common_name_prefix
+}
+
+locals {
+  common_name         = try(random_id.common_name[0].hex, null)
+  s3_bucket_name      = var.anyscale_s3_bucket_name != null ? var.anyscale_s3_bucket_name : local.common_name
+  vpc_name            = var.anyscale_vpc_name != null ? var.anyscale_vpc_name : local.common_name
+  efs_name            = var.anyscale_efs_name != null ? var.anyscale_efs_name : local.common_name
+  security_group_name = var.security_group_name != null ? var.security_group_name : local.common_name
+
+  # IAM Role Names/Policies are unique since we have multiples of these for a given Anyscale Cloud.
+  # For IAM Roles and Policies, we'll add the type of role/policy to the name.
+  iam_access_role_name        = var.anyscale_iam_access_role_name != null ? var.anyscale_iam_access_role_name : local.common_name != null ? "${local.common_name}-crossacct-iam-role" : null
+  iam_cluster_node_role_name  = var.anyscale_iam_cluster_node_role_name != null ? var.anyscale_iam_cluster_node_role_name : local.common_name != null ? "${local.common_name}-cluster-node-role" : null
+  iam_steadystate_policy_name = var.anyscale_access_steadystate_policy_name != null ? var.anyscale_access_steadystate_policy_name : local.common_name != null ? "${local.common_name}-crossacct-steadystate-policy" : null
 }
 
 # ------------------------------
@@ -43,7 +68,7 @@ module "aws_anyscale_s3" {
   tags   = local.s3_tags
 
   anyscale_cloud_id      = var.anyscale_cloud_id
-  anyscale_bucket_name   = var.anyscale_s3_bucket_name
+  anyscale_bucket_name   = local.s3_bucket_name
   anyscale_bucket_prefix = local.s3_bucket_prefix
   server_side_encryption = var.anyscale_s3_server_side_encryption
   force_destroy          = var.anyscale_s3_force_destroy
@@ -58,12 +83,12 @@ module "aws_anyscale_iam" {
   source = "./modules/aws-anyscale-iam"
   tags   = local.iam_tags
 
-  anyscale_access_role_name              = var.anyscale_iam_access_role_name
+  anyscale_access_role_name              = local.iam_access_role_name
   anyscale_access_role_name_prefix       = local.iam_access_role_name_prefix
-  anyscale_cluster_node_role_name        = var.anyscale_iam_cluster_node_role_name
+  anyscale_cluster_node_role_name        = local.iam_cluster_node_role_name
   anyscale_cluster_node_role_name_prefix = local.iam_cluster_node_role_name_prefix
 
-  anyscale_access_steadystate_policy_name   = var.anyscale_access_steadystate_policy_name
+  anyscale_access_steadystate_policy_name   = local.iam_steadystate_policy_name
   anyscale_access_steadystate_policy_prefix = local.steadystate_policy_prefix
 
   anyscale_cloud_id = var.anyscale_cloud_id
@@ -93,7 +118,7 @@ module "aws_anyscale_vpc" {
   source = "./modules/aws-anyscale-vpc"
   tags   = local.vpc_tags
 
-  anyscale_vpc_name = var.anyscale_vpc_name
+  anyscale_vpc_name = local.vpc_name
   cidr_block        = var.anyscale_vpc_cidr_block
 
   public_subnets  = var.anyscale_vpc_public_subnets
@@ -136,7 +161,7 @@ module "aws_anyscale_securitygroup_self" {
   tags   = local.securitygroup_tags
   vpc_id = coalesce(var.existing_vpc_id, module.aws_anyscale_vpc.vpc_id)
 
-  security_group_name                       = var.security_group_name
+  security_group_name                       = local.security_group_name
   security_group_name_prefix                = local.security_group_name_prefix
   create_anyscale_public_ingress            = var.security_group_create_anyscale_public_ingress
   ingress_from_cidr_map                     = local.ingress_from_cidr_range_override_defined ? var.security_group_override_ingress_from_cidr_map : local.ingress_cidr_block_defined ? local.ingress_from_cidr_map : [{}]
@@ -148,7 +173,7 @@ module "aws_anyscale_efs" {
   tags   = local.efs_tags
 
   # File system
-  anyscale_efs_name  = var.efs_name
+  anyscale_efs_name  = local.efs_name
   efs_creation_token = var.efs_creation_token
 
   lifecycle_policy_transition_to_ia                    = var.efs_lifecycle_transition_to_ia

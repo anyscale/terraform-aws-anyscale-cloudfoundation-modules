@@ -10,23 +10,22 @@ body:
       value: |
         Thank you for taking the time to report a security issue.
         If this is a critical security issue that needs to be addressed immediately, email security-911@anyscale.com
-  - type: input
-    id: contact
-    attributes:
-      label: Contact Details
-      description: An email address that we can reach out to you if we need more information.
-      placeholder: ex. email@example.com
   - type: textarea
-    id: security_issue
     attributes:
       label: What is the security issue?
       description: Please provide a detailed explanation of the security issue.
       value: "<<SECURITY ISSUE>>"
     validations:
       required: true
-  - type: input
-    id: which_module
+  - type: checkboxes
     attributes:
-      label: Which module?
-      description: "Which module(s) are you having problems with?"
-      value: "ex. Root, S3, EFS, IAM, VPC, S3-Policy, SecurityGroup"
+      label: Which module(s)?
+      description: "Please select which module(s) this issue impacts."
+      options:
+        - label: Root Anyscale Module
+        - label: aws-anyscale-efs
+        - label: aws-anyscale-iam
+        - label: aws-anyscale-s3
+        - label: aws-anyscale-s3-policy
+        - label: aws-anyscale-securitygroups
+        - label: aws-anyscale-vpc
