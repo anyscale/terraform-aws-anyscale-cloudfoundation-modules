@@ -22,7 +22,7 @@ locals {
 
   create_new_vpc              = var.existing_vpc_id == null ? true : false
   create_vpc_subnets          = local.anyscale_private_subnet_count > 0 || local.anyscale_public_subnet_count > 0 ? true : false
-  create_vpc_gateway_endpoint = length(var.anyscale_gateway_vpc_endpoints) > 0 && (local.create_new_vpc || length(var.existing_vpc_route_table_ids) > 0) ? true : false
+  create_vpc_gateway_endpoint = length(var.anyscale_gateway_vpc_endpoints) > 0 && (local.create_new_vpc || length(var.existing_vpc_private_route_table_ids) > 0 || length(var.existing_vpc_public_route_table_ids) > 0) ? true : false
   create_internet_gw          = local.create_new_vpc ? true : false
   create_nat_gw               = local.create_new_vpc ? true : false
   execute_vpc_sub_module      = local.create_new_vpc || local.create_vpc_subnets || local.create_vpc_gateway_endpoint ? true : false
@@ -32,6 +32,9 @@ locals {
   iam_cluster_node_role_name_prefix = coalesce(var.anyscale_iam_cluster_node_role_name_prefix, var.common_prefix, "anyscale-cluster-node-")
   security_group_name_prefix        = coalesce(var.security_group_name_prefix, var.common_prefix, "anyscale-security-group-")
   steadystate_policy_prefix         = coalesce(var.anyscale_access_steadystate_policy_prefix, var.common_prefix, "anyscale-steady_state-")
+  cluster_node_custom_policy_prefix = coalesce(var.anyscale_cluster_node_custom_policy_prefix, var.common_prefix, "anyscale-clusternode-custom-policy-")
+  access_role_custom_policy_prefix  = coalesce(var.anyscale_accessrole_custom_policy_name_prefix, var.common_prefix, "anyscale-crossacct-custom-policy-")
+  iam_s3_policy_prefix              = coalesce(var.anyscale_iam_s3_policy_name_prefix, var.common_prefix, "anyscale-iam-s3-")
 
   common_name_prefix = var.use_common_name ? coalesce(var.common_prefix, "anyscale-") : null
 }
@@ -42,7 +45,7 @@ locals {
 resource "random_id" "common_name" {
   count = var.use_common_name ? 1 : 0
 
-  byte_length = 6
+  byte_length = var.random_name_suffix_length
   prefix      = local.common_name_prefix
 }
 
@@ -55,9 +58,12 @@ locals {
 
   # IAM Role Names/Policies are unique since we have multiples of these for a given Anyscale Cloud.
   # For IAM Roles and Policies, we'll add the type of role/policy to the name.
-  iam_access_role_name        = var.anyscale_iam_access_role_name != null ? var.anyscale_iam_access_role_name : local.common_name != null ? "${local.common_name}-crossacct-iam-role" : null
-  iam_cluster_node_role_name  = var.anyscale_iam_cluster_node_role_name != null ? var.anyscale_iam_cluster_node_role_name : local.common_name != null ? "${local.common_name}-cluster-node-role" : null
-  iam_steadystate_policy_name = var.anyscale_access_steadystate_policy_name != null ? var.anyscale_access_steadystate_policy_name : local.common_name != null ? "${local.common_name}-crossacct-steadystate-policy" : null
+  iam_access_role_name                = var.anyscale_iam_access_role_name != null ? var.anyscale_iam_access_role_name : local.common_name != null ? "${local.common_name}-crossacct-iam-role" : null
+  iam_cluster_node_role_name          = var.anyscale_iam_cluster_node_role_name != null ? var.anyscale_iam_cluster_node_role_name : local.common_name != null ? "${local.common_name}-cluster-node-role" : null
+  iam_steadystate_policy_name         = var.anyscale_access_steadystate_policy_name != null ? var.anyscale_access_steadystate_policy_name : local.common_name != null ? "${local.common_name}-crossacct-steadystate-policy" : null
+  iam_cluster_node_custom_policy_name = var.anyscale_cluster_node_custom_policy_name != null ? var.anyscale_cluster_node_custom_policy_name : local.common_name != null ? "${local.common_name}-clusternode-custom-policy" : null
+  iam_accessrole_custom_policy_name   = var.anyscale_accessrole_custom_policy_name != null ? var.anyscale_accessrole_custom_policy_name : local.common_name != null ? "${local.common_name}-crossacct-custom-policy" : null
+  iam_s3_policy_name                  = var.anyscale_iam_s3_policy_name != null ? var.anyscale_iam_s3_policy_name : local.common_name != null ? "${local.common_name}-s3-policy" : null
 }
 
 # ------------------------------
@@ -72,6 +78,7 @@ module "aws_anyscale_s3" {
   anyscale_bucket_prefix = local.s3_bucket_prefix
   server_side_encryption = var.anyscale_s3_server_side_encryption
   force_destroy          = var.anyscale_s3_force_destroy
+  lifecycle_rule         = var.anyscale_s3_lifecycle_rule
 
   module_enabled = local.create_new_s3_bucket
 }
@@ -83,17 +90,34 @@ module "aws_anyscale_iam" {
   source = "./modules/aws-anyscale-iam"
   tags   = local.iam_tags
 
-  anyscale_access_role_name              = local.iam_access_role_name
-  anyscale_access_role_name_prefix       = local.iam_access_role_name_prefix
+  anyscale_access_role_name        = local.iam_access_role_name
+  anyscale_access_role_name_prefix = local.iam_access_role_name_prefix
+  anyscale_access_role_description = var.anyscale_access_role_description
+
+  anyscale_access_steadystate_policy_name        = local.iam_steadystate_policy_name
+  anyscale_access_steadystate_policy_prefix      = local.steadystate_policy_prefix
+  anyscale_access_steadystate_policy_description = var.anyscale_access_steadystate_policy_description
+
+  anyscale_custom_policy_name        = local.iam_accessrole_custom_policy_name
+  anyscale_custom_policy_name_prefix = local.access_role_custom_policy_prefix
+  anyscale_custom_policy_description = var.anyscale_accessrole_custom_policy_description
+  anyscale_custom_policy             = var.anyscale_accessrole_custom_policy
+
   anyscale_cluster_node_role_name        = local.iam_cluster_node_role_name
   anyscale_cluster_node_role_name_prefix = local.iam_cluster_node_role_name_prefix
+  anyscale_cluster_node_role_description = var.anyscale_cluster_node_role_description
 
-  anyscale_access_steadystate_policy_name   = local.iam_steadystate_policy_name
-  anyscale_access_steadystate_policy_prefix = local.steadystate_policy_prefix
+  anyscale_cluster_node_custom_policy_name        = local.iam_cluster_node_custom_policy_name
+  anyscale_cluster_node_custom_policy_prefix      = local.cluster_node_custom_policy_prefix
+  anyscale_cluster_node_custom_policy_description = var.anyscale_cluster_node_custom_policy_description
+  anyscale_cluster_node_custom_policy             = var.anyscale_cluster_node_custom_policy
+
+  anyscale_s3_bucket_arn             = local.create_new_s3_bucket ? module.aws_anyscale_s3.s3_bucket_arn : var.existing_s3_bucket_arn
+  anyscale_iam_s3_policy_name        = local.iam_s3_policy_name
+  anyscale_iam_s3_policy_name_prefix = local.iam_s3_policy_prefix
+  anyscale_iam_s3_policy_description = var.anyscale_iam_s3_policy_description
 
   anyscale_cloud_id = var.anyscale_cloud_id
-
-  anyscale_s3_bucket_arn = local.create_new_s3_bucket ? module.aws_anyscale_s3.s3_bucket_arn : var.existing_s3_bucket_arn
 }
 
 # ------------------------------
@@ -129,9 +153,10 @@ module "aws_anyscale_vpc" {
 
   gateway_vpc_endpoints = var.anyscale_gateway_vpc_endpoints
 
-  existing_vpc_id             = var.existing_vpc_id
-  existing_private_subnet_ids = var.existing_vpc_subnet_ids
-  existing_route_table_ids    = var.existing_vpc_route_table_ids
+  existing_vpc_id                  = var.existing_vpc_id
+  existing_private_subnet_ids      = var.existing_vpc_subnet_ids
+  existing_private_route_table_ids = var.existing_vpc_private_route_table_ids
+  existing_public_route_table_ids  = var.existing_vpc_public_route_table_ids
 
   module_enabled = local.execute_vpc_sub_module
 }

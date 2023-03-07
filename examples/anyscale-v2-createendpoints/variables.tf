@@ -60,20 +60,7 @@ variable "customer_ingress_cidr_ranges" {
     The IPv4 CIDR block that is allowed to access the clusters.
     This provides the ability to lock down the v1 stack to just the public IPs of a corporate network.
     This is added to the security group and allows port 443 (https) and 22 (ssh) access.
-    ex: `52.1.1.23/32,10.1.0.0/16`
+    ex: `52.1.1.23/32,10.1.0.0/16'
   EOT
   type        = string
-}
-
-variable "common_prefix" {
-  description = <<-EOT
-    (Optional)
-    Default for this EXAMPLE is `anyscale-pfx-test-`
-  EOT
-  type        = string
-  default     = "anyscale-pfx-test-"
-  validation {
-    condition     = var.common_prefix == null || try(length(var.common_prefix) <= 30, false)
-    error_message = "common_prefix must either be `null` or less than 30 characters."
-  }
 }

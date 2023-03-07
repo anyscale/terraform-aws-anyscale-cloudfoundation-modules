@@ -64,3 +64,8 @@ variable "customer_ingress_cidr_ranges" {
   EOT
   type        = string
 }
+
+variable "s3_tag_value" {
+  description = "This is used to set the S3 tag value for testing purposes"
+  type        = string
+}

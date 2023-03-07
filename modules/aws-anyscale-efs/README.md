@@ -21,7 +21,7 @@ EFS is required for you to use Anyscale Workspaces.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.55.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.57.1 |
 
 ## Modules
 

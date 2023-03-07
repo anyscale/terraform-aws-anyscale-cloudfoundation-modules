@@ -57,6 +57,14 @@ go test -v
 ```
 Where `<module_name>` is the name of the terraform module (can also be `github.com/<your_repo_name>`).
 
+To execute a specific test (when there are multiple tests), you can use:
+```
+cd test
+go test -v -run <TestName>
+#example
+go test -v -run TestAnyscaleV2Resources
+```
+
 #### Other useful go commands
 `go get -t -u` This updates test modules to the latest versions. Must be followed with `go mod tidy`
 

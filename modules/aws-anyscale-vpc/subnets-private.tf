@@ -4,9 +4,9 @@
 
 locals {
   private_subnet_count  = length(var.private_subnets) > 0 && length(var.existing_private_subnet_ids) == 0 ? length(var.private_subnets) : 0
-  existing_prv_rt_count = length(var.existing_route_table_ids) > 0 ? length(var.existing_route_table_ids) : 0
+  existing_prv_rt_count = length(var.existing_private_route_table_ids) > 0 ? length(var.existing_private_route_table_ids) : 0
 
-  private_route_table_ids = local.existing_prv_rt_count > 0 ? var.existing_route_table_ids : local.private_subnet_count > 0 ? aws_route_table.private[*].id : []
+  private_route_table_ids = local.existing_prv_rt_count > 0 ? var.existing_private_route_table_ids : local.private_subnet_count > 0 ? aws_route_table.private[*].id : []
 }
 
 # ----------------

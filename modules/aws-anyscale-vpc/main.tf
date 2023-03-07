@@ -47,7 +47,7 @@ locals {
 
   subnet_az_count = var.module_enabled ? length(local.subnet_availability_zones) : 0
 
-  all_route_table_ids = concat(local.private_route_table_ids, local.public_route_table_ids, var.existing_route_table_ids, [])
+  all_route_table_ids = concat(local.private_route_table_ids, local.public_route_table_ids, [])
 
   module_tags = tomap({
     tf_sub_module = "aws-anyscale-vpc"

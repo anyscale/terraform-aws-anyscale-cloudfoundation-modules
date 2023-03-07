@@ -17,7 +17,7 @@ This module creates the default Security Group resources needed for Anyscale to 
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.55.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.57.1 |
 
 ## Modules
 

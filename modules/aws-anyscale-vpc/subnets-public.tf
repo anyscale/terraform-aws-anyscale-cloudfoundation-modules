@@ -3,8 +3,10 @@
 # ---------------
 
 locals {
-  public_subnet_count    = length(var.public_subnets) > 0 ? length(var.public_subnets) : 0
-  public_route_table_ids = local.public_subnet_count > 0 ? aws_route_table.public[*].id : []
+  public_subnet_count   = length(var.public_subnets) > 0 ? length(var.public_subnets) : 0
+  existing_pub_rt_count = length(var.existing_public_route_table_ids) > 0 ? length(var.existing_public_route_table_ids) : 0
+
+  public_route_table_ids = local.existing_pub_rt_count > 0 ? var.existing_public_route_table_ids : local.public_subnet_count > 0 ? aws_route_table.public[*].id : []
 }
 
 # -----------
