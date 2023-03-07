@@ -69,8 +69,8 @@ module "existing_vpc_new_subnets" {
 
   existing_vpc_id = "vpc-086408b268f481027"
 
-  private_subnets          = ["10.0.20.0/24", "10.0.21.0/24"]
-  existing_route_table_ids = ["rtb-02d75c4d4bf4c6dd1"]
+  private_subnets                  = ["10.0.20.0/24", "10.0.21.0/24"]
+  existing_private_route_table_ids = ["rtb-02d75c4d4bf4c6dd1"]
 
   create_igw = false # We will assume this is already there
   create_ngw = false # We will assume this is already there
@@ -88,8 +88,8 @@ module "existing_vpc_new_subnets" {
 module "existing_vpc_create_endpoints" {
   source = "../../"
 
-  existing_vpc_id          = "vpc-01e570eea1c7258ae"
-  existing_route_table_ids = ["rtb-0745f6378288c2836"]
+  existing_vpc_id                  = "vpc-01e570eea1c7258ae"
+  existing_private_route_table_ids = ["rtb-0745f6378288c2836"]
 
   create_igw = false # We will assume this is already there
   create_ngw = false # We will assume this is already there

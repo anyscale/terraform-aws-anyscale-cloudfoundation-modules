@@ -53,18 +53,19 @@ No resources.
 | <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID. Default is `null`. | `string` | `null` | no |
 | <a name="input_anyscale_deploy_env"></a> [anyscale\_deploy\_env](#input\_anyscale\_deploy\_env) | (Required) Anyscale deploy environment. Used in resource names and tags. | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | The AWS region in which all resources will be created. | `string` | n/a | yes |
+| <a name="input_s3_tag_value"></a> [s3\_tag\_value](#input\_s3\_tag\_value) | This is used to set the S3 tag value for testing purposes | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags to all resources that accept tags. | `map(string)` | <pre>{<br>  "environment": "test",<br>  "test": true<br>}</pre> | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_anyscale_v2_private_vpc_efs_id"></a> [anyscale\_v2\_private\_vpc\_efs\_id](#output\_anyscale\_v2\_private\_vpc\_efs\_id) | Anyscale Elastic File System ID. |
-| <a name="output_anyscale_v2_private_vpc_iam_instance_role_arn"></a> [anyscale\_v2\_private\_vpc\_iam\_instance\_role\_arn](#output\_anyscale\_v2\_private\_vpc\_iam\_instance\_role\_arn) | Anyscale IAM instance role arn. |
-| <a name="output_anyscale_v2_private_vpc_iam_role_arn"></a> [anyscale\_v2\_private\_vpc\_iam\_role\_arn](#output\_anyscale\_v2\_private\_vpc\_iam\_role\_arn) | Anyscale IAM access role arn. |
-| <a name="output_anyscale_v2_private_vpc_id"></a> [anyscale\_v2\_private\_vpc\_id](#output\_anyscale\_v2\_private\_vpc\_id) | Anyscale VPC ID. If there was not one created, return the one that was used during other resource creation. |
-| <a name="output_anyscale_v2_private_vpc_private_subnet_ids"></a> [anyscale\_v2\_private\_vpc\_private\_subnet\_ids](#output\_anyscale\_v2\_private\_vpc\_private\_subnet\_ids) | Anyscale VPC Private Subnet IDs. If there were none created, return an empty string. |
-| <a name="output_anyscale_v2_private_vpc_public_subnet_ids"></a> [anyscale\_v2\_private\_vpc\_public\_subnet\_ids](#output\_anyscale\_v2\_private\_vpc\_public\_subnet\_ids) | Anyscale VPC Public Subnet IDs. If there were none created, return an empty string. |
-| <a name="output_anyscale_v2_private_vpc_s3_bucket_id"></a> [anyscale\_v2\_private\_vpc\_s3\_bucket\_id](#output\_anyscale\_v2\_private\_vpc\_s3\_bucket\_id) | Anyscale S3 Bucket ID. If a bucket was not created, return an empty string. |
-| <a name="output_anyscale_v2_private_vpc_security_group_id"></a> [anyscale\_v2\_private\_vpc\_security\_group\_id](#output\_anyscale\_v2\_private\_vpc\_security\_group\_id) | Anyscale Security Group ID. If a security group was not created, return an empty string. |
+| <a name="output_anyscale_v2_efs_id"></a> [anyscale\_v2\_efs\_id](#output\_anyscale\_v2\_efs\_id) | Anyscale Elastic File System ID. |
+| <a name="output_anyscale_v2_iam_instance_role_arn"></a> [anyscale\_v2\_iam\_instance\_role\_arn](#output\_anyscale\_v2\_iam\_instance\_role\_arn) | Anyscale IAM instance role arn. |
+| <a name="output_anyscale_v2_iam_role_arn"></a> [anyscale\_v2\_iam\_role\_arn](#output\_anyscale\_v2\_iam\_role\_arn) | Anyscale IAM access role arn. |
+| <a name="output_anyscale_v2_private_subnet_ids"></a> [anyscale\_v2\_private\_subnet\_ids](#output\_anyscale\_v2\_private\_subnet\_ids) | Anyscale VPC Private Subnet IDs. If there were none created, return an empty string. |
+| <a name="output_anyscale_v2_public_subnet_ids"></a> [anyscale\_v2\_public\_subnet\_ids](#output\_anyscale\_v2\_public\_subnet\_ids) | Anyscale VPC Public Subnet IDs. If there were none created, return an empty string. |
+| <a name="output_anyscale_v2_s3_bucket_id"></a> [anyscale\_v2\_s3\_bucket\_id](#output\_anyscale\_v2\_s3\_bucket\_id) | Anyscale S3 Bucket ID. If a bucket was not created, return an empty string. |
+| <a name="output_anyscale_v2_security_group_id"></a> [anyscale\_v2\_security\_group\_id](#output\_anyscale\_v2\_security\_group\_id) | Anyscale Security Group ID. If a security group was not created, return an empty string. |
+| <a name="output_anyscale_v2_vpc_id"></a> [anyscale\_v2\_vpc\_id](#output\_anyscale\_v2\_vpc\_id) | Anyscale VPC ID. If there was not one created, return the one that was used during other resource creation. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

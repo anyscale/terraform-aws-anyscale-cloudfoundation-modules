@@ -49,10 +49,12 @@ variable "tags" {
     A map of default tags to be added to all resources that accept tags.
     Resource dependent tags will be appended to this list.
     ex:
+    ```
     tags = {
       application = "Anyscale",
       environment = "prod"
     }
+    ```
     Default is an empty map.
   EOT
   type        = map(string)
@@ -86,10 +88,28 @@ variable "use_common_name" {
     Determines if a standard name should be used across all resources.
     If set to true and `common_prefix` is also provided, the `common_prefix` will be used prefixed to a common name.
     If set to true and `common_prefix` is not provided, the prefix will be `anyscale-`
+    If set to true, this will also use a random suffix to avoid name collisions.
     Default is `false`
   EOT
   type        = bool
   default     = false
+}
+
+variable "random_name_suffix_length" {
+  description = <<-EOT
+    (Optional)
+    Determines the random suffix length that is used to generate a common name.
+    Certain AWS resources have a hard limit on name lengths and this will allow
+    the ability to control how many characters are added as a suffix.
+    Must be >= 2 and <= 30.
+    Default is `6`
+  EOT
+  type        = number
+  default     = 6
+  validation {
+    condition     = try(var.random_name_suffix_length >= 2, var.random_name_suffix_length <= 30, false)
+    error_message = "random_name_suffix_length must either be >= 2 and <= 30"
+  }
 }
 
 #--------------------------------------------
@@ -105,11 +125,21 @@ variable "existing_vpc_subnet_ids" {
   type        = list(string)
   default     = []
 }
-variable "existing_vpc_route_table_ids" {
+variable "existing_vpc_private_route_table_ids" {
   description = <<-EOT
     (Optional)
-    Existing VPC Route Table IDs.
-    If provided, this will map new subnets to these route table IDs. If no new subnets are created, these route tables will be used to create VPC Endpoint(s).
+    Existing VPC Private Route Table IDs.
+    If provided, this will map new private subnets to these route table IDs.
+    If no new subnets are created, these route tables will be used to create VPC Endpoint(s).
+  EOT
+  type        = list(string)
+  default     = []
+}
+variable "existing_vpc_public_route_table_ids" {
+  description = <<-EOT
+    (Optional)
+    Existing VPC Public Route Table IDs.
+    If provided, these route tables will be used to create VPC Endpoint(s).
   EOT
   type        = list(string)
   default     = []
@@ -145,10 +175,12 @@ variable "anyscale_vpc_tags" {
     A map of tags for VPC resources.
     Duplicate tags found in the "tags" variable will get duplicated on the resource.
     ex:
+    ```
     anyscale_vpc_tags = {
       "purpose" : "networking",
       "criticality" : "critical"
     }
+    ```
     Default is an empty map.
   EOT
   type        = map(string)
@@ -204,6 +236,17 @@ variable "anyscale_iam_access_role_name_prefix" {
   default     = null
 }
 
+variable "anyscale_access_role_description" {
+  description = <<-EOT
+    (Optional)
+    The IAM role description for the Anysclae IAM access role.
+    This role is used for cross account access from the Anyscale Controlplane to an AWS account and allows access to manage AWS resources.
+    Default is `Anyscale access role`
+  EOT
+  type        = string
+  default     = "Anyscale access role"
+}
+
 variable "anyscale_access_steadystate_policy_name" {
   description = <<-EOT
     (Optional)
@@ -226,7 +269,62 @@ variable "anyscale_access_steadystate_policy_prefix" {
   type        = string
   default     = null
 }
+variable "anyscale_access_steadystate_policy_description" {
+  description = <<-EOT
+    (Optional)
+    Anyscale steady state IAM policy description.
+    Default is `Anyscale Steady State IAM Policy which is used by the Anyscale IAM Access Role`
+  EOT
+  type        = string
+  default     = "Anyscale Steady State IAM Policy which is used by the Anyscale IAM Access Role"
+}
 
+# Anyscale Access Role Custom Policy
+variable "anyscale_accessrole_custom_policy_name" {
+  description = <<-EOT
+    (Optional)
+    Name for an Anyscale custom IAM policy.
+    If left `null`, will default to `anyscale_custom_policy_name_prefix`.
+    Default is `null`.
+  EOT
+  type        = string
+  default     = null
+}
+variable "anyscale_accessrole_custom_policy_name_prefix" {
+  description = <<-EOT
+    (Optional)
+    Name prefix for the Anyscale custom IAM policy.
+    If `anyscale_accessrole_custom_policy_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `anyscale-crossacct-custom-policy-` in a local variable.
+  EOT
+  type        = string
+  default     = null
+}
+variable "anyscale_accessrole_custom_policy_description" {
+  description = <<-EOT
+    (Optional)
+    Anyscale IAM custom policy description.
+    Default is `Anyscale custom IAM policy`.
+  EOT
+  type        = string
+  default     = "Anyscale custom IAM policy"
+}
+variable "anyscale_accessrole_custom_policy" {
+  description = <<-EOT
+    (Optional)
+    Anyscale custom IAM policy.
+    This policy will be applied in addition to the default policies added to the Anyscale Access IAM Role.
+    Note: Any customizations to the IAM Role need to be carefully tested and Anyscale is not
+    responsible for any problems that may occur due to misconfiguring the policy and/or Anyscale Access Role.
+    Must be a valid IAM policy.
+    Default is `null`.
+  EOT
+  type        = string
+  default     = null
+}
+
+# Cluster Node Role
 variable "anyscale_iam_cluster_node_role_name" {
   description = <<-EOT
     (Optional, forces creation of new resource)
@@ -248,6 +346,90 @@ variable "anyscale_iam_cluster_node_role_name_prefix" {
   type        = string
   default     = null
 }
+variable "anyscale_cluster_node_role_description" {
+  description = <<-EOT
+    (Optional)
+    The IAM Role description for the Anyscale Cluster Node Role.
+    This role is used by compute resources to access resources within an AWS account.
+    Default is `Anyscale cluster node role`.
+  EOT
+  type        = string
+  default     = "Anyscale cluster node role"
+}
+variable "anyscale_cluster_node_custom_policy_name" {
+  description = <<-EOT
+    (Optional)
+    Name for the Anyscale cluster node custom IAM policy.
+    If left `null`, will default to `anyscale_cluster_node_custom_policy_prefix`.
+    Default is `null`.
+  EOT
+  type        = string
+  default     = null
+}
+variable "anyscale_cluster_node_custom_policy_prefix" {
+  description = <<-EOT
+    (Optional)
+    Name prefix for the Anyscale cluster node custom IAM policy.
+    If `anyscale_cluster_node_custom_policy_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `anyscale-clusternode-custom-policy-` in a local variable.
+  EOT
+  type        = string
+  default     = null
+}
+variable "anyscale_cluster_node_custom_policy_description" {
+  description = <<-EOT
+    (Optional)
+    Anyscale IAM cluster node custom policy description.
+    Default is `Anyscale cluster node custom IAM policy`.
+  EOT
+  type        = string
+  default     = "Anyscale cluster node custom IAM policy"
+}
+variable "anyscale_cluster_node_custom_policy" {
+  description = <<-EOT
+    (Optional)
+    Anyscale cluster node custom IAM policy.
+    This policy will be applied in addition to the default policies added to the Cluster Node Role.
+    Note: Any customizations to the IAM Role need to be carefully tested and Anyscale is not
+    responsible for any problems that may occur due to misconfiguring the policy and/or Cluster Role.
+    Must be a valid IAM policy.
+    Default is `null`.
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_iam_s3_policy_name" {
+  description = <<-EOT
+    (Optional)
+    Name for the Anyscale S3 access IAM policy.
+    If left `null`, will default to `anyscale_iam_s3_policy_name_prefix`.
+    Default is `null`.
+  EOT
+  type        = string
+  default     = null
+}
+variable "anyscale_iam_s3_policy_name_prefix" {
+  description = <<-EOT
+    (Optional)
+    Name prefix for the Anyscale S3 access IAM policy.
+    If `anyscale_iam_s3_policy_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `anyscale-iam-s3-` in a local variable.
+  EOT
+  type        = string
+  default     = null
+}
+variable "anyscale_iam_s3_policy_description" {
+  description = <<-EOT
+    (Optional)
+    Anyscale S3 access IAM policy description.
+    Default is `Anyscale S3 Access IAM Policy`.
+  EOT
+  type        = string
+  default     = "Anyscale S3 Access IAM Policy"
+}
 
 variable "anyscale_iam_tags" {
   description = <<-EOT
@@ -255,10 +437,12 @@ variable "anyscale_iam_tags" {
     A map of tags for IAM resources.
     Duplicate tags found in the "tags" variable will get duplicated on the resource.
     ex:
+    ```
     anyscale_iam_tags = {
       "purpose" : "iam",
       "criticality" : "critical"
     }
+    ```
     Default is an empty map.
   EOT
   type        = map(string)
@@ -348,10 +532,12 @@ variable "anyscale_securitygroup_tags" {
     A map of tags for Security Group resources.
     Duplicate tags found in the "tags" variable will get duplicated on the resource.
     ex:
+    ```
     anyscale_iam_tags = {
       "purpose" : "security",
       "criticality" : "critical"
     }
+    ```
     Default is an empty map.
   EOT
   type        = map(string)
@@ -418,10 +604,12 @@ variable "anyscale_efs_tags" {
     A map of tags for EFS resources.
     Duplicate tags found in the "tags" variable will get duplicated on the resource.
     ex:
+    ```
     anyscale_iam_tags = {
       "purpose" : "storage",
       "criticality" : "critical"
     }
+    ```
     Default is an empty map.
   EOT
   type        = map(string)
@@ -475,10 +663,12 @@ variable "anyscale_s3_server_side_encryption" {
     Configuration to enforce server side encryption (KMS or AES256).
     If you are using KMS, you must proivde the KMS Key ID.
     ex using kms:
+    ```
     apply_server_side_encryption_by_default = {
       kms_master_key_id = "1234abcd-12ab-34cd-56ef-1234567890ab"
       sse_algorithm     = "aws:kms"
     }
+    ```
     Default is `{ sse_algorithm = "AES256" }`
   EOT
   type        = map(string)
@@ -536,12 +726,51 @@ variable "anyscale_s3_tags" {
     A map of tags for S3 resources.
     Duplicate tags found in the "tags" variable will get duplicated on the resource.
     ex:
+    ```
     anyscale_iam_tags = {
       "purpose" : "storage",
       "criticality" : "critical"
     }
+    ```
     Default is an empty map.
   EOT
   type        = map(string)
   default     = {}
+}
+
+variable "anyscale_s3_lifecycle_rule" {
+  description = <<-EOT
+    (Optional)
+    List of maps containing configuration of object lifecycle management.
+    ex:
+    ```
+    anyscale_s3_lifecycle_rule = [
+      {
+        id      = "log"
+        enabled = true
+        filter = {
+          prefix = "log1/"
+        }
+        transition = [
+          {
+            days          = 30
+            storage_class = "ONEZONE_IA"
+          }, {
+            days          = 60
+            storage_class = "GLACIER"
+          }
+        ]
+        noncurrent_version_transition = [
+          {
+            days          = 30
+            storage_class = "STANDARD_IA"
+          },
+        ]
+      }
+    ]
+    ```
+    Default is an empty list.
+  EOT
+  type        = any
+  default     = []
 }

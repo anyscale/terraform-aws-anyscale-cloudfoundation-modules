@@ -19,7 +19,7 @@ This builds a minimal VPC configuration. If you need more complex VPC configurat
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.55.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.57.1 |
 | <a name="provider_time"></a> [time](#provider\_time) | 0.9.1 |
 
 ## Modules
@@ -74,8 +74,9 @@ No modules.
 | <a name="input_enable_vpc_dns_hostnames"></a> [enable\_vpc\_dns\_hostnames](#input\_enable\_vpc\_dns\_hostnames) | (Optional) Determines if DNS hostnames are enabled on the VPC. Default is `true` | `bool` | `true` | no |
 | <a name="input_enable_vpc_dns_support"></a> [enable\_vpc\_dns\_support](#input\_enable\_vpc\_dns\_support) | (Optional) Determines if DNS support is enabled on the VPC. Default is `true`. | `bool` | `true` | no |
 | <a name="input_enable_vpc_flow_logs"></a> [enable\_vpc\_flow\_logs](#input\_enable\_vpc\_flow\_logs) | (Optional) Determines if VPC Flow Logs should be enabled. Default is `false`. | `bool` | `false` | no |
+| <a name="input_existing_private_route_table_ids"></a> [existing\_private\_route\_table\_ids](#input\_existing\_private\_route\_table\_ids) | (Optional)<br>A list of existing Route Tables for private subnets.<br>If you are creating new private subnets in an existing VPC, this will provide the mapping from<br>subnet to route table. If only 1 route table is provided, all new subnets will be associated with that one.<br>If more than one, please make sure that you provide the same number of route tables as subnets.<br><br>Default is an empty list. | `list(string)` | `[]` | no |
 | <a name="input_existing_private_subnet_ids"></a> [existing\_private\_subnet\_ids](#input\_existing\_private\_subnet\_ids) | (Optional)<br>A list of existing private subnets.<br>If this variable and var.existing\_vpc\_id are both provided, the aws-anyscale-vpc sub-module will not create a VPC or Subnets.<br>It will only create VPC Endpoints if the gateway\_vpc\_endpoints variable is defined.<br><br>Default is an empty list. | `list(string)` | `[]` | no |
-| <a name="input_existing_route_table_ids"></a> [existing\_route\_table\_ids](#input\_existing\_route\_table\_ids) | (Optional)<br>A list of existing Route Tables.<br>If you are creating new private subnets in an existing VPC, this will provide the mapping from<br>subnet to route table. If only 1 is provided, all new subnets will be associated with that one.<br>If more than one, please make sure that you provide the same number of route tables as subnets.<br><br>Default is an empty list. | `list(string)` | `[]` | no |
+| <a name="input_existing_public_route_table_ids"></a> [existing\_public\_route\_table\_ids](#input\_existing\_public\_route\_table\_ids) | (Optional)<br>A list of existing Route Tables for public subnets.<br>If provided and if `gateway_vpc_endpoints` is also provided,<br>this will create a route to the gateway endpoint.<br><br>Default is an empty list. | `list(string)` | `[]` | no |
 | <a name="input_existing_vpc_id"></a> [existing\_vpc\_id](#input\_existing\_vpc\_id) | (Optional)<br>An existing VPC ID. If provided, this will skip creating an Anyscale VPC.<br>If no existing Subnet IDs are provided (`existing_subnet_ids`), but `existing_vpc_id` is provided, then new subnets will be created in this VPC.<br>Default is `null`. | `string` | `null` | no |
 | <a name="input_flow_log_cloudwatch_log_group_kms_key_id"></a> [flow\_log\_cloudwatch\_log\_group\_kms\_key\_id](#input\_flow\_log\_cloudwatch\_log\_group\_kms\_key\_id) | (Optional) The ARN of the KMS Key to use when encrypting log data for VPC flow logs. Default is `null`. | `string` | `null` | no |
 | <a name="input_flow_log_cloudwatch_log_group_name_prefix"></a> [flow\_log\_cloudwatch\_log\_group\_name\_prefix](#input\_flow\_log\_cloudwatch\_log\_group\_name\_prefix) | (Optional) Specifies the name prefix of CloudWatch Log Group for VPC flow logs. Default is `/aws/vpc-flow-log/` | `string` | `"/aws/vpc-flow-log/"` | no |

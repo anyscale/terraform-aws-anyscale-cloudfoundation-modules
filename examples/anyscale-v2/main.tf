@@ -16,8 +16,6 @@ locals {
     }),
     var.tags
   )
-  cidr_block     = "172.24.0.0/16"
-  public_subnets = ["172.24.101.0/24", "172.24.102.0/24", "172.24.103.0/24"]
 }
 
 module "aws_anyscale_v2" {
@@ -28,8 +26,8 @@ module "aws_anyscale_v2" {
   anyscale_cloud_id   = var.anyscale_cloud_id
 
   # VPC Related
-  anyscale_vpc_cidr_block     = local.cidr_block
-  anyscale_vpc_public_subnets = local.public_subnets
+  anyscale_vpc_cidr_block     = "172.24.0.0/16"
+  anyscale_vpc_public_subnets = ["172.24.101.0/24", "172.24.102.0/24", "172.24.103.0/24"]
 
   # Security Group Related
   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges

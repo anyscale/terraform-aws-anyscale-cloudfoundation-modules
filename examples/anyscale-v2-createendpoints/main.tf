@@ -3,7 +3,6 @@
 #   Creates a v2 stack including
 #     - IAM Roles
 #     - S3 Bucket
-#       - Custom tags for the S3 bucket
 #     - VPC Security Groups
 #     - EFS
 # ---------------------------------------------------------------------------------------------------------------------
@@ -14,9 +13,10 @@ locals {
     }),
     var.tags
   )
+
 }
 
-module "aws_anyscale_v2_existing_vpc" {
+module "aws_anyscale_v2_createendpoints" {
   source = "../../"
   tags   = local.full_tags
 
@@ -24,14 +24,17 @@ module "aws_anyscale_v2_existing_vpc" {
   anyscale_cloud_id   = var.anyscale_cloud_id
 
   # VPC Related
-  existing_vpc_id         = "vpc-086408b268f481027"
-  existing_vpc_subnet_ids = ["subnet-06154a164989c0f8d", "subnet-05f678cbbba3d9a1d", "subnet-0f7b63788905e3eb2"]
+  existing_vpc_id                      = "vpc-07ae27a170d7fc7be"
+  existing_vpc_subnet_ids              = ["subnet-0d3c9339dd7b4419e", "subnet-065bf13bbea271c3c"]
+  existing_vpc_private_route_table_ids = ["rtb-06c6a1cfd89cb8e96", "rtb-0668cedc29747917f"]
+  # existing_vpc_public_route_table_ids  = ["rtb-00b074124e7d41fd3"]
+  anyscale_gateway_vpc_endpoints = {
+    "s3" = {
+      name   = "s3"
+      policy = null
+    }
+  }
 
   # Security Group Related
   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges
-
-  anyscale_s3_tags = {
-    "resource_tag_test" : true,
-    "s3_tagging" : var.s3_tag_value
-  }
 }

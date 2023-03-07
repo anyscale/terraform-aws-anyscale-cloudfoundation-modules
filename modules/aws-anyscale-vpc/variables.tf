@@ -140,6 +140,18 @@ variable "map_public_ip_on_launch" {
   type        = bool
   default     = true
 }
+variable "existing_public_route_table_ids" {
+  description = <<-EOT
+    (Optional)
+    A list of existing Route Tables for public subnets.
+    If provided and if `gateway_vpc_endpoints` is also provided,
+    this will create a route to the gateway endpoint.
+
+    Default is an empty list.
+  EOT
+  type        = list(string)
+  default     = []
+}
 
 # Private Subnets
 # ex:
@@ -167,12 +179,12 @@ variable "private_subnet_names" {
   type        = list(string)
   default     = []
 }
-variable "existing_route_table_ids" {
+variable "existing_private_route_table_ids" {
   description = <<-EOT
     (Optional)
-    A list of existing Route Tables.
+    A list of existing Route Tables for private subnets.
     If you are creating new private subnets in an existing VPC, this will provide the mapping from
-    subnet to route table. If only 1 is provided, all new subnets will be associated with that one.
+    subnet to route table. If only 1 route table is provided, all new subnets will be associated with that one.
     If more than one, please make sure that you provide the same number of route tables as subnets.
 
     Default is an empty list.
