@@ -12,7 +12,7 @@ in a cloud environment. It currently supports AWS with Google Cloud support comi
 
 ## AWS Cloud Resources
 The minimum resources needed to run Anyscale on AWS are [documented here](https://docs.anyscale.com/user-guide/onboard/clouds#resource-requirements).
-To support this, sob-modules were created to allow easier long-term management of the resources. These include:
+To support this, sub-modules were created to allow easier long-term management of the resources. These include:
 * aws-anyscale-vpc - This builds a rudimentary VPC
 * aws-anyscale-securitygroups - This builds security groups that are applied to Anyscale Clusters and the EFS storage.
 * aws-anyscale-s3 - This builds a S3 bucket which is used by Anyscale to store cluster logs and shared resources.
@@ -35,7 +35,7 @@ The examples folder has a couple common use cases that have been tested. These i
   * Pass in an existing VPC and Subnets - build everything else
   * Build everything, but only provide Anyscale access to private subnets that are behind a NAT GW
 
-Additional examples can be requested via a [issues] ticket.
+Additional examples can be requested via an [issues] ticket.
 
 ## Reporting Issues
 
