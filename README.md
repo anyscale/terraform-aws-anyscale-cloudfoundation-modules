@@ -43,8 +43,6 @@ We use GitHub [Issues] to track community reported issues and missing features.
 
 ## Known Issues/Untested
 
-v2 Stack is currently untested.
-
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
