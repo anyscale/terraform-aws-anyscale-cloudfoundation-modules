@@ -122,7 +122,7 @@ variable "lifecycle_policy_transition_to_primary_storage_class" {
 variable "attach_policy" {
   description = "(Optional) Determines whether a policy is attached to the file system. Default is `true`."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "bypass_policy_lockout_safety_check" {

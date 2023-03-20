@@ -1,0 +1,20 @@
+name: branch-cleanup
+on:
+  pull_request:
+    branches:
+      - main
+permissions:
+  contents: read
+
+jobs:
+  cleanup-branch:
+    name: Auto delete branch on merge
+    runs-on: ubuntu-latest
+    permissions:
+      # write permission is required to create a github release
+      contents: write
+    steps:
+      - uses: cloudposse/actions/github/branch-cleanup@0.28.0
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          NO_BRANCH_DELETED_EXIT_CODE: 0

@@ -16,7 +16,7 @@ locals {
   existing_subnet_count          = length(var.existing_vpc_subnet_ids)
   anyscale_private_subnet_count  = length(var.anyscale_vpc_private_subnets)
   anyscale_public_subnet_count   = length(var.anyscale_vpc_public_subnets)
-  efs_mount_targets_subnet_count = local.existing_subnet_count > 0 ? local.existing_subnet_count : local.anyscale_private_subnet_count > 0 ? local.anyscale_private_subnet_count : local.anyscale_public_subnet_count > 0 ? local.anyscale_public_subnet_count : 0
+  efs_mount_targets_subnet_count = max(local.existing_subnet_count, local.anyscale_private_subnet_count, local.anyscale_public_subnet_count)
 
   create_new_s3_bucket = var.existing_s3_bucket_arn == null ? true : false
 
@@ -193,6 +193,9 @@ module "aws_anyscale_securitygroup_self" {
   ingress_with_existing_security_groups_map = local.ingress_existing_sg_defined ? var.security_group_ingress_with_existing_security_groups_map : []
 }
 
+# ------------------------------
+# EFS Module
+# ------------------------------
 module "aws_anyscale_efs" {
   source = "./modules/aws-anyscale-efs"
   tags   = local.efs_tags

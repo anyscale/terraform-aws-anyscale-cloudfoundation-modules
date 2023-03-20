@@ -1,3 +1,22 @@
+## 0.5.2 (Released)
+
+FEATURES:
+
+BUG FIXES:
+- EFS Security Policy was not properly built
+- EFS Mounts were not being created in all regions
+
+BREAKING CHANGES:
+
+## 0.5.1 (Released)
+
+FEATURES:
+- Root README.md updates - Anyscale v2 has been tested
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
 ## 0.5.0 (Released)
 
 FEATURES:
@@ -11,7 +30,6 @@ BUG FIXES:
 - VPC Endpoint bug fix
 
 BREAKING CHANGES:
--
 
 ## 0.4.0 (Un-Released)
 

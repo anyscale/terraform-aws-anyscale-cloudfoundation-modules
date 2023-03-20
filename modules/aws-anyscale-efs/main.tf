@@ -116,9 +116,12 @@ data "aws_iam_policy_document" "policy" {
   }
 
   statement {
-    sid       = "NonSecureTransport"
-    effect    = "Deny"
-    actions   = ["*"]
+    sid    = "NonSecureTransport"
+    effect = "Allow"
+    actions = [
+      "elasticfilesystem:ClientMount",
+      "elasticfilesystem:ClientWrite"
+    ]
     resources = [aws_efs_file_system.anyscale_efs[0].arn]
 
     principals {
@@ -129,7 +132,7 @@ data "aws_iam_policy_document" "policy" {
     condition {
       test     = "Bool"
       variable = "aws:SecureTransport"
-      values   = ["false"]
+      values   = ["true"]
     }
   }
 }
