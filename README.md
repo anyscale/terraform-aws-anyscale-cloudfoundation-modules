@@ -2,9 +2,9 @@
 [![Terraform Version][badge-terraform]](https://github.com/hashicorp/terraform/releases)
 [![AWS Provider Version][badge-tf-aws]](https://github.com/terraform-providers/terraform-provider-aws/releases)
 
-# Terraform Modules for Anyscale Cloud Foundations
+# Terraform Modules for Anyscale Cloud Foundations on AWS
 [Terraform] modules to manage cloud infrastructure for Anyscale. This builds the foundational cloud resources needed to run Anyscale
-in a cloud environment. It currently supports AWS with Google Cloud support coming soon.
+in a cloud environment. This module and sub-modules support AWS.
 
 **THIS IS PROVIDED AS A STARTING POINT AND IS CONSIDERED BETA**
 
@@ -12,7 +12,7 @@ in a cloud environment. It currently supports AWS with Google Cloud support comi
 
 ## AWS Cloud Resources
 The minimum resources needed to run Anyscale on AWS are [documented here](https://docs.anyscale.com/user-guide/onboard/clouds#resource-requirements).
-To support this, sub-modules were created to allow easier long-term management of the resources. These include:
+To support this, sob-modules were created to allow easier long-term management of the resources. These include:
 * aws-anyscale-vpc - This builds a rudimentary VPC
 * aws-anyscale-securitygroups - This builds security groups that are applied to Anyscale Clusters and the EFS storage.
 * aws-anyscale-s3 - This builds a S3 bucket which is used by Anyscale to store cluster logs and shared resources.
@@ -49,7 +49,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
 
 ## Providers

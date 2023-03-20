@@ -21,6 +21,7 @@ resource "aws_s3_bucket" "anyscale_managed_s3_bucket" {
   #checkov:skip=CKV_AWS_145:Encrypted is managed below as a customer choice
   #checkov:skip=CKV_AWS_144:Replication is managed as a choice
   #checkov:skip=CKV_AWS_19:Encryption is managed below as a customer choice
+  #checkov:skip=CKV2_AWS_62:Event notification is not required for this bucket.
   count = var.module_enabled ? 1 : 0
 
   bucket        = local.anyscale_bucketname

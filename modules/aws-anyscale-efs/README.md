@@ -3,11 +3,16 @@
 [![AWS Provider Version][badge-tf-aws]](https://github.com/terraform-providers/terraform-provider-aws/releases)
 
 # aws-anyscale-efs
+
 This module creates an Elastic File System for Anyscale applications and workloads.
 
-EFS is a cloud based, scalable file system for applications and workloads that can be in combination with other AWS cloud services. It offers shared storage, is designed for scalable performance and is secure & compliant with common regulatory standards. EFS is required for you to use Anyscale Workspaces.
+EFS is a cloud based, scalable file system for applications and workloads that can be in combination with other AWS cloud services. It offers shared storage, is designed for scalable performance and is secure & compliant with common regulatory standards.
 
 EFS is required for you to use Anyscale Workspaces.
+
+## Known Issues
+
+EFS Policies to enforce TLS traffic are not currently supported. This requires additional changes to the way Workspaces mount EFS. NFS does not support TLS out of the box, however Amazon has an efs-mount-helper that does support TLS as well as additional IAM authentication options. For now, the variable: `attach_policy` has been changed to `false` which will by default not create the EFS policy. This is the only supported method for Anyscale Workspace clusters at this time.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -15,13 +20,13 @@ EFS is required for you to use Anyscale Workspaces.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.57.1 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.59.0 |
 
 ## Modules
 
@@ -47,7 +52,7 @@ No modules.
 | <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID. Default is `null`. | `string` | `null` | no |
 | <a name="input_anyscale_efs_name"></a> [anyscale\_efs\_name](#input\_anyscale\_efs\_name) | (Optional) Elastic file system name. Will default to `efs_anyscale` if this var `null` and anyscale\_cloud\_id is also `null`. Default is `null`. | `string` | `null` | no |
 | <a name="input_associated_security_group_ids"></a> [associated\_security\_group\_ids](#input\_associated\_security\_group\_ids) | (Optional) A list of security group IDs to add to the mount targets. Default is an empty list. | `list(string)` | `[]` | no |
-| <a name="input_attach_policy"></a> [attach\_policy](#input\_attach\_policy) | (Optional) Determines whether a policy is attached to the file system. Default is `true`. | `bool` | `true` | no |
+| <a name="input_attach_policy"></a> [attach\_policy](#input\_attach\_policy) | (Optional) Determines whether a policy is attached to the file system. Default is `true`. | `bool` | `false` | no |
 | <a name="input_availability_zone_name"></a> [availability\_zone\_name](#input\_availability\_zone\_name) | (Optional) The AWS Availability Zone in which to create the file system. Used to create a file system that uses One Zone storage classes. Default is `null`. | `string` | `null` | no |
 | <a name="input_bypass_policy_lockout_safety_check"></a> [bypass\_policy\_lockout\_safety\_check](#input\_bypass\_policy\_lockout\_safety\_check) | (Optional) A flag to indicate whether to bypass the `aws_efs_file_system_policy` lockout safety check. Default is `false` | `bool` | `false` | no |
 | <a name="input_create_backup_policy"></a> [create\_backup\_policy](#input\_create\_backup\_policy) | (Optional) Determines whether a backup policy is created. Default is `true`. | `bool` | `true` | no |
