@@ -17,6 +17,10 @@ locals {
   anyscale_access_steadystate_policy_name   = try(var.anyscale_access_steadystate_policy_name, null)
   anyscale_access_steadystate_policy_prefix = local.anyscale_access_steadystate_policy_name != null ? null : var.anyscale_access_steadystate_policy_prefix != null ? var.anyscale_access_steadystate_policy_prefix : "anyscsale-"
 
+  create_servicesv2_policy          = var.create_anyscale_access_role && var.create_anyscale_access_servicesv2_policy ? true : false
+  anyscale_servicesv2_policy_name   = try(var.anyscale_access_servicesv2_policy_name, null)
+  anyscale_servicesv2_policy_prefix = local.anyscale_servicesv2_policy_name != null ? null : var.anyscale_access_servicesv2_policy_prefix != null ? var.anyscale_access_servicesv2_policy_prefix : "anyscale-servicesv2-"
+
   create_s3_bucket_policy            = var.anyscale_s3_bucket_arn != null ? true : false
   anyscale_iam_s3_policy_name_cld_id = var.anyscale_cloud_id != null && var.anyscale_iam_s3_policy_name_prefix == null && var.anyscale_iam_s3_policy_name == null ? "anyscale-${var.anyscale_cloud_id}-s3-" : null
   anyscale_iam_s3_policy_name_prefix = var.anyscale_iam_s3_policy_name != null ? null : local.anyscale_iam_s3_policy_name_cld_id == null ? var.anyscale_iam_s3_policy_name_prefix : local.anyscale_iam_s3_policy_name_cld_id != null ? local.anyscale_iam_s3_policy_name_cld_id : "anyscale-s3-"
@@ -62,6 +66,18 @@ resource "aws_iam_policy" "anyscale_steadystate_policy" {
   tags = var.tags
 }
 
+resource "aws_iam_policy" "anyscale_servicesv2_policy" {
+  count = var.module_enabled && local.create_servicesv2_policy ? 1 : 0
+
+  name        = local.anyscale_servicesv2_policy_name
+  name_prefix = local.anyscale_servicesv2_policy_prefix
+  path        = var.anyscale_access_servicesv2_policy_path
+  description = var.anyscale_access_servicesv2_policy_description
+  policy      = data.aws_iam_policy_document.iam_anyscale_services_v2.json
+
+  tags = var.tags
+}
+
 resource "aws_iam_policy" "anyscale_iam_custom_policy" {
   count = var.module_enabled && local.create_custom_policy ? 1 : 0
 
@@ -82,6 +98,12 @@ resource "aws_iam_role_policy_attachment" "anyscale_iam_role_steady_state_policy
   policy_arn = aws_iam_policy.anyscale_steadystate_policy[0].arn
 }
 
+resource "aws_iam_role_policy_attachment" "anyscale_iam_role_servicesv2_policy_attach" {
+  count = var.module_enabled && local.create_servicesv2_policy ? 1 : 0
+
+  role       = aws_iam_role.anyscale_access_role[0].name
+  policy_arn = aws_iam_policy.anyscale_servicesv2_policy[0].arn
+}
 
 resource "aws_iam_role_policy_attachment" "anyscale_iam_role_custom_policy_attach" {
   count = var.module_enabled && var.create_anyscale_access_role && local.create_custom_policy ? 1 : 0

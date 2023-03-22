@@ -1,3 +1,13 @@
+## 0.6.0 (Released)
+
+FEATURES:
+- Support for Anyscale Services v2 including IAM policy updates for Cross Account access role.
+
+BUG FIXES:
+- IAM policy fix for cross account access role when cloud id is provided.
+
+BREAKING CHANGES:
+
 ## 0.5.2 (Released)
 
 FEATURES:

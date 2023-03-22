@@ -35,6 +35,10 @@ variable "tags" {
   default     = {}
 }
 
+#-------------------
+# Anyscale Cross Acct
+#   Access Role
+#-------------------
 variable "create_anyscale_access_role" {
   description = "(Optional) Determines whether to create the Anyscale access role. Default is `true`."
   type        = bool
@@ -82,7 +86,7 @@ variable "anyscale_trusted_role_sts_externalid" {
 }
 
 variable "create_anyscale_access_steadystate_policy" {
-  description = "(Optional) Deterimines creating the Anyscale IAM steadystate policy. Default is `true`."
+  description = "(Optional) Deterimines if the Anyscale IAM steadystate policy is created. Default is `true`."
   type        = bool
   default     = true
 }
@@ -109,6 +113,33 @@ variable "anyscale_access_steadystate_policy_description" {
   description = "(Optional) Anyscale steady state IAM policy description. Default is `Anyscale Steady State IAM Policy`"
   type        = string
   default     = "Anyscale Steady State IAM Policy"
+}
+
+# Services v2 Policy
+variable "create_anyscale_access_servicesv2_policy" {
+  description = "(Optional) Determines if the IAM policy for Services v2 is created. Default is `true`."
+  type        = bool
+  default     = true
+}
+variable "anyscale_access_servicesv2_policy_name" {
+  description = "(Optional) Name for the Anyscale Services v2 Policy. Will use policy_name_prefix if this is set to `null`. Default is `null`."
+  type        = string
+  default     = null
+}
+variable "anyscale_access_servicesv2_policy_path" {
+  description = "(Optional) Path for the Anyscale Services v2 IAM policy. Default is `/`."
+  type        = string
+  default     = "/"
+}
+variable "anyscale_access_servicesv2_policy_prefix" {
+  description = "(Optional) Name prefix for the Anyscale default Services v2 policy. Conflicts with anyscale_access_servicesv2_policy_name. Default is `anyscale-servicesv2-`."
+  type        = string
+  default     = "anyscale-servicesv2-"
+}
+variable "anyscale_access_servicesv2_policy_description" {
+  description = "(Optional) Anyscale Services v2 policy description. Default is `Anyscale IAM policy for Services v2 - assigned to the Anyscale Access role.`"
+  type        = string
+  default     = "Anyscale IAM policy for Services v2 - assigned to the Anyscale Access role."
 }
 
 # Custom Policy
@@ -231,7 +262,11 @@ variable "create_iam_s3_policy" {
   default     = true
 }
 variable "anyscale_s3_bucket_arn" {
-  description = "(Optional) The S3 Bucket arn that the IAM Roles need access to. If not provided, the S3 policy will not be created. Default is `null`."
+  description = <<-EOT
+    (Optional) The S3 Bucket arn that the IAM Roles need access to.
+    If not provided, make sure to set `create_iam_s3_policy` to `false` otherwise this will throw an error.
+    Default is `null`.
+  EOT
   type        = string
   default     = null
 }

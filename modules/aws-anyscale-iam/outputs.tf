@@ -39,6 +39,24 @@ output "anyscale_steadystate_policy_id" {
   value       = try(aws_iam_policy.anyscale_steadystate_policy[0].policy_id, "")
 }
 
+# Services v2 policy
+output "anyscale_servicesv2_policy_arn" {
+  description = "ARN of Anyscale Steady State IAM policy"
+  value       = try(aws_iam_policy.anyscale_servicesv2_policy[0].arn, "")
+}
+output "anyscale_servicesv2_policy_name" {
+  description = "Name of Anyscale Steady State IAM policy"
+  value       = try(aws_iam_policy.anyscale_servicesv2_policy[0].name, "")
+}
+output "anyscale_servicesv2_policy_path" {
+  description = "Path of Anyscale Steady State IAM policy"
+  value       = try(aws_iam_policy.anyscale_servicesv2_policy[0].path, "")
+}
+output "anyscale_servicesv2_policy_id" {
+  description = "Policy ID of Anyscale Steady State IAM policy"
+  value       = try(aws_iam_policy.anyscale_servicesv2_policy[0].policy_id, "")
+}
+
 # Custom policy
 output "anyscale_iam_custom_policy_arn" {
   description = "ARN of Anyscale custom IAM policy"
@@ -101,4 +119,22 @@ output "anyscale_cluster_node_custom_policy_path" {
 output "anyscale_cluster_node_custom_policy_id" {
   description = "Policy ID of Anyscale cluster node custom policy"
   value       = try(aws_iam_policy.anyscale_cluster_node_custom_policy[0].policy_id, "")
+}
+
+# S3 Policy
+output "anyscale_iam_s3_policy_arn" {
+  description = "ARN of Anyscale IAM S3 policy"
+  value       = try(aws_iam_policy.anyscale_s3_access_policy[0].arn, "")
+}
+output "anyscale_iam_s3_policy_name" {
+  description = "Name of Anyscale IAM S3 policy"
+  value       = try(aws_iam_policy.anyscale_s3_access_policy[0].name, "")
+}
+output "anyscale_iam_s3_policy_path" {
+  description = "Path of Anyscale IAM S3 policy"
+  value       = try(aws_iam_policy.anyscale_s3_access_policy[0].path, "")
+}
+output "anyscale_iam_s3_policy_id" {
+  description = "Policy ID of Anyscale IAM S3 policy"
+  value       = try(aws_iam_policy.anyscale_s3_access_policy[0].policy_id, "")
 }
