@@ -51,6 +51,16 @@ module "kitchen_sink" {
   anyscale_access_steadystate_policy_path        = "/testpath/"
   anyscale_access_steadystate_policy_description = "Anyscale TESTPOLICY Description"
 
+  create_anyscale_access_servicesv2_policy      = true
+  anyscale_access_servicesv2_policy_name        = "anyscale-servicesv2-policy-testpolicy"
+  anyscale_access_servicesv2_policy_path        = "/testpath/"
+  anyscale_access_servicesv2_policy_description = "Anyscale Services v2 TESTPOLICY Description"
+
+  create_iam_s3_policy               = true
+  anyscale_s3_bucket_arn             = "arn:aws:s3:::anyscale-demo"
+  anyscale_iam_s3_policy_name_prefix = "anyscale-s3-testpolicy-"
+  anyscale_iam_s3_policy_path        = "/tests3path/"
+
   anyscale_custom_policy_name        = "anyscale-custom-policy-testpolicy"
   anyscale_custom_policy_path        = "/testcustompath/"
   anyscale_custom_policy_description = "Anyscale CUSTOM TESTPOLICY Description"

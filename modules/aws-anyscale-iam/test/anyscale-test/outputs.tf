@@ -32,6 +32,18 @@ output "kitchen_sink_steadystate_policy_path" {
   description = "The path of the kitchen sink anyscale steady state IAM policy"
   value       = module.kitchen_sink.anyscale_steadystate_policy_path
 }
+output "kitchen_sink_servicesv2_policy_arn" {
+  description = "The arn of the kitchen sink anyscale servicesv2 IAM policy"
+  value       = module.kitchen_sink.anyscale_servicesv2_policy_arn
+}
+output "kitchen_sink_servicesv2_policy_name" {
+  description = "The name of the kitchen sink anyscale servicesv2 IAM policy"
+  value       = module.kitchen_sink.anyscale_servicesv2_policy_name
+}
+output "kitchen_sink_servicesv2_policy_path" {
+  description = "The path of the kitchen sink anyscale servicesv2 IAM policy"
+  value       = module.kitchen_sink.anyscale_servicesv2_policy_path
+}
 
 output "kitchen_sink_access_custom_policy_arn" {
   description = "The arn of kitchen sink anyscale custom IAM policy"
@@ -77,6 +89,18 @@ output "kitchen_sink_cluster_node_custom_policy_path" {
   value       = module.kitchen_sink.anyscale_cluster_node_custom_policy_path
 }
 
+output "kitchen_sink_iam_s3_policy_arn" {
+  description = "The arn of kitchen sink anyscale IAM S3 policy"
+  value       = module.kitchen_sink.anyscale_iam_s3_policy_arn
+}
+output "kitchen_sink_iam_s3_policy_name" {
+  description = "The name of the kitchen sink anyscale IAM S3 policy"
+  value       = module.kitchen_sink.anyscale_iam_s3_policy_name
+}
+output "kitchen_sink_iam_s3_policy_path" {
+  description = "The path of the kitchen sink anyscale IAM S3 policy"
+  value       = module.kitchen_sink.anyscale_iam_s3_policy_path
+}
 
 # -----------------
 # No resource test

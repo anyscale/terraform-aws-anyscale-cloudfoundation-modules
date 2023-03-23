@@ -61,6 +61,17 @@ func TestAnyscaleResources(t *testing.T) {
 	iamKitchenSyncSteadyStatePolicyPathOutput := terraform.OutputRequired(t, terraformOptions, "kitchen_sink_steadystate_policy_path")
 	assert.Contains(t, iamKitchenSyncSteadyStatePolicyPathOutput, "/testpath/")
 
+	// Kitchen Sink Anyscale Services v2 Policy
+	iamKitchenSyncServicesv2PolicyArnOutput := terraform.OutputRequired(t, terraformOptions, "kitchen_sink_servicesv2_policy_arn")
+	assert.Contains(t, iamKitchenSyncServicesv2PolicyArnOutput, "arn:aws:iam::")
+	assert.Contains(t, iamKitchenSyncServicesv2PolicyArnOutput, "anyscale-servicesv2-policy-testpolicy")
+
+	iamKitchenSyncServicesv2PolicyNameOutput := terraform.OutputRequired(t, terraformOptions, "kitchen_sink_servicesv2_policy_name")
+	assert.Contains(t, iamKitchenSyncServicesv2PolicyNameOutput, "anyscale-servicesv2-policy-testpolicy")
+
+	iamKitchenSyncServicesv2PolicyPathOutput := terraform.OutputRequired(t, terraformOptions, "kitchen_sink_servicesv2_policy_path")
+	assert.Contains(t, iamKitchenSyncServicesv2PolicyPathOutput, "/testpath/")
+
 	// Kitchen Sink Access Custom Policy
 	iamKitchenSyncCustomPolicyArnOutput := terraform.OutputRequired(t, terraformOptions, "kitchen_sink_access_custom_policy_arn")
 	assert.Contains(t, iamKitchenSyncCustomPolicyArnOutput, "arn:aws:iam::")
@@ -91,10 +102,20 @@ func TestAnyscaleResources(t *testing.T) {
 	assert.Contains(t, iamKitchenSyncClusterNodeCustomPolicyArnOutput, "arn:aws:iam::")
 	assert.Contains(t, iamKitchenSyncClusterNodeCustomPolicyArnOutput, "anyscale-cluster-node-policy-testpolicy")
 
-	iamKitchenClusterNodeCustomPolicyNameOutput := terraform.OutputRequired(t, terraformOptions, "kitchen_sink_cluster_node_custom_policy_name")
-	assert.Contains(t, iamKitchenClusterNodeCustomPolicyNameOutput, "anyscale-cluster-node-policy-testpolicy")
+	iamKitchenSyncClusterNodeCustomPolicyNameOutput := terraform.OutputRequired(t, terraformOptions, "kitchen_sink_cluster_node_custom_policy_name")
+	assert.Contains(t, iamKitchenSyncClusterNodeCustomPolicyNameOutput, "anyscale-cluster-node-policy-testpolicy")
 
 	iamKitchenSyncClusterNodeCustomPolicyPathOutput := terraform.OutputRequired(t, terraformOptions, "kitchen_sink_cluster_node_custom_policy_path")
 	assert.Contains(t, iamKitchenSyncClusterNodeCustomPolicyPathOutput, "/testclusternodepath/")
 
+	// Kitchen Sink IAM S3 Policy
+	iamKitchenSyncIAMS3PolicyArnOutput := terraform.OutputRequired(t, terraformOptions, "kitchen_sink_iam_s3_policy_arn")
+	assert.Contains(t, iamKitchenSyncIAMS3PolicyArnOutput, "arn:aws:iam::")
+	assert.Contains(t, iamKitchenSyncIAMS3PolicyArnOutput, "aanyscale-s3-testpolicy-")
+
+	iamKitchenSyncIAMS3PolicyNameOutput := terraform.OutputRequired(t, terraformOptions, "kitchen_sink_iam_s3_policy_name")
+	assert.Contains(t, iamKitchenSyncIAMS3PolicyNameOutput, "anyscale-s3-testpolicy-")
+
+	iamKitchenSyncIAMS3PolicyPathOutput := terraform.OutputRequired(t, terraformOptions, "kitchen_sink_iam_s3_policy_path")
+	assert.Contains(t, iamKitchenSyncIAMS3PolicyPathOutput, "/tests3path/")
 }
