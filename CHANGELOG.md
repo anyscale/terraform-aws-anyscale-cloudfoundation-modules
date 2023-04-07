@@ -1,3 +1,12 @@
+## 0.6.1 (Released)
+
+FEATURES:
+- Documentation updates
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
 ## 0.6.0 (Released)
 
 FEATURES:
