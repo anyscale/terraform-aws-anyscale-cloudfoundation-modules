@@ -12,7 +12,7 @@ in a cloud environment. This module and sub-modules support AWS.
 
 ## AWS Cloud Resources
 The minimum resources needed to run Anyscale on AWS are [documented here](https://docs.anyscale.com/user-guide/onboard/clouds#resource-requirements).
-To support this, sob-modules were created to allow easier long-term management of the resources. These include:
+To support this, sub-modules were created to allow easier long-term management of the resources. These include:
 * aws-anyscale-vpc - This builds a rudimentary VPC
 * aws-anyscale-securitygroups - This builds security groups that are applied to Anyscale Clusters and the EFS storage.
 * aws-anyscale-s3 - This builds a S3 bucket which is used by Anyscale to store cluster logs and shared resources.
