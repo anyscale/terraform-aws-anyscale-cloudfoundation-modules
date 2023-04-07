@@ -10,6 +10,7 @@ This repository contains a collection of [Terraform] modules to create the funda
 **USE AT YOUR OWN RISK**
 
 ## AWS Cloud Resources
+
 The minimum resources needed to run Anyscale on AWS are [well documented](https://docs.anyscale.com/user-guide/onboard/clouds/deploy-on-aws).
 To facilitate long-term management and customization of these resources, we have broken them down into sub-modules:
 * aws-anyscale-vpc - Creates a basic (opinionated) VPC for Anyscale.
@@ -18,7 +19,6 @@ To facilitate long-term management and customization of these resources, we have
 * aws-anyscale-s3-policy - Establishes an S3 bucket policy with dependencies on aws-anyscale-iam.
 * aws-anyscale-iam - Builds IAM roles and policies, including a role for cross-account access from the Anyscale control plane and a role for EC2 instance profiles.
 * aws-anyscale-efs - Sets up EFS storage and associated mount points.
-
 
 ### Customization
 
