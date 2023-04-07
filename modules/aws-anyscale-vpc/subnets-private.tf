@@ -27,7 +27,8 @@ resource "aws_subnet" "private" {
         format("${local.vpc_name}-${var.private_subnet_suffix}-%s", local.subnet_availability_zones[count.index])
       )
     },
-    var.tags
+    var.tags,
+    var.private_subnet_tags
   )
 }
 

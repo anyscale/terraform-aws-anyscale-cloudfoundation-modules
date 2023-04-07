@@ -162,11 +162,43 @@ variable "anyscale_vpc_public_subnets" {
   type        = list(string)
   default     = []
 }
+variable "anyscale_vpc_public_subnet_tags" {
+  description = <<-EOT
+    (Optional) A map of tags for public subnets.
+    Duplicate tags found in the `tags` or `anyscale_vpc_tags` variables will get duplicated on the resource.
+    ex:
+    ```
+    anyscale_vpc_public_subnet_tags = {
+      "purpose" : "networking",
+      "criticality" : "critical"
+    }
+    ```
+    Default is an empty map.
+  EOT
+  type        = map(string)
+  default     = {}
+}
 
 variable "anyscale_vpc_private_subnets" {
   description = "(Optional) A list of private subnets inside the VPC. Default is an empty list."
   type        = list(string)
   default     = []
+}
+variable "anyscale_vpc_private_subnet_tags" {
+  description = <<-EOT
+    (Optional) A map of tags for private subnets.
+    Duplicate tags found in the `tags` or `anyscale_vpc_tags` variables will get duplicated on the resource.
+    ex:
+    ```
+    anyscale_vpc_private_subnet_tags = {
+      "purpose" : "networking",
+      "criticality" : "critical"
+    }
+    ```
+    Default is an empty map.
+  EOT
+  type        = map(string)
+  default     = {}
 }
 
 variable "anyscale_vpc_tags" {

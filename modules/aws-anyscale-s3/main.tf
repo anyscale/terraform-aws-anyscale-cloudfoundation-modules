@@ -98,6 +98,7 @@ resource "aws_s3_bucket_public_access_block" "anyscale_managed_s3_bucket" {
 
 
 resource "aws_s3_bucket_lifecycle_configuration" "anyscale_managed_s3_bucket" {
+  #checkov:skip=CKV_AWS_300:Lifecycle rules are managed below as a customer choice
   count = var.module_enabled && length(local.lifecycle_rules) > 0 ? 1 : 0
 
   bucket = aws_s3_bucket.anyscale_managed_s3_bucket[0].id

@@ -30,7 +30,8 @@ resource "aws_subnet" "public" {
         format("${local.vpc_name}-${var.public_subnet_suffix}-%s", local.subnet_availability_zones[count.index])
       )
     },
-    var.tags
+    var.tags,
+    var.public_subnet_tags
   )
 }
 

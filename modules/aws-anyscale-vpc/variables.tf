@@ -135,6 +135,11 @@ variable "public_subnet_names" {
   type        = list(string)
   default     = []
 }
+variable "public_subnet_tags" {
+  description = "(Optional) A map of tags to add to public subnets. Default is an empty map."
+  type        = map(string)
+  default     = {}
+}
 variable "map_public_ip_on_launch" {
   description = "(Optional) Determines if public subnets should auto-assign public IPs on launch. Defualt is `true`."
   type        = bool
@@ -178,6 +183,11 @@ variable "private_subnet_names" {
   description = "(Optional) Explicit values to use in the Name tag on private subnets. If empty, Name tags are generated. Default is an empty list."
   type        = list(string)
   default     = []
+}
+variable "private_subnet_tags" {
+  description = "(Optional) A map of tags to add to private subnets. Default is an empty map."
+  type        = map(string)
+  default     = {}
 }
 variable "existing_private_route_table_ids" {
   description = <<-EOT

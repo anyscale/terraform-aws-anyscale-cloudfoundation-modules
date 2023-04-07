@@ -145,8 +145,10 @@ module "aws_anyscale_vpc" {
   anyscale_vpc_name = local.vpc_name
   cidr_block        = var.anyscale_vpc_cidr_block
 
-  public_subnets  = var.anyscale_vpc_public_subnets
-  private_subnets = var.anyscale_vpc_private_subnets
+  public_subnets      = var.anyscale_vpc_public_subnets
+  public_subnet_tags  = var.anyscale_vpc_public_subnet_tags
+  private_subnets     = var.anyscale_vpc_private_subnets
+  private_subnet_tags = var.anyscale_vpc_private_subnet_tags
 
   create_igw = local.create_internet_gw
   create_ngw = local.create_nat_gw
