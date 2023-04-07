@@ -1,3 +1,13 @@
+## 0.7.0 (Release)
+
+FEATURES:
+- Add subnet-level tags to aws-anyscale-vpc module
+- Add subnet-level tags to the root module
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
 ## 0.6.1 (Released)
 
 FEATURES:
