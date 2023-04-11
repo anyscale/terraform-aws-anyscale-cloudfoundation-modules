@@ -44,12 +44,12 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "anyscale_managed_
   }
 }
 
-resource "aws_s3_bucket_acl" "anyscale_managed_s3_bucket" {
-  count = var.module_enabled ? 1 : 0
+# resource "aws_s3_bucket_acl" "anyscale_managed_s3_bucket" {
+#   count = var.module_enabled ? 1 : 0
 
-  bucket = aws_s3_bucket.anyscale_managed_s3_bucket[0].id
-  acl    = var.acl
-}
+#   bucket = aws_s3_bucket.anyscale_managed_s3_bucket[0].id
+#   acl    = var.acl
+# }
 
 resource "aws_s3_bucket_cors_configuration" "anyscale_managed_s3_bucket" {
   count  = var.module_enabled && local.cors_enabled ? 1 : 0

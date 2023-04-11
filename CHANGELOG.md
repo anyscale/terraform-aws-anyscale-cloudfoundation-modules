@@ -1,3 +1,17 @@
+## 0.8.0 (Release)
+
+FEATURES:
+- Add export for Route Table IDs to the root module.
+
+BUG FIXES:
+- New S3 buckets no longer support canned ACLs out-of-the-box. This variable and configuration have been removed from the S3 sub-module.
+- Update sub-module readme links to point to correct repository.
+
+BREAKING CHANGES:
+
+NOTES:
+- Tested against AWS Provider 4.62.0
+
 ## 0.7.0 (Release)
 
 FEATURES:

@@ -40,27 +40,27 @@ variable "anyscale_bucket_prefix" {
   default     = "anyscale-"
 }
 
-variable "acl" {
-  description = "(Optional) The canned ACL to apply. Default is `private`."
-  type        = string
-  default     = "private"
-  validation {
-    condition = contains(
-      [
-        "private",
-        "public-read",
-        "public-read-write",
-        "aws-exec-read",
-        "authenticated-read",
-        "bucket-owner-read",
-        "bucket-owner-full-control",
-        "log-delivery-write"
-      ],
-      var.acl
-    )
-    error_message = "Not a valid ACL. See more at https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl"
-  }
-}
+# variable "acl" {
+#   description = "(Optional) The canned ACL to apply. Default is `private`."
+#   type        = string
+#   default     = "private"
+#   validation {
+#     condition = contains(
+#       [
+#         "private",
+#         "public-read",
+#         "public-read-write",
+#         "aws-exec-read",
+#         "authenticated-read",
+#         "bucket-owner-read",
+#         "bucket-owner-full-control",
+#         "log-delivery-write"
+#       ],
+#       var.acl
+#     )
+#     error_message = "Not a valid ACL. See more at https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl"
+#   }
+# }
 
 # variable "bucket_policy" {
 #   description = "(Optional) A bucket policy in JSON format."
