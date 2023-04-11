@@ -151,7 +151,9 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | <a name="output_anyscale_s3_bucket_id"></a> [anyscale\_s3\_bucket\_id](#output\_anyscale\_s3\_bucket\_id) | Anyscale S3 Bucket ID. If a bucket was not created, return an empty string. |
 | <a name="output_anyscale_security_group_id"></a> [anyscale\_security\_group\_id](#output\_anyscale\_security\_group\_id) | Anyscale Security Group ID. If a security group was not created, return an empty string. |
 | <a name="output_anyscale_vpc_id"></a> [anyscale\_vpc\_id](#output\_anyscale\_vpc\_id) | Anyscale VPC ID. If there was not one created, return the one that was used during other resource creation. |
+| <a name="output_anyscale_vpc_private_routetable_ids"></a> [anyscale\_vpc\_private\_routetable\_ids](#output\_anyscale\_vpc\_private\_routetable\_ids) | Anyscale VPC Private Route Table IDs. If none were created, return an empty string. |
 | <a name="output_anyscale_vpc_private_subnet_ids"></a> [anyscale\_vpc\_private\_subnet\_ids](#output\_anyscale\_vpc\_private\_subnet\_ids) | Anyscale VPC Private Subnet IDs. If there were none created, return an empty string. |
+| <a name="output_anyscale_vpc_public_routetable_ids"></a> [anyscale\_vpc\_public\_routetable\_ids](#output\_anyscale\_vpc\_public\_routetable\_ids) | Anyscale VPC Public Route Table IDs. If none were created, return an empty string. |
 | <a name="output_anyscale_vpc_public_subnet_ids"></a> [anyscale\_vpc\_public\_subnet\_ids](#output\_anyscale\_vpc\_public\_subnet\_ids) | Anyscale VPC Public Subnet IDs. If there were none created, return an empty string. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

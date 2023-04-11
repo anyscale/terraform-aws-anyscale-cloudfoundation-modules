@@ -6,9 +6,17 @@ output "anyscale_v2_vpc_id" {
   value       = try(module.aws_anyscale_v2_common_name.anyscale_vpc_id, "")
 }
 
+output "anyscale_v2_public_routetable_ids" {
+  description = "Anyscale VPC Public Route Table IDs. If none were created, return an empty string."
+  value       = try(module.aws_anyscale_v2_common_name.anyscale_vpc_public_routetable_ids, [])
+}
 output "anyscale_v2_public_subnet_ids" {
   description = "Anyscale VPC Public Subnet IDs. If there were none created, return an empty string."
   value       = try(module.aws_anyscale_v2_common_name.anyscale_vpc_public_subnet_ids, [])
+}
+output "anyscale_v2_private_routetable_ids" {
+  description = "Anyscale VPC Private Route Table IDs. If none were created, return an empty string."
+  value       = try(module.aws_anyscale_v2_common_name.anyscale_vpc_private_routetable_ids, [])
 }
 output "anyscale_v2_private_subnet_ids" {
   description = "Anyscale VPC Private Subnet IDs. If there were none created, return an empty string."
