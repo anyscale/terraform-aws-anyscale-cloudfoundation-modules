@@ -1,18 +1,25 @@
-## 0.8.0 (Release)
+## 0.9.0 (Released)
+
+FEATURES:
+- Additional security for Services v2 IAM Policies
+- Added outputs to Examples that builds Anyscale `cloud register` cli command.
+
+BUG FIXES:
+- Fixed S3 Kitchen Sink test
+
+BREAKING CHANGES:
+
+## 0.8.0 (Released)
 
 FEATURES:
 - Add export for Route Table IDs to the root module.
 
 BUG FIXES:
 - New S3 buckets no longer support canned ACLs out-of-the-box. This variable and configuration have been removed from the S3 sub-module.
-- Update sub-module readme links to point to correct repository.
 
 BREAKING CHANGES:
 
-NOTES:
-- Tested against AWS Provider 4.62.0
-
-## 0.7.0 (Release)
+## 0.7.0 (Released)
 
 FEATURES:
 - Add subnet-level tags to aws-anyscale-vpc module

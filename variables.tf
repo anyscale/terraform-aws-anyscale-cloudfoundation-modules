@@ -311,6 +311,40 @@ variable "anyscale_access_steadystate_policy_description" {
   default     = "Anyscale Steady State IAM Policy which is used by the Anyscale IAM Access Role"
 }
 
+variable "anyscale_access_servicesv2_policy_name" {
+  description = <<-EOT
+    (Optional)
+    Name for the Anyscale default servicesv2 IAM policy.
+    If left `null`, will default to `anyscale_access_servicesv2_policy_prefix`
+    If provided, overrides the `anyscale_access_servicesv2_policy_prefix` variable.
+    Default is `null`.
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_access_servicesv2_policy_prefix" {
+  description = <<-EOT
+    (Optional)
+    Name prefix for the Anyscale default servicesv2 IAM policy.
+    If `anyscale_access_servicesv2_policy_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `anyscale-servicesv2-` in a local variable.
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_access_servicesv2_policy_description" {
+  description = <<-EOT
+    (Optional)
+    Anyscale servicesv2 IAM policy description.
+    Default is `Anyscale Services v2 IAM Policy which is used by the Anyscale IAM Access Role`
+  EOT
+  type        = string
+  default     = "Anyscale Services v2 IAM Policy which is used by the Anyscale IAM Access Role"
+}
+
 # Anyscale Access Role Custom Policy
 variable "anyscale_accessrole_custom_policy_name" {
   description = <<-EOT

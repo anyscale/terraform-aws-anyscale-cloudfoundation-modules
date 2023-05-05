@@ -106,7 +106,9 @@ resource "aws_flow_log" "anyscale_vpc" {
   )
 }
 
+
 resource "aws_cloudwatch_log_group" "anyscale_vpc" {
+  #checkov:skip=CKV_AWS_338:Cloudwatch Log Group retention is variable.
   count = var.module_enabled && var.create_flow_log_cloudwatch_log_group ? 1 : 0
 
   name = format(

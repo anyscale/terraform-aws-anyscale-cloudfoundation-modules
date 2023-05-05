@@ -30,7 +30,6 @@ module "kitchen_sink" {
   module_enabled = true
 
   anyscale_bucket_name = "anyscale-tf-test-bucket-${var.aws_region}"
-  acl                  = "private"
   force_destroy        = true
   cors_rule = {
     allowed_headers = ["*"]

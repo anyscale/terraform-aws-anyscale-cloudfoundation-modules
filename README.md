@@ -55,7 +55,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_random"></a> [random](#provider\_random) | 3.4.3 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.5.1 |
 
 ## Modules
 
@@ -79,6 +79,9 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_anyscale_access_role_description"></a> [anyscale\_access\_role\_description](#input\_anyscale\_access\_role\_description) | (Optional)<br>The IAM role description for the Anysclae IAM access role.<br>This role is used for cross account access from the Anyscale Controlplane to an AWS account and allows access to manage AWS resources.<br>Default is `Anyscale access role` | `string` | `"Anyscale access role"` | no |
+| <a name="input_anyscale_access_servicesv2_policy_description"></a> [anyscale\_access\_servicesv2\_policy\_description](#input\_anyscale\_access\_servicesv2\_policy\_description) | (Optional)<br>Anyscale servicesv2 IAM policy description.<br>Default is `Anyscale Services v2 IAM Policy which is used by the Anyscale IAM Access Role` | `string` | `"Anyscale Services v2 IAM Policy which is used by the Anyscale IAM Access Role"` | no |
+| <a name="input_anyscale_access_servicesv2_policy_name"></a> [anyscale\_access\_servicesv2\_policy\_name](#input\_anyscale\_access\_servicesv2\_policy\_name) | (Optional)<br>Name for the Anyscale default servicesv2 IAM policy.<br>If left `null`, will default to `anyscale_access_servicesv2_policy_prefix`<br>If provided, overrides the `anyscale_access_servicesv2_policy_prefix` variable.<br>Default is `null`. | `string` | `null` | no |
+| <a name="input_anyscale_access_servicesv2_policy_prefix"></a> [anyscale\_access\_servicesv2\_policy\_prefix](#input\_anyscale\_access\_servicesv2\_policy\_prefix) | (Optional)<br>Name prefix for the Anyscale default servicesv2 IAM policy.<br>If `anyscale_access_servicesv2_policy_name` is provided, it will override this variable.<br>The variable `general_prefix` is a fall-back prefix if this is not provided.<br>Default is `null` but is set to `anyscale-servicesv2-` in a local variable. | `string` | `null` | no |
 | <a name="input_anyscale_access_steadystate_policy_description"></a> [anyscale\_access\_steadystate\_policy\_description](#input\_anyscale\_access\_steadystate\_policy\_description) | (Optional)<br>Anyscale steady state IAM policy description.<br>Default is `Anyscale Steady State IAM Policy which is used by the Anyscale IAM Access Role` | `string` | `"Anyscale Steady State IAM Policy which is used by the Anyscale IAM Access Role"` | no |
 | <a name="input_anyscale_access_steadystate_policy_name"></a> [anyscale\_access\_steadystate\_policy\_name](#input\_anyscale\_access\_steadystate\_policy\_name) | (Optional)<br>Name for the Anyscale default steady state IAM policy.<br>If left `null`, will default to `anyscale_access_steadystate_policy_prefix`<br>If provided, overrides the `anyscale_access_steadystate_policy_prefix` variable.<br>Default is `null`. | `string` | `null` | no |
 | <a name="input_anyscale_access_steadystate_policy_prefix"></a> [anyscale\_access\_steadystate\_policy\_prefix](#input\_anyscale\_access\_steadystate\_policy\_prefix) | (Optional)<br>Name prefix for the Anyscale default steady state IAM policy.<br>If `anyscale_access_steadystate_policy_name` is provided, it will override this variable.<br>The variable `general_prefix` is a fall-back prefix if this is not provided.<br>Default is `null` but is set to `anyscale-steady_state-` in a local variable. | `string` | `null` | no |

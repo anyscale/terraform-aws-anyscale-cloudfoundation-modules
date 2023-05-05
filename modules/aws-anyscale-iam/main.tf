@@ -20,6 +20,12 @@ locals {
   create_servicesv2_policy          = var.create_anyscale_access_role && var.create_anyscale_access_servicesv2_policy ? true : false
   anyscale_servicesv2_policy_name   = try(var.anyscale_access_servicesv2_policy_name, null)
   anyscale_servicesv2_policy_prefix = local.anyscale_servicesv2_policy_name != null ? null : var.anyscale_access_servicesv2_policy_prefix != null ? var.anyscale_access_servicesv2_policy_prefix : "anyscale-servicesv2-"
+  # split_cloudid                     = try(split("_", var.anyscale_cloud_id), [])
+  # capitalized_cloudid_parts = [
+  #   for part in local.split_cloudid : "${upper(substr(part, 0, 1))}${substr(part, 1, -1)}"
+  # ]
+  # joined_cloudid         = try(substr(join("", local.capitalized_cloudid_parts), 0, 19), null)
+  # servicev2_policy_cldid = try("AnyscaleALB${local.joined_cloudid}", "*")
 
   create_s3_bucket_policy            = var.anyscale_s3_bucket_arn != null ? true : false
   anyscale_iam_s3_policy_name_cld_id = var.anyscale_cloud_id != null && var.anyscale_iam_s3_policy_name_prefix == null && var.anyscale_iam_s3_policy_name == null ? "anyscale-${var.anyscale_cloud_id}-s3-" : null
@@ -234,4 +240,13 @@ resource "aws_iam_role_policy_attachment" "anyscale_access_role_s3_policy_attach
 
   role       = aws_iam_role.anyscale_access_role[0].name
   policy_arn = aws_iam_policy.anyscale_s3_access_policy[0].arn
+}
+
+# ---------------------------
+# Service Linked Role
+#   - Elastic Load Balancing
+# ---------------------------
+resource "aws_iam_service_linked_role" "elastic_load_balancing" {
+  count            = local.create_alb_linked_role ? 1 : 0
+  aws_service_name = "elasticloadbalancing.amazonaws.com"
 }
