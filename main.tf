@@ -1,3 +1,8 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# Core Anyscale AWS Module
+#  This creates the foundational AWS resources required for an Anyscale Cloud
+#  This module is the root module and calls other modules to create the resources
+# ---------------------------------------------------------------------------------------------------------------------
 locals {
   full_tags = merge(tomap({
     anyscale-cloud-id           = var.anyscale_cloud_id,
@@ -32,6 +37,7 @@ locals {
   iam_cluster_node_role_name_prefix = coalesce(var.anyscale_iam_cluster_node_role_name_prefix, var.common_prefix, "anyscale-cluster-node-")
   security_group_name_prefix        = coalesce(var.security_group_name_prefix, var.common_prefix, "anyscale-security-group-")
   steadystate_policy_prefix         = coalesce(var.anyscale_access_steadystate_policy_prefix, var.common_prefix, "anyscale-steady_state-")
+  iam_servicesv2_policy_prefix      = coalesce(var.anyscale_access_servicesv2_policy_prefix, var.common_prefix, "anyscale-servicesv2-")
   cluster_node_custom_policy_prefix = coalesce(var.anyscale_cluster_node_custom_policy_prefix, var.common_prefix, "anyscale-clusternode-custom-policy-")
   access_role_custom_policy_prefix  = coalesce(var.anyscale_accessrole_custom_policy_name_prefix, var.common_prefix, "anyscale-crossacct-custom-policy-")
   iam_s3_policy_prefix              = coalesce(var.anyscale_iam_s3_policy_name_prefix, var.common_prefix, "anyscale-iam-s3-")
@@ -61,6 +67,7 @@ locals {
   iam_access_role_name                = var.anyscale_iam_access_role_name != null ? var.anyscale_iam_access_role_name : local.common_name != null ? "${local.common_name}-crossacct-iam-role" : null
   iam_cluster_node_role_name          = var.anyscale_iam_cluster_node_role_name != null ? var.anyscale_iam_cluster_node_role_name : local.common_name != null ? "${local.common_name}-cluster-node-role" : null
   iam_steadystate_policy_name         = var.anyscale_access_steadystate_policy_name != null ? var.anyscale_access_steadystate_policy_name : local.common_name != null ? "${local.common_name}-crossacct-steadystate-policy" : null
+  iam_servicesv2_policy_name          = var.anyscale_access_servicesv2_policy_name != null ? var.anyscale_access_servicesv2_policy_name : local.common_name != null ? "${local.common_name}-crossacct-servicesv2-policy" : null
   iam_cluster_node_custom_policy_name = var.anyscale_cluster_node_custom_policy_name != null ? var.anyscale_cluster_node_custom_policy_name : local.common_name != null ? "${local.common_name}-clusternode-custom-policy" : null
   iam_accessrole_custom_policy_name   = var.anyscale_accessrole_custom_policy_name != null ? var.anyscale_accessrole_custom_policy_name : local.common_name != null ? "${local.common_name}-crossacct-custom-policy" : null
   iam_s3_policy_name                  = var.anyscale_iam_s3_policy_name != null ? var.anyscale_iam_s3_policy_name : local.common_name != null ? "${local.common_name}-s3-policy" : null
@@ -97,6 +104,10 @@ module "aws_anyscale_iam" {
   anyscale_access_steadystate_policy_name        = local.iam_steadystate_policy_name
   anyscale_access_steadystate_policy_prefix      = local.steadystate_policy_prefix
   anyscale_access_steadystate_policy_description = var.anyscale_access_steadystate_policy_description
+
+  anyscale_access_servicesv2_policy_name        = local.iam_servicesv2_policy_name
+  anyscale_access_servicesv2_policy_prefix      = local.iam_servicesv2_policy_prefix
+  anyscale_access_servicesv2_policy_description = var.anyscale_access_servicesv2_policy_description
 
   anyscale_custom_policy_name        = local.iam_accessrole_custom_policy_name
   anyscale_custom_policy_name_prefix = local.access_role_custom_policy_prefix

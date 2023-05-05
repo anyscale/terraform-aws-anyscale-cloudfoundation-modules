@@ -273,35 +273,31 @@ data "aws_iam_policy_document" "iam_anyscale_s3_bucket_access" {
   }
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "iam_anyscale_services_v2" {
+  statement {
+    sid    = "CloudformationCreateDescribe"
+    effect = "Allow"
+    actions = [
+      "cloudformation:CreateStack",
+      "cloudformation:DescribeStackEvents",
+      "cloudformation:DescribeStackResources",
+      "cloudformation:DescribeStacks"
+    ]
+    resources = [
+      "arn:aws:cloudformation:*:${local.account_id}:stack/*"
+    ]
+  }
+
   dynamic "statement" {
     for_each = local.cloud_id_provided ? [] : [1]
     content {
-      sid = "Cloudformation"
+      sid    = "CloudformationWrite"
+      effect = "Allow"
       actions = [
         "cloudformation:TagResource",
         "cloudformation:UntagResource",
-        "cloudformation:CreateStack",
         "cloudformation:UpdateStack",
-        "cloudformation:DeleteStack",
-        "cloudformation:DescribeStackEvents",
-        "cloudformation:DescribeStackResources",
-        "cloudformation:DescribeStacks"
-      ]
-      resources = [
-        "arn:aws:cloudformation:*:${local.account_id}:stack/*"
-      ]
-    }
-  }
-  dynamic "statement" {
-    for_each = local.cloud_id_provided ? [1] : []
-    content {
-      sid    = "CloudformationRead"
-      effect = "Allow"
-      actions = [
-        "cloudformation:DescribeStackEvents",
-        "cloudformation:DescribeStackResources",
-        "cloudformation:DescribeStacks"
       ]
       resources = [
         "arn:aws:cloudformation:*:${local.account_id}:stack/*"
@@ -317,7 +313,6 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
       actions = [
         "cloudformation:TagResource",
         "cloudformation:UntagResource",
-        "cloudformation:CreateStack",
         "cloudformation:UpdateStack",
         "cloudformation:DeleteStack",
       ]
@@ -330,6 +325,17 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
         values   = [var.anyscale_cloud_id]
       }
     }
+  }
+
+  statement {
+    sid    = "CloudformationDelete"
+    effect = "Allow"
+    actions = [
+      "cloudformation:DeleteStack",
+    ]
+    resources = [
+      "arn:aws:cloudformation:*:${local.account_id}:stack/anyscale*"
+    ]
   }
 
   statement {
@@ -347,39 +353,56 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
   }
 
   statement {
-    sid    = "ELBCertsWrite"
+    sid    = "ACMAllResources"
     effect = "Allow"
     actions = [
-      "elasticloadbalancing:AddListenerCertificates",
-      "elasticloadbalancing:RemoveListenerCertificates"
-    ]
-    resources = [
-      "arn:aws:elasticloadbalancing:*:${local.account_id}:listener/app/*"
-    ]
-  }
-
-  statement {
-    sid    = "ACMRead"
-    effect = "Allow"
-    actions = [
-      "acm:ListCertificates"
+      "acm:ListCertificates",
+      "acm:RequestCertificate",
+      "acm:DescribeCertificate",
     ]
     resources = ["*"]
   }
 
-  statement {
-    sid    = "ACMWrite"
-    effect = "Allow"
-    actions = [
-      "acm:DeleteCertificate",
-      "acm:RenewCertificate",
-      "acm:RequestCertificate",
-      "acm:AddTagsToCertificate",
-      "acm:DescribeCertificate",
-      "acm:GetCertificate",
-      "acm:ListTagsForCertificate"
-    ]
-    resources = ["arn:aws:acm:*:${local.account_id}:certificate/*"]
+  dynamic "statement" {
+    for_each = local.cloud_id_provided ? [] : [1]
+    content {
+      sid    = "ACMWrite"
+      effect = "Allow"
+      actions = [
+        "acm:DeleteCertificate",
+        "acm:RenewCertificate",
+        "acm:AddTagsToCertificate",
+        "acm:GetCertificate",
+        "acm:ListTagsForCertificate"
+      ]
+      resources = ["arn:aws:acm:*:${local.account_id}:certificate/*"]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = local.cloud_id_provided ? [1] : []
+    content {
+      sid    = "ACMWrite"
+      effect = "Allow"
+      actions = [
+        "acm:DeleteCertificate",
+        "acm:RenewCertificate",
+        "acm:AddTagsToCertificate",
+        "acm:GetCertificate",
+        "acm:ListTagsForCertificate"
+      ]
+      resources = ["arn:aws:acm:*:${local.account_id}:certificate/*"]
+      condition {
+        test     = "StringEquals"
+        variable = "aws:RequestTag/anyscale-cloud-id"
+        values   = [var.anyscale_cloud_id]
+      }
+      condition {
+        test     = "ForAnyValue:StringEquals"
+        variable = "aws:TagKeys"
+        values   = ["anyscale-cloud-id"]
+      }
+    }
   }
 
   statement {
@@ -399,13 +422,15 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
       "elasticloadbalancing:ModifyTargetGroup",
       "elasticloadbalancing:DeleteTargetGroup",
       "elasticloadbalancing:RegisterTargets",
-      "elasticloadbalancing:DeregisterTargets"
+      "elasticloadbalancing:DeregisterTargets",
+      "elasticloadbalancing:AddListenerCertificates",
+      "elasticloadbalancing:RemoveListenerCertificates"
     ]
     resources = [
-      "arn:aws:elasticloadbalancing:*:${local.account_id}:loadbalancer/app/*",
-      "arn:aws:elasticloadbalancing:*:${local.account_id}:listener/app/*",
-      "arn:aws:elasticloadbalancing:*:${local.account_id}:listener-rule/app/*",
-      "arn:aws:elasticloadbalancing:*:${local.account_id}:targetgroup*"
+      "arn:aws:elasticloadbalancing:*:${local.account_id}:loadbalancer/app/Anyscale*",
+      "arn:aws:elasticloadbalancing:*:${local.account_id}:listener/app/Anyscale*",
+      "arn:aws:elasticloadbalancing:*:${local.account_id}:listener-rule/app/Anyscale*",
+      "arn:aws:elasticloadbalancing:*:${local.account_id}:targetgroup/AnyscaleTarget*"
     ]
     condition {
       test     = "StringEquals"
@@ -413,129 +438,4 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
       values   = ["cloudformation.amazonaws.com"]
     }
   }
-  # dynamic "statement" {
-  #   for_each = local.cloud_id_provided ? [] : [1]
-  #   content {
-  #     sid    = "ELBWrite"
-  #     effect = "Allow"
-  #     actions = [
-  #       "elasticloadbalancing:AddTags",
-  #       "elasticloadbalancing:CreateRule",
-  #       "elasticloadbalancing:ModifyRule",
-  #       "elasticloadbalancing:DeleteRule",
-  #       "elasticloadbalancing:CreateListener",
-  #       "elasticloadbalancing:ModifyListener",
-  #       "elasticloadbalancing:DeleteListener",
-  #       "elasticloadbalancing:CreateLoadBalancer",
-  #       "elasticloadbalancing:DeleteLoadBalancer",
-  #       "elasticloadbalancing:CreateTargetGroup",
-  #       "elasticloadbalancing:ModifyTargetGroup",
-  #       "elasticloadbalancing:DeleteTargetGroup",
-  #       "elasticloadbalancing:RegisterTargets",
-  #       "elasticloadbalancing:DeregisterTargets"
-  #     ]
-  #     resources = [
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:loadbalancer/app/*",
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:listener/app/*",
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:listener-rule/app/*",
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:targetgroup*"
-  #     ]
-  #     condition {
-  #       test     = "StringEquals"
-  #       variable = "aws:CalledViaFirst"
-  #       values   = ["cloudformation.amazonaws.com"]
-  #     }
-  #   }
-  # }
-
-  # dynamic "statement" {
-  #   for_each = local.cloud_id_provided ? [1] : []
-  #   content {
-  #     sid    = "ELBWrite"
-  #     effect = "Allow"
-  #     actions = [
-  #       "elasticloadbalancing:AddTags",
-  #       "elasticloadbalancing:DeleteTags",
-  #       "elasticloadbalancing:DeleteLoadBalancer",
-  #       "elasticloadbalancing:ModifyRule",
-  #       "elasticloadbalancing:DeleteRule",
-  #       "elasticloadbalancing:ModifyListener",
-  #       "elasticloadbalancing:DeleteListener",
-  #       "elasticloadbalancing:ModifyTargetGroup",
-  #       "elasticloadbalancing:DeleteTargetGroup",
-  #       "elasticloadbalancing:RegisterTargets",
-  #       "elasticloadbalancing:DeregisterTargets",
-  #       "elasticloadbalancing:CreateTargetGroup"
-  #     ]
-  #     resources = [
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:loadbalancer/app/*",
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:listener/app/*",
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:listener-rule/app/*",
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:targetgroup*"
-  #     ]
-  #     condition {
-  #       test     = "StringEquals"
-  #       variable = "aws:CalledViaFirst"
-  #       values   = ["cloudformation.amazonaws.com"]
-  #     }
-  #   }
-  # }
-
-  # dynamic "statement" {
-  #   for_each = local.cloud_id_provided ? [1] : []
-  #   content {
-  #     sid    = "ELBWriteRestricted"
-  #     effect = "Allow"
-  #     actions = [
-  #       "elasticloadbalancing:CreateRule",
-  #       "elasticloadbalancing:CreateListener",
-  #       "elasticloadbalancing:CreateLoadBalancer",
-  #       # "elasticloadbalancing:CreateTargetGroup",
-  #     ]
-  #     resources = [
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:loadbalancer/app/*",
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:listener/app/*",
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:listener-rule/app/*",
-  #       # "arn:aws:elasticloadbalancing:*:${local.account_id}:targetgroup*"
-  #     ]
-  #     condition {
-  #       test     = "StringEquals"
-  #       variable = "aws:CalledViaFirst"
-  #       values   = ["cloudformation.amazonaws.com"]
-  #     }
-  #     condition {
-  #       test     = "StringEquals"
-  #       variable = "aws:RequestTag/anyscale-cloud-id"
-  #       values   = [var.anyscale_cloud_id]
-  #     }
-  #     condition {
-  #       test     = "ForAnyValue:StringEquals"
-  #       variable = "aws:TagKeys"
-  #       values   = ["anyscale-cloud-id"]
-  #     }
-  #   }
-  # }
-
-  # dynamic "statement" {
-  #   for_each = local.cloud_id_provided ? [1] : []
-  #   content {
-  #     sid    = "DenyTaggingOnOtherLoadbalancers"
-  #     effect = "Deny"
-  #     actions = [
-  #       "elasticloadbalancing:AddTags",
-  #       "elasticloadbalancing:DeleteTags",
-  #     ]
-  #     resources = [
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:loadbalancer/app/*",
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:listener/app/*",
-  #       "arn:aws:elasticloadbalancing:*:${local.account_id}:listener-rule/app/*",
-  #       # "arn:aws:elasticloadbalancing:*:${local.account_id}:targetgroup*"
-  #     ]
-  #     condition {
-  #       test     = "StringNotEquals"
-  #       variable = "aws:ResourceTag/anyscale-cloud-id"
-  #       values   = [var.anyscale_cloud_id]
-  #     }
-  #   }
-  # }
 }

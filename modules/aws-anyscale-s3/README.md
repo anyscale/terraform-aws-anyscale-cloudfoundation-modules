@@ -17,7 +17,7 @@ This module creates the default S3 resources needed for Anyscale to work in a cu
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.62.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.66.0 |
 
 ## Modules
 
@@ -62,8 +62,8 @@ No modules.
 
 <!-- References -->
 [Terraform]: https://www.terraform.io
-[Issues]: https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/issues
-[badge-build]: https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/workflows/CI/CD%20Pipeline/badge.svg
+[Issues]: https://github.com/anyscale/sa-sandbox-terraform/issues
+[badge-build]: https://github.com/anyscale/sa-sandbox-terraform/workflows/CI/CD%20Pipeline/badge.svg
 [badge-terraform]: https://img.shields.io/badge/terraform-1.x%20-623CE4.svg?logo=terraform
 [badge-tf-aws]: https://img.shields.io/badge/AWS-4.+-F8991D.svg?logo=terraform
-[build-status]: https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/actions
+[build-status]: https://github.com/anyscale/sa-sandbox-terraform/actions
