@@ -1,3 +1,12 @@
+## 0.10.0 (Released)
+FEATURES:
+
+BUG FIXES:
+- Additional security for Services v2 IAM policies. This resolves issues with brand new AWS accounts.
+
+BREAKING CHANGES:
+- Removed ELB Service Linked Role from Terraform. If your terraform modules created this role, and you apply this update, this will potentially remove the Service Linked Role for Elastic Load Balancing. The Cloudformation script that creates the Anyscale Services will recreate it. If the Service Linked Role is in use during an update, the terraform module may throw an error.
+
 ## 0.9.0 (Released)
 
 FEATURES:

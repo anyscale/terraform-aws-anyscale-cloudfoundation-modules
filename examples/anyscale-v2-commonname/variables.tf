@@ -16,6 +16,10 @@ variable "aws_region" {
   type        = string
 }
 
+# ------------------------------------------------------------------------------
+# OPTIONAL PARAMETERS
+# These variables have defaults, but may be overridden.
+# ------------------------------------------------------------------------------
 variable "anyscale_deploy_env" {
   description = "(Required) Anyscale deploy environment. Used in resource names and tags."
   type        = string
@@ -25,12 +29,9 @@ variable "anyscale_deploy_env" {
     )
     error_message = "The anyscale_deploy_env only allows `production`, `test`, or `development`"
   }
+  default = "production"
 }
 
-# ------------------------------------------------------------------------------
-# OPTIONAL PARAMETERS
-# These variables have defaults, but may be overridden.
-# ------------------------------------------------------------------------------
 variable "anyscale_cloud_id" {
   description = "(Optional) Anyscale Cloud ID. Default is `null`."
   type        = string

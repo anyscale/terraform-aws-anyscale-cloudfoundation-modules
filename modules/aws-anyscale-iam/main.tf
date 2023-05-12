@@ -246,7 +246,7 @@ resource "aws_iam_role_policy_attachment" "anyscale_access_role_s3_policy_attach
 # Service Linked Role
 #   - Elastic Load Balancing
 # ---------------------------
-resource "aws_iam_service_linked_role" "elastic_load_balancing" {
-  count            = local.create_alb_linked_role ? 1 : 0
-  aws_service_name = "elasticloadbalancing.amazonaws.com"
-}
+# resource "aws_iam_service_linked_role" "elastic_load_balancing" {
+#   count            = local.create_alb_linked_role ? 1 : 0
+#   aws_service_name = "elasticloadbalancing.amazonaws.com"
+# }
