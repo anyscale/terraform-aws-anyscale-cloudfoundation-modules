@@ -57,6 +57,7 @@ data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
     actions = [
       # Populates metadata about what is available
       # in the account.
+      "ec2:DescribeAccountAttributes",
       "ec2:DescribeAvailabilityZones",
       "ec2:DescribeInstanceTypes",
       "ec2:DescribeRegions",
@@ -74,6 +75,33 @@ data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
       "ec2:DescribeSecurityGroups"
     ]
     resources = ["*"]
+  }
+
+  statement {
+    sid    = "CreateSpotServiceRole"
+    effect = "Allow"
+    actions = [
+      "iam:CreateServiceLinkedRole"
+    ]
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot"
+    ]
+    condition {
+      test     = "StringLike"
+      variable = "iam:AWSServiceName"
+      values   = ["spot.amazonaws.com"]
+    }
+  }
+  statement {
+    sid    = "UpdateSpotServiceRole"
+    effect = "Allow"
+    actions = [
+      "iam:AttachRolePolicy",
+      "iam:PutRolePolicy",
+    ]
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot"
+    ]
   }
 
   dynamic "statement" {
@@ -229,7 +257,7 @@ data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
       "ec2:DescribePrefixLists",
       "ec2:DescribeReservedInstancesOfferings",
       "ec2:DescribeSpotInstanceRequests",
-      "ec2:DescribeSpotPriceHistory"
+      "ec2:DescribeSpotPriceHistory",
     ]
     resources = ["*"]
   }
@@ -289,6 +317,17 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
     ]
   }
 
+  statement {
+    sid    = "EC2Describe"
+    effect = "Allow"
+    actions = [
+      # VPC Describe Resources
+      "ec2:DescribeVpcs",
+      "ec2:DescribeInternetGateways",
+    ]
+    resources = ["*"]
+  }
+
   dynamic "statement" {
     for_each = local.cloud_id_provided ? [] : [1]
     content {
@@ -335,6 +374,33 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
     ]
     resources = [
       "arn:aws:cloudformation:*:${local.account_id}:stack/anyscale*"
+    ]
+  }
+
+  statement {
+    sid    = "CreateELBServiceLinkedRole"
+    effect = "Allow"
+    actions = [
+      "iam:CreateServiceLinkedRole"
+    ]
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing"
+    ]
+    condition {
+      test     = "StringLike"
+      variable = "iam:AWSServiceName"
+      values   = ["elasticloadbalancing.amazonaws.com"]
+    }
+  }
+  statement {
+    sid    = "UpdateELBServiceLinkedRole"
+    effect = "Allow"
+    actions = [
+      "iam:AttachRolePolicy",
+      "iam:PutRolePolicy",
+    ]
+    resources = [
+      "arn:aws:iam::${local.account_id}:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing"
     ]
   }
 
