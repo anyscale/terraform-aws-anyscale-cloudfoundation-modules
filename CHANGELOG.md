@@ -1,3 +1,11 @@
+## 0.10.1 (Released)
+FEATURES:
+
+BUG FIXES:
+- Additional tightening of policies around Service Linked Role creation.
+
+BREAKING CHANGES:
+
 ## 0.10.0 (Released)
 FEATURES:
 

@@ -92,17 +92,17 @@ data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
       values   = ["spot.amazonaws.com"]
     }
   }
-  statement {
-    sid    = "UpdateSpotServiceRole"
-    effect = "Allow"
-    actions = [
-      "iam:AttachRolePolicy",
-      "iam:PutRolePolicy",
-    ]
-    resources = [
-      "arn:aws:iam::${local.account_id}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot"
-    ]
-  }
+  # statement {
+  #   sid    = "UpdateSpotServiceRole"
+  #   effect = "Allow"
+  #   actions = [
+  #     "iam:AttachRolePolicy",
+  #     "iam:PutRolePolicy",
+  #   ]
+  #   resources = [
+  #     "arn:aws:iam::${local.account_id}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot"
+  #   ]
+  # }
 
   dynamic "statement" {
     for_each = local.cloud_id_provided ? [] : [1]
@@ -392,17 +392,17 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
       values   = ["elasticloadbalancing.amazonaws.com"]
     }
   }
-  statement {
-    sid    = "UpdateELBServiceLinkedRole"
-    effect = "Allow"
-    actions = [
-      "iam:AttachRolePolicy",
-      "iam:PutRolePolicy",
-    ]
-    resources = [
-      "arn:aws:iam::${local.account_id}:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing"
-    ]
-  }
+  # statement {
+  #   sid    = "UpdateELBServiceLinkedRole"
+  #   effect = "Allow"
+  #   actions = [
+  #     "iam:AttachRolePolicy",
+  #     "iam:PutRolePolicy",
+  #   ]
+  #   resources = [
+  #     "arn:aws:iam::${local.account_id}:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing"
+  #   ]
+  # }
 
   statement {
     sid    = "ELBRead"
