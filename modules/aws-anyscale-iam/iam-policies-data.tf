@@ -490,7 +490,8 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
       "elasticloadbalancing:RegisterTargets",
       "elasticloadbalancing:DeregisterTargets",
       "elasticloadbalancing:AddListenerCertificates",
-      "elasticloadbalancing:RemoveListenerCertificates"
+      "elasticloadbalancing:RemoveListenerCertificates",
+      "elasticloadbalancing:ModifyLoadBalancerAttributes"
     ]
     resources = [
       "arn:aws:elasticloadbalancing:*:${local.account_id}:loadbalancer/app/Anyscale*",
