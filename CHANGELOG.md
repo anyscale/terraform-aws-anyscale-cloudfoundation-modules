@@ -1,4 +1,13 @@
-## 0.10.1 (Released)
+## 0.11.1 (Released)
+FEATURES:
+
+BUG FIXES:
+- Additional permission for Anyscale Services allowing modification of ELB.
+
+BREAKING CHANGES:
+
+
+## 0.11.0 (Released)
 FEATURES:
 
 BUG FIXES:
