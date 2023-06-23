@@ -78,3 +78,12 @@ variable "common_prefix" {
     error_message = "common_prefix must either be `null` or less than 30 characters."
   }
 }
+
+variable "anyscale_trusted_role_arns" {
+  description = <<-EOT
+    (Optional)
+    ARNs of AWS entities who can assume these roles. Default is the AWS account for Anyscale
+  EOT
+  type        = list(string)
+  default     = ["arn:aws:iam::525325868955:root"]
+}

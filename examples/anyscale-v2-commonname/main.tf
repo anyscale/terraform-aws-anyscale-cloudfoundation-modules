@@ -35,3 +35,10 @@ module "aws_anyscale_v2_common_name" {
   # Security Group Related
   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges
 }
+
+module "aws-anyscale-iam" {
+  source = "../../modules/aws-anyscale-iam"
+
+  # Pass the variable to the module
+  anyscale_trusted_role_arns = var.anyscale_trusted_role_arns
+}
