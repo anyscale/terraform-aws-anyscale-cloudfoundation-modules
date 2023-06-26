@@ -109,6 +109,8 @@ module "aws_anyscale_iam" {
   anyscale_access_servicesv2_policy_prefix      = local.iam_servicesv2_policy_prefix
   anyscale_access_servicesv2_policy_description = var.anyscale_access_servicesv2_policy_description
 
+  anyscale_trusted_role_arns = var.anyscale_access_role_trusted_role_arns
+
   anyscale_custom_policy_name        = local.iam_accessrole_custom_policy_name
   anyscale_custom_policy_name_prefix = local.access_role_custom_policy_prefix
   anyscale_custom_policy_description = var.anyscale_accessrole_custom_policy_description

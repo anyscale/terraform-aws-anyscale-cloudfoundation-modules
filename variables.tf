@@ -244,6 +244,7 @@ variable "anyscale_gateway_vpc_endpoints" {
 #--------------------------------------------
 # IAM Variables
 #--------------------------------------------
+# Cross Acct Access Role
 variable "anyscale_iam_access_role_name" {
   description = <<-EOT
     (Optional, forces creation of new resource)
@@ -278,7 +279,15 @@ variable "anyscale_access_role_description" {
   type        = string
   default     = "Anyscale access role"
 }
-
+variable "anyscale_access_role_trusted_role_arns" {
+  description = <<-EOT
+    (Optional)
+    A list of ARNs of IAM roles that are allowed to assume the Anyscale IAM access role.
+    Default is an empty list and the default in the `aws-anyscale-iam` sub-module is used.
+  EOT
+  type        = list(string)
+  default     = []
+}
 variable "anyscale_access_steadystate_policy_name" {
   description = <<-EOT
     (Optional)
