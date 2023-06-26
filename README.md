@@ -48,8 +48,8 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.0 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | >= 3.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.0 |
 
 ## Providers
 

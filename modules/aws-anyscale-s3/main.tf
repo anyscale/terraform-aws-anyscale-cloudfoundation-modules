@@ -18,10 +18,14 @@ locals {
 
 #tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "anyscale_managed_s3_bucket" {
-  #checkov:skip=CKV_AWS_145:Encrypted is managed below as a customer choice
+  #checkov:skip=CKV_AWS_145:Encryption is managed below as a customer choice
   #checkov:skip=CKV_AWS_144:Replication is managed as a choice
+  #checkov:skip=CKV_AWS_18:Encryption is managed below as a customer choice
   #checkov:skip=CKV_AWS_19:Encryption is managed below as a customer choice
   #checkov:skip=CKV2_AWS_62:Event notification is not required for this bucket.
+  #checkov:skip=CKV2_AWS_6:Bucket policy is managed below as a customer choice
+  #checkov:skip=CKV_AWS_21:Bucket versioning is managed below as a customer choice
+  #checkov:skip=CKV2_AWS_61:Bucket policy is managed below as a customer choice
   count = var.module_enabled ? 1 : 0
 
   bucket        = local.anyscale_bucketname
