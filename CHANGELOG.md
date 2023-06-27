@@ -1,3 +1,18 @@
+## 0.13.0 (Released)
+FEATURES:
+- Update to latest AWS Provider (v5.x)
+- IAM SubModule - Allow alternative trusted role arn for automated testing
+
+## 0.12.0 (Unreleased)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+Forced new deploy as Terraform Registry wasn't picking this release up correctly.
+
 ## 0.11.1 (Released)
 FEATURES:
 
