@@ -8,44 +8,55 @@ More info can be found [here](https://terratest.gruntwork.io/docs/getting-starte
 
 ## Tests Breakdown
 
-### anyscale-v1-test
+### anyscale-v2-tests
 
-This will create two sets of resources for an Anyscale v1.0 Stack.
-
-The first includes as many defaults as possible including:
-   - IAM Roles
-   - S3 Bucket
-   - VPC with publicly routed subnets (no internal)
-   - VPC Security Group allowing public from Anyscale and 0.0.0.0/0
-   - EFS
-
-The second utilizes an existing VPC and creates:
-   - IAM Roles
-   - S3 Bucket
-   - VPC Security Group allowing public from Anyscale and 0.0.0.0/0
-   - EFS
-
-### anyscale-v2-test - NOT DONE
-
-This will create three sets of resources for Anyscale v2.0 Stacks.
-
-The first includes as many defaults as possible and duplicates the v1 Stack resources above minus the Anyscale Public Ingress:
+- anyscale_v2_00_test - This creates resources for an Anyscale v2.0 stack using as many defaults as possible.
    - IAM Roles
    - S3 Bucket
    - VPC with publicly routed subnets (no internal)
    - VPC Security Group allowing access from a customer defined public IP
    - EFS
 
-The second utilizes an existing VPC and is meant to be testing the v2 Customer Defined Networking solution with no public IPs and locked down ingress in the security group configuration. It creates:
+- anyscale_v2_01_test - This creates resources for an Anyscale v2.0 Stack with an existing VPC and an existing S3 bucket. This utilizes an existing VPC and is meant to be testing v2 Customer Defined Networking:
    - IAM Roles
    - S3 Bucket
    - VPC Security Group that is locked down with no public access and no access from Anyscale IPs
    - EFS
 
-The third creates resources for an Anyscale v2.0 Stack with an existing VPC and an existing S3 bucket. This is still utilizing an existing VPC and is meant to be testing v2 Customer Defined Networking, an existing S3, etc. It creates:
-   - IAM Roles
-   - VPC Security Group that is locked down with no public access and no access from Anyscale IPs
-   - EFS
+- anyscale_v2_02_private_subnets_test - This creates resources for an Anyscale v2.0 Stack with a Private Networking VPC.
+  - IAM Roles
+  - S3 Bucket
+  - VPC with privately routed subnets (no external subnets for Anyscale Clusters)
+  - VPC Security Group allowing access from internal IPs
+  - EFS
+
+- anyscale_v2_03_common_name_test - This creates resources for an Anyscale v2.0 Stack with common resource names.
+  - IAM Roles
+  - S3 Bucket
+  - VPC with publicly routed subnets (no internal)
+  - VPC Security group
+  - EFS
+
+- anyscale_v2_04_create_endpoints - This uses an existing VPC but creates VPC endpoints - as well as the other resources needed for an Anyscale v2.0 stack. It uses an existing VPC and existing subnets.
+  - IAM Roles
+  - S3 Bucket
+  - VPC Endpoints for S3
+  - VPC Security Group
+  - EFS
+
+- anyscale_v2_05_e2e_public_test - This is used for automated testing of the end to end process for creating an Anyscale cloud with Terraform and `anyscale cloud register` - it's similar to the common_name test.
+  - IAM Roles
+  - S3 Bucket
+  - VPC with publicly routed subnets (no internal)
+  - VPC Security Group
+  - EFS
+
+- anyscale_v2_06_e2e_private_test - This is used for automated testing of the end to end process for creating an Anyscale cloud with Terraform and `anyscale cloud register` - it's similar to the private_subnets_test.
+  - IAM Roles
+  - S3 Bucket
+  - VPC with privately routed subnets (no external subnets for Anyscale Clusters)
+  - VPC Security Group
+  - EFS
 
 #### Manual execution
 Manully running the go tests can save time during initial development. Requires active aws credentials.
