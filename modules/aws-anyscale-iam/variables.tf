@@ -74,10 +74,15 @@ variable "role_permissions_boundary_arn" {
   default     = null
 }
 
-variable "anyscale_trusted_role_arns" {
-  description = "(Optional) ARNs of AWS entities who can assume these roles. Default is the AWS account for Anyscale."
+variable "anyscale_default_trusted_role_arns" {
+  description = "(Optional) ARNs of AWS entities who can assume these roles. If `anyscale_trusted_role_arns` is provided, it will override this variable. Default is the AWS account for Anyscale Production."
   type        = list(string)
   default     = ["arn:aws:iam::525325868955:root"]
+}
+variable "anyscale_trusted_role_arns" {
+  description = "(Optional) ARNs of AWS entities who can assume these roles. If this variable is provided, it will override `anyscale_default_trusted_role_arns`. Default is an empty list."
+  type        = list(string)
+  default     = []
 }
 variable "anyscale_trusted_role_sts_externalid" {
   description = "(Optional) STS ExternalId condition values to use with a role. Default is an empty list."

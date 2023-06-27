@@ -10,6 +10,10 @@ locals {
     "arn:aws:iam::${local.account_id}:instance-profile/${local.anyscale_cluster_node_role_name_prefix}*"
   )
 
+  anyscale_trusted_role_arns = coalescelist(
+    var.anyscale_trusted_role_arns, var.anyscale_default_trusted_role_arns
+  )
+
   cloud_id_provided = var.anyscale_cloud_id != null ? true : false
 }
 # Allow Anyscale account access to assume this role.
@@ -20,7 +24,7 @@ data "aws_iam_policy_document" "iam_anyscale_crossacct_assumerole_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = var.anyscale_trusted_role_arns
+      identifiers = local.anyscale_trusted_role_arns
     }
 
     dynamic "condition" {
@@ -38,6 +42,7 @@ data "aws_iam_policy_document" "iam_anyscale_crossacct_assumerole_policy" {
 #tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
   #checkov:skip=CKV_AWS_111:Write access required for these items
+  #checkov:skip=CKV_AWS_356:Wildcards allowed for these items
 
   statement {
     sid    = "IAM"
@@ -92,17 +97,6 @@ data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
       values   = ["spot.amazonaws.com"]
     }
   }
-  # statement {
-  #   sid    = "UpdateSpotServiceRole"
-  #   effect = "Allow"
-  #   actions = [
-  #     "iam:AttachRolePolicy",
-  #     "iam:PutRolePolicy",
-  #   ]
-  #   resources = [
-  #     "arn:aws:iam::${local.account_id}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot"
-  #   ]
-  # }
 
   dynamic "statement" {
     for_each = local.cloud_id_provided ? [] : [1]
@@ -303,6 +297,7 @@ data "aws_iam_policy_document" "iam_anyscale_s3_bucket_access" {
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "iam_anyscale_services_v2" {
+  #checkov:skip=CKV_AWS_356:Policy requires wildcards in resource permissions'
   statement {
     sid    = "CloudformationCreateDescribe"
     effect = "Allow"

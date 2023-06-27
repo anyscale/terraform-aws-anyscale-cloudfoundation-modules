@@ -11,13 +11,13 @@ This module creates the default IAM resources needed for Anyscale to work in a c
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.67.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.5.0 |
 
 ## Modules
 
@@ -86,12 +86,13 @@ No modules.
 | <a name="input_anyscale_custom_policy_name"></a> [anyscale\_custom\_policy\_name](#input\_anyscale\_custom\_policy\_name) | (Optional) Name for an Anyscale custom IAM policy. Default is `null`. | `string` | `null` | no |
 | <a name="input_anyscale_custom_policy_name_prefix"></a> [anyscale\_custom\_policy\_name\_prefix](#input\_anyscale\_custom\_policy\_name\_prefix) | (Optional) Name prefix for the Anyscale custom IAM policy. Default is `anyscale-iam-role-custom-`. | `string` | `"anyscale-iam-role-custom-"` | no |
 | <a name="input_anyscale_custom_policy_path"></a> [anyscale\_custom\_policy\_path](#input\_anyscale\_custom\_policy\_path) | (Optional) Path of the Anyscale custom IAM policy. Default is `/`. | `string` | `"/"` | no |
+| <a name="input_anyscale_default_trusted_role_arns"></a> [anyscale\_default\_trusted\_role\_arns](#input\_anyscale\_default\_trusted\_role\_arns) | (Optional) ARNs of AWS entities who can assume these roles. If `anyscale_trusted_role_arns` is provided, it will override this variable. Default is the AWS account for Anyscale Production. | `list(string)` | <pre>[<br>  "arn:aws:iam::525325868955:root"<br>]</pre> | no |
 | <a name="input_anyscale_iam_s3_policy_description"></a> [anyscale\_iam\_s3\_policy\_description](#input\_anyscale\_iam\_s3\_policy\_description) | (Optional) Anyscale S3 access IAM policy description. Default is `Anyscale S3 Access IAM Policy`. | `string` | `"Anyscale S3 Access IAM Policy"` | no |
 | <a name="input_anyscale_iam_s3_policy_name"></a> [anyscale\_iam\_s3\_policy\_name](#input\_anyscale\_iam\_s3\_policy\_name) | (Optional) Name for the Anyscale S3 access IAM policy. Default is `null`. | `string` | `null` | no |
 | <a name="input_anyscale_iam_s3_policy_name_prefix"></a> [anyscale\_iam\_s3\_policy\_name\_prefix](#input\_anyscale\_iam\_s3\_policy\_name\_prefix) | (Optional) Name prefix for the Anyscale S3 access IAM policy. Default is `anyscale-iam-s3-`. | `string` | `"anyscale-iam-s3-"` | no |
 | <a name="input_anyscale_iam_s3_policy_path"></a> [anyscale\_iam\_s3\_policy\_path](#input\_anyscale\_iam\_s3\_policy\_path) | (Optional) Path of the Anyscale S3 access IAM policy. Default is `/`. | `string` | `"/"` | no |
 | <a name="input_anyscale_s3_bucket_arn"></a> [anyscale\_s3\_bucket\_arn](#input\_anyscale\_s3\_bucket\_arn) | (Optional) The S3 Bucket arn that the IAM Roles need access to.<br>If not provided, make sure to set `create_iam_s3_policy` to `false` otherwise this will throw an error.<br>Default is `null`. | `string` | `null` | no |
-| <a name="input_anyscale_trusted_role_arns"></a> [anyscale\_trusted\_role\_arns](#input\_anyscale\_trusted\_role\_arns) | (Optional) ARNs of AWS entities who can assume these roles. Default is the AWS account for Anyscale. | `list(string)` | <pre>[<br>  "arn:aws:iam::525325868955:root"<br>]</pre> | no |
+| <a name="input_anyscale_trusted_role_arns"></a> [anyscale\_trusted\_role\_arns](#input\_anyscale\_trusted\_role\_arns) | (Optional) ARNs of AWS entities who can assume these roles. If this variable is provided, it will override `anyscale_default_trusted_role_arns`. Default is an empty list. | `list(string)` | `[]` | no |
 | <a name="input_anyscale_trusted_role_sts_externalid"></a> [anyscale\_trusted\_role\_sts\_externalid](#input\_anyscale\_trusted\_role\_sts\_externalid) | (Optional) STS ExternalId condition values to use with a role. Default is an empty list. | `any` | `[]` | no |
 | <a name="input_create_anyscale_access_role"></a> [create\_anyscale\_access\_role](#input\_create\_anyscale\_access\_role) | (Optional) Determines whether to create the Anyscale access role. Default is `true`. | `bool` | `true` | no |
 | <a name="input_create_anyscale_access_servicesv2_policy"></a> [create\_anyscale\_access\_servicesv2\_policy](#input\_create\_anyscale\_access\_servicesv2\_policy) | (Optional) Determines if the IAM policy for Services v2 is created. Default is `true`. | `bool` | `true` | no |
@@ -143,5 +144,5 @@ No modules.
 [Issues]: https://github.com/anyscale/sa-sandbox-terraform/issues
 [badge-build]: https://github.com/anyscale/sa-sandbox-terraform/workflows/CI/CD%20Pipeline/badge.svg
 [badge-terraform]: https://img.shields.io/badge/terraform-1.x%20-623CE4.svg?logo=terraform
-[badge-tf-aws]: https://img.shields.io/badge/AWS-4.+-F8991D.svg?logo=terraform
+[badge-tf-aws]: https://img.shields.io/badge/AWS-5.+-F8991D.svg?logo=terraform
 [build-status]: https://github.com/anyscale/sa-sandbox-terraform/actions

@@ -174,6 +174,7 @@ resource "aws_iam_policy" "vpc_flow_log_cloudwatch" {
 }
 
 data "aws_iam_policy_document" "vpc_flow_log_cloudwatch" {
+  #checkov:skip=CKV_AWS_356:Wildcard resource allowed in IAM policy
   count = var.module_enabled && var.create_flow_log_cloudwatch_iam_role ? 1 : 0
 
   #checkov:skip=CKV_AWS_111:Log permissions required for Flow Logs

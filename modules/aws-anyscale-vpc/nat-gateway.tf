@@ -9,8 +9,9 @@ locals {
 # Elastic IPs for NAT
 # --------------------
 resource "aws_eip" "nat_gateway" {
-  count = var.module_enabled ? local.nat_gateway_count : 0
-  vpc   = true
+  #checkov:skip=CKV2_AWS_19: EIP is used for NAT Gateway
+  count  = var.module_enabled ? local.nat_gateway_count : 0
+  domain = "vpc"
 
   tags = merge(
     {
