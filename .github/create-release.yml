@@ -1,44 +1,46 @@
-name-template: 'v$RESOLVED_VERSION'
-tag-template: 'v$RESOLVED_VERSION'
-version-template: '$MAJOR.$MINOR.$PATCH'
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+version-template: "$MAJOR.$MINOR.$PATCH"
 version-resolver:
   major:
     labels:
-      - 'major'
+      - "major"
   minor:
     labels:
-      - 'minor'
-      - 'enhancement'
+      - "minor"
+      - "enhancement"
   patch:
     labels:
-      - 'auto-update'
-      - 'patch'
-      - 'fix'
-      - 'bugfix'
-      - 'bug'
-      - 'hotfix'
-      - 'documentation'
-      - 'examples'
-  default: 'minor'
+      - "auto-update"
+      - "patch"
+      - "fix"
+      - "bugfix"
+      - "bug"
+      - "hotfix"
+      - "documentation"
+      - "examples"
+      - "unittests"
+      - "github"
+  default: "minor"
 
 categories:
-- title: '🚀 Enhancements'
-  labels:
-    - 'enhancement'
-    - 'patch'
-- title: '🐛 Bug Fixes'
-  labels:
-    - 'fix'
-    - 'bugfix'
-    - 'bug'
-    - 'hotfix'
-- title: '📚 Documentation/Examples'
-  labels:
-    - 'documentation'
-    - 'examples'
-- title: 'Github Chores'
-  labels:
-    - 'github'
+  - title: "🚀 Enhancements"
+    labels:
+      - "enhancement"
+      - "patch"
+  - title: "🐛 Bug Fixes"
+    labels:
+      - "fix"
+      - "bugfix"
+      - "bug"
+      - "hotfix"
+  - title: "📚 Documentation/Examples"
+    labels:
+      - "documentation"
+      - "examples"
+  - title: "Github Chores"
+    labels:
+      - "github"
 # - title: 'Automatic Updates'
 #   labels:
 #   - 'auto-update'
