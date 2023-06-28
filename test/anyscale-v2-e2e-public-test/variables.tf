@@ -16,6 +16,10 @@ variable "aws_region" {
   type        = string
 }
 
+# ------------------------------------------------------------------------------
+# OPTIONAL PARAMETERS
+# These variables have defaults, but may be overridden.
+# ------------------------------------------------------------------------------
 variable "anyscale_deploy_env" {
   description = "(Required) Anyscale deploy environment. Used in resource names and tags."
   type        = string
@@ -25,12 +29,9 @@ variable "anyscale_deploy_env" {
     )
     error_message = "The anyscale_deploy_env only allows `production`, `test`, or `development`"
   }
+  default = "production"
 }
 
-# ------------------------------------------------------------------------------
-# OPTIONAL PARAMETERS
-# These variables have defaults, but may be overridden.
-# ------------------------------------------------------------------------------
 variable "anyscale_cloud_id" {
   description = "(Optional) Anyscale Cloud ID. Default is `null`."
   type        = string
@@ -60,14 +61,30 @@ variable "customer_ingress_cidr_ranges" {
     The IPv4 CIDR block that is allowed to access the clusters.
     This provides the ability to lock down the v1 stack to just the public IPs of a corporate network.
     This is added to the security group and allows port 443 (https) and 22 (ssh) access.
-    ex: `52.1.1.23/32,10.1.0.0/16'
-    Default is `0.0.0.0/0`
+    ex: `52.1.1.23/32,10.1.0.0/16`
   EOT
   type        = string
-  default     = "0.0.0.0/0"
 }
 
-variable "existing_vpc_s3_tag_value" {
-  description = "This is used to set the S3 tag value for testing purposes"
+variable "common_prefix" {
+  description = <<-EOT
+    (Optional)
+    Default for this EXAMPLE is `anyscale-pfx-test-`
+  EOT
   type        = string
+  default     = "anyscale-pfx-test-"
+  validation {
+    condition     = var.common_prefix == null || try(length(var.common_prefix) <= 30, false)
+    error_message = "common_prefix must either be `null` or less than 30 characters."
+  }
+}
+
+variable "anyscale_access_role_trusted_role_arns" {
+  description = <<-EOT
+    (Optional)
+    A list of ARNs of IAM roles that are allowed to assume the Anyscale IAM access role.
+    Default is an empty list and the default in the `aws-anyscale-iam` sub-module is used.
+  EOT
+  type        = list(string)
+  default     = []
 }

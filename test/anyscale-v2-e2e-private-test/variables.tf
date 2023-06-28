@@ -55,12 +55,30 @@ variable "tags" {
   }
 }
 
-variable "customer_ingress_cidr_ranges" {
+variable "common_prefix" {
   description = <<-EOT
-    The IPv4 CIDR block that is allowed to access the clusters.
-    This provides the ability to lock down the v1 stack to just the public IPs of a corporate network.
-    This is added to the security group and allows port 443 (https) and 22 (ssh) access.
-    ex: `52.1.1.23/32,10.1.0.0/16`
+    (Optional)
+    Default for this EXAMPLE is `anyscale-pfx-test-`
   EOT
   type        = string
+  default     = "anyscale-pfx-test-"
+  validation {
+    condition     = var.common_prefix == null || try(length(var.common_prefix) <= 30, false)
+    error_message = "common_prefix must either be `null` or less than 30 characters."
+  }
+}
+
+variable "s3_tag_value" {
+  description = "This is used to set the S3 tag value for testing purposes"
+  type        = string
+}
+
+variable "anyscale_access_role_trusted_role_arns" {
+  description = <<-EOT
+    (Optional)
+    A list of ARNs of IAM roles that are allowed to assume the Anyscale IAM access role.
+    Default is an empty list and the default in the `aws-anyscale-iam` sub-module is used.
+  EOT
+  type        = list(string)
+  default     = []
 }
