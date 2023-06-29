@@ -1,3 +1,24 @@
+## 0.14.1 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+Updated the create-release file to include additional tags for point releases.
+
+## 0.14.0 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+Unit tests updated. Should have been 0.13.1.
+This was a new minor release instead of a point release as the tag was not in the create-release file.
+
 ## 0.13.0 (Released)
 FEATURES:
 - Update to latest AWS Provider (v5.x)
