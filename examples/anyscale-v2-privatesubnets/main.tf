@@ -18,7 +18,7 @@ locals {
 }
 
 module "aws_anyscale_v2_private_vpc" {
-  source        = "../../"
+  source        = "../../" #this should be changed if executing this example outside of this repository
   tags          = local.full_tags
   common_prefix = "private-vpc-"
 
@@ -57,7 +57,7 @@ module "aws_anyscale_v2_private_vpc" {
   }
 
   # Security Group Related
-  security_group_ingress_allow_access_from_cidr_range = "172.24.0.0/16"
+  security_group_ingress_allow_access_from_cidr_range = "172.24.0.0/16" # The CIDR range of the VPC
   anyscale_securitygroup_tags = {
     "sg_tag_test" = "private_vpc"
   }

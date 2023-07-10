@@ -1,10 +1,18 @@
 # Anyscale Networking Stack v2 - Private Subnets
 
+This **example** will build the resources necessary to run Anyscale in an AWS account. This example will build a
+[Private/Customer Defined Networking](https://docs.anyscale.com/cloud-deployment/aws/manage-clouds#anyscale-clouds-on-aws) solution.
+The resources built by this Terraform will all have a common name prefix.
+
+## To execute
+A general understanding of Terraform and AWS are useful for executing this Terraform. For a high level overview of both,
+please see the [getting started guide](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/blob/main/getting-started.md).
+
 ## Using with Anyscale CLI
 
 The outputs from this Terraform can be used to build an anyscale cloud with the anyscale CLI. To use:
 1. Make sure you have the latest Anyscale CLI installed `pip install anyscale --upgrade`
-2. Grab the outputs from the CLI to run `anyscale cloud register`
+2. The terraform output, `anyscale_register_command` will provide an example Anyscale CLI command that can be used to register an Anyscale Cloud. You will need to change `<CUSTOMER_DEFINED_NAME>` to a cloud name that you would like to use.
 
 example:
 
@@ -50,11 +58,11 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID. Default is `null`. | `string` | `null` | no |
-| <a name="input_anyscale_deploy_env"></a> [anyscale\_deploy\_env](#input\_anyscale\_deploy\_env) | (Required) Anyscale deploy environment. Used in resource names and tags. | `string` | n/a | yes |
-| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | The AWS region in which all resources will be created. | `string` | n/a | yes |
-| <a name="input_s3_tag_value"></a> [s3\_tag\_value](#input\_s3\_tag\_value) | This is used to set the S3 tag value for testing purposes | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags to all resources that accept tags. | `map(string)` | <pre>{<br>  "environment": "test",<br>  "test": true<br>}</pre> | no |
+| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | (Required) The AWS region in which all resources will be created.<br>ex:<pre>aws_region = "us-east-2"</pre> | `string` | n/a | yes |
+| <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID.<br>This is used to lock down the cross account access role by Cloud ID. Because the Cloud ID is unique to each<br>customer, this ensures that only the customer can access their own resources. The Cloud ID is not known until the<br>Cloud is created, so this is an optional variable.<br>ex:<pre>anyscale_cloud_id = "cld_abcdefghijklmnop1234567890"</pre> | `string` | `null` | no |
+| <a name="input_anyscale_deploy_env"></a> [anyscale\_deploy\_env](#input\_anyscale\_deploy\_env) | (Optional) Anyscale deployment environment.<br>Used in resource names and tags.<br>ex:<pre>anyscale_deploy_env = "production"</pre> | `string` | `"production"` | no |
+| <a name="input_s3_tag_value"></a> [s3\_tag\_value](#input\_s3\_tag\_value) | This is used to set the S3 tag value for testing purposes | `string` | `"testing"` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags.<br>These tags will be added to all cloud resources that accept tags.<br>ex:<pre>tags = {<br>  "environment" = "test",<br>  "team" = "anyscale"<br>}</pre> | `map(string)` | <pre>{<br>  "environment": "test",<br>  "test": true<br>}</pre> | no |
 
 ## Outputs
 
