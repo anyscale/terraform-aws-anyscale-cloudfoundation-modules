@@ -14,6 +14,8 @@ repos:
         args:
           - --args=--quiet
       - id: terraform_docs
+        args:
+          - --args=--config=.terraform-docs.yml
       - id: tfupdate
         name: Autoupdate Terraform AWS Provider
         args:

@@ -19,7 +19,7 @@ locals {
 }
 
 module "aws_anyscale_v2" {
-  source = "../.."
+  source = "../.." #this should be changed if executing this example outside of this repository
   tags   = local.full_tags
 
   anyscale_deploy_env = var.anyscale_deploy_env
