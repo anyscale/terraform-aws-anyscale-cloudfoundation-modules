@@ -1,0 +1,4 @@
+formatter: md
+sort:
+  enabled: true
+  by: required

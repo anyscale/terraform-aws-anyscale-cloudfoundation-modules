@@ -17,15 +17,15 @@ locals {
 }
 
 module "aws_anyscale_v2_existing_vpc" {
-  source = "../../"
+  source = "../../" #this should be changed if executing this example outside of this repository
   tags   = local.full_tags
 
   anyscale_deploy_env = var.anyscale_deploy_env
   anyscale_cloud_id   = var.anyscale_cloud_id
 
   # VPC Related
-  existing_vpc_id         = "vpc-086408b268f481027"
-  existing_vpc_subnet_ids = ["subnet-06154a164989c0f8d", "subnet-05f678cbbba3d9a1d", "subnet-0f7b63788905e3eb2"]
+  existing_vpc_id         = var.existing_vpc_id
+  existing_vpc_subnet_ids = var.existing_subnet_ids
 
   # Security Group Related
   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges

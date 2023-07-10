@@ -12,12 +12,43 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 variable "aws_region" {
-  description = "The AWS region in which all resources will be created."
+  description = <<-EOF
+    The AWS region in which all resources will be created.
+    ex:
+    ```
+    aws_region = "us-east-2"
+    ```
+  EOF
   type        = string
 }
 
+variable "customer_ingress_cidr_ranges" {
+  description = <<-EOT
+    The IPv4 CIDR block that is allowed to access the clusters.
+    This provides the ability to lock down the v1 stack to just the public IPs of a corporate network.
+    This is added to the security group and allows port 443 (https) and 22 (ssh) access.
+
+    While not recommended, you can set this to `0.0.0.0/0` to allow access from anywhere.
+    ex:
+    ```
+    customer_ingress_cidr_ranges = "52.1.1.23/32,10.1.0.0/16"
+    ```
+  EOT
+  type        = string
+}
+
+# ------------------------------------------------------------------------------
+# OPTIONAL PARAMETERS
+# These variables have defaults, but may be overridden.
+# ------------------------------------------------------------------------------
 variable "anyscale_deploy_env" {
-  description = "(Required) Anyscale deploy environment. Used in resource names and tags."
+  description = <<-EOF
+    (Optional) Anyscale deployment environment. Used in resource names and tags.
+    ex:
+    ```
+    anyscale_deploy_env = "production"
+    ```
+  EOF
   type        = string
   validation {
     condition = (
@@ -25,14 +56,20 @@ variable "anyscale_deploy_env" {
     )
     error_message = "The anyscale_deploy_env only allows `production`, `test`, or `development`"
   }
+  default = "production"
 }
 
-# ------------------------------------------------------------------------------
-# OPTIONAL PARAMETERS
-# These variables have defaults, but may be overridden.
-# ------------------------------------------------------------------------------
 variable "anyscale_cloud_id" {
-  description = "(Optional) Anyscale Cloud ID. Default is `null`."
+  description = <<-EOF
+    (Optional) Anyscale Cloud ID.
+    This is used to lock down the cross account access role by Cloud ID. Because the Cloud ID is unique to each
+    customer, this ensures that only the customer can access their own resources. The Cloud ID is not known until the
+    Cloud is created, so this is an optional variable.
+    ex:
+    ```
+    anyscale_cloud_id = "cld_abcdefghijklmnop1234567890"
+    ```
+  EOF
   type        = string
   default     = null
   validation {
@@ -47,20 +84,20 @@ variable "anyscale_cloud_id" {
 }
 
 variable "tags" {
-  description = "(Optional) A map of tags to all resources that accept tags."
+  description = <<-EOF
+    (Optional) A map of tags.
+    These tags will be added to all cloud resources that accept tags.
+    ex:
+    ```
+    tags = {
+      "environment" = "test",
+      "team" = "anyscale"
+    }
+    ```
+  EOF
   type        = map(string)
   default = {
     "test" : true,
     "environment" : "test"
   }
-}
-
-variable "customer_ingress_cidr_ranges" {
-  description = <<-EOT
-    The IPv4 CIDR block that is allowed to access the clusters.
-    This provides the ability to lock down the v1 stack to just the public IPs of a corporate network.
-    This is added to the security group and allows port 443 (https) and 22 (ssh) access.
-    ex: `52.1.1.23/32,10.1.0.0/16'
-  EOT
-  type        = string
 }
