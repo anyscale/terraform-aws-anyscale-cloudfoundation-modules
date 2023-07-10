@@ -13,7 +13,7 @@
 
 variable "aws_region" {
   description = <<-EOF
-    The AWS region in which all resources will be created.
+    (Required) The AWS region in which all resources will be created.
     ex:
     ```
     aws_region = "us-east-2"
@@ -24,6 +24,7 @@ variable "aws_region" {
 
 variable "customer_ingress_cidr_ranges" {
   description = <<-EOT
+    (Required) Customer Ingress CIDR Ranges.
     The IPv4 CIDR block that is allowed to access the clusters.
     This provides the ability to lock down the v1 stack to just the public IPs of a corporate network.
     This is added to the security group and allows port 443 (https) and 22 (ssh) access.
@@ -37,6 +38,63 @@ variable "customer_ingress_cidr_ranges" {
   type        = string
 }
 
+variable "existing_vpc_id" {
+  description = <<-EOT
+    (Required) Existing VPC ID.
+    The ID of an existing VPC to use. This should not be the entire ARN of the VPC, just the ID.
+    ex:
+    ```
+    existing_vpc_id = "vpc-1234567890"
+    ```
+    ```
+  EOT
+  type        = string
+  validation {
+    condition = (
+      length(var.existing_vpc_id) > 4 &&
+      substr(var.existing_vpc_id, 0, 4) == "vpc-"
+    )
+    error_message = "The existing_vpc_id must be set and shoudl start with \"vpc-\"."
+  }
+}
+
+variable "existing_subnet_ids" {
+  description = <<-EOT
+    (Required) Existing Subnet IDs.
+    The IDs of existing subnets to use. This should not be the entire ARN of the subnet, just the ID.
+    These subnets should be in the `existing_vpc_id`.
+    ex:
+    ```
+    existing_subnet_ids = ["subnet-1234567890", "subnet-0987654321"]
+    ```
+  EOT
+  type        = list(string)
+  validation {
+    condition = (
+      length(var.existing_subnet_ids) > 0
+    )
+    error_message = "The existing_subnet_ids must be set and should be a list of subnet IDs."
+  }
+}
+
+variable "existing_route_table_ids" {
+  description = <<-EOT
+    (Required) Existing Route Table IDs.
+    The IDs of existing route tables to use. This should not be the entire ARN of the route table, just the ID.
+    These route tables should be in the `existing_vpc_id` and associated with the `existing_subnet_ids`.
+    ex:
+    ```
+    existing_route_table_ids = ["rtb-1234567890", "rtb-0987654321"]
+    ```
+  EOT
+  type        = list(string)
+  validation {
+    condition = (
+      length(var.existing_route_table_ids) > 0
+    )
+    error_message = "The existing_route_table_ids must be set and should be a list of route table IDs."
+  }
+}
 # ------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These variables have defaults, but may be overridden.

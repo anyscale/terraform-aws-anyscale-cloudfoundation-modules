@@ -24,9 +24,9 @@ module "aws_anyscale_v2_createendpoints" {
   anyscale_cloud_id   = var.anyscale_cloud_id
 
   # VPC Related
-  existing_vpc_id                      = "vpc-07ae27a170d7fc7be"
-  existing_vpc_subnet_ids              = ["subnet-0d3c9339dd7b4419e", "subnet-065bf13bbea271c3c"]
-  existing_vpc_private_route_table_ids = ["rtb-06c6a1cfd89cb8e96", "rtb-0668cedc29747917f"]
+  existing_vpc_id                      = var.existing_vpc_id
+  existing_vpc_subnet_ids              = var.existing_subnet_ids
+  existing_vpc_private_route_table_ids = var.existing_route_table_ids
 
   anyscale_gateway_vpc_endpoints = {
     "s3" = {
