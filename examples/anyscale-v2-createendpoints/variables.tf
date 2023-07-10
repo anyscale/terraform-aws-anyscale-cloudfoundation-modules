@@ -95,6 +95,7 @@ variable "existing_route_table_ids" {
     error_message = "The existing_route_table_ids must be set and should be a list of route table IDs."
   }
 }
+
 # ------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These variables have defaults, but may be overridden.
