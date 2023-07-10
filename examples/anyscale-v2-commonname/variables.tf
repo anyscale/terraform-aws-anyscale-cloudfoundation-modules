@@ -12,7 +12,13 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 variable "aws_region" {
-  description = "The AWS region in which all resources will be created."
+  description = <<-EOF
+    The AWS region in which all resources will be created.
+    ex:
+    ```
+    aws_region = "us-east-2"
+    ```
+  EOF
   type        = string
 }
 
