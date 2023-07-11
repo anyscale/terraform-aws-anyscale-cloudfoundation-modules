@@ -405,8 +405,10 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
     actions = [
       "elasticloadbalancing:DescribeListeners",
       "elasticloadbalancing:DescribeLoadBalancers",
+      "elasticloadbalancing:DescribeLoadBalancerAttributes",
       "elasticloadbalancing:DescribeRules",
       "elasticloadbalancing:DescribeTargetGroups",
+      "elasticloadbalancing:DescribeTargetGroupAttributes",
       "elasticloadbalancing:DescribeTargetHealth",
       "elasticloadbalancing:DescribeListenerCertificates"
     ]
@@ -471,22 +473,28 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
     effect = "Allow"
     actions = [
       "elasticloadbalancing:AddTags",
+      "elasticloadbalancing:RemoveTags",
       "elasticloadbalancing:CreateRule",
       "elasticloadbalancing:ModifyRule",
       "elasticloadbalancing:DeleteRule",
+      "elasticloadbalancing:SetRulePriorities",
       "elasticloadbalancing:CreateListener",
       "elasticloadbalancing:ModifyListener",
       "elasticloadbalancing:DeleteListener",
       "elasticloadbalancing:CreateLoadBalancer",
       "elasticloadbalancing:DeleteLoadBalancer",
+      "elasticloadbalancing:ModifyLoadBalancerAttributes",
       "elasticloadbalancing:CreateTargetGroup",
       "elasticloadbalancing:ModifyTargetGroup",
       "elasticloadbalancing:DeleteTargetGroup",
+      "elasticloadbalancing:ModifyTargetGroupAttributes",
       "elasticloadbalancing:RegisterTargets",
       "elasticloadbalancing:DeregisterTargets",
       "elasticloadbalancing:AddListenerCertificates",
       "elasticloadbalancing:RemoveListenerCertificates",
-      "elasticloadbalancing:ModifyLoadBalancerAttributes"
+      "elasticloadbalancing:SetIpAddressType",
+      "elasticloadbalancing:SetSecurityGroups",
+      "elasticloadbalancing:SetSubnets"
     ]
     resources = [
       "arn:aws:elasticloadbalancing:*:${local.account_id}:loadbalancer/app/Anyscale*",
