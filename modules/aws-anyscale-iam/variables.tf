@@ -9,7 +9,7 @@
 # These variables have defaults, but may be overridden.
 # ------------------------------------------------------------------------------
 variable "anyscale_cloud_id" {
-  description = "(Required) Anyscale Cloud ID"
+  description = "Anyscale Cloud ID"
   type        = string
   default     = null
   validation {
@@ -20,6 +20,21 @@ variable "anyscale_cloud_id" {
       )
     )
     error_message = "The anyscale_cloud_id value must start with \"cld_\"."
+  }
+}
+
+variable "anyscale_org_id" {
+  description = "Anyscale Organization ID"
+  type        = string
+  default     = null
+  validation {
+    condition = (
+      var.anyscale_org_id == null ? true : (
+        length(var.anyscale_org_id) > 4 &&
+        substr(var.anyscale_org_id, 0, 4) == "org_"
+      )
+    )
+    error_message = "The anyscale_org_id value must start with \"org_\"."
   }
 }
 
@@ -258,6 +273,32 @@ variable "anyscale_cluster_node_managed_policy_arns" {
   description = "(Optional) List of IAM custom or managed policy ARNs to attach to the role. Default is an empty list."
   type        = list(string)
   default     = []
+}
+
+variable "create_cluster_node_cloudwatch_policy" {
+  description = "(Optional) Determines whether to create the CloudWatch IAM policy for the cluster node role. Default is `false`."
+  type        = bool
+  default     = false
+}
+variable "anyscale_cluster_node_cloudwatch_policy_name" {
+  description = "(Optional) Name for the Anyscale cluster node CloudWatch IAM policy. Default is `null`."
+  type        = string
+  default     = null
+}
+variable "anyscale_cluster_node_cloudwatch_policy_prefix" {
+  description = "(Optional) Name prefix for the Anyscale cluster node CloudWatch IAM policy. Default is `anyscale-cluster-cloudwatch-`."
+  type        = string
+  default     = "anyscale-cluster-cloudwatch-"
+}
+variable "anyscale_cluster_node_cloudwatch_policy_path" {
+  description = "(Optional) Path of the Anyscale cluster node CloudWatch IAM policy. Default is `/`."
+  type        = string
+  default     = "/"
+}
+variable "anyscale_cluster_node_cloudwatch_policy_description" {
+  description = "(Optional) Anyscale IAM cluster node CloudWatch policy description. Default is `Anyscale Cluster Node CloudWatch Policy`."
+  type        = string
+  default     = "Anyscale Cluster Node CloudWatch Policy"
 }
 
 # S3 Bucket Access Related

@@ -14,7 +14,19 @@ locals {
     var.anyscale_trusted_role_arns, var.anyscale_default_trusted_role_arns
   )
 
-  cloud_id_provided = var.anyscale_cloud_id != null ? true : false
+  cloud_id_provided         = var.anyscale_cloud_id != null ? true : false
+  cloud_and_org_id_provided = var.anyscale_cloud_id != null && var.anyscale_org_id != null ? true : false
+  org_id_provided           = var.anyscale_org_id != null ? true : false
+
+  log_group_cloud_and_org_id_arn = local.cloud_and_org_id_provided ? "arn:aws:logs:*:${local.account_id}:log-group:/anyscale/${var.anyscale_org_id}/${var.anyscale_cloud_id}*" : null
+  log_group_org_id_arn           = local.org_id_provided ? "arn:aws:logs:*:${local.account_id}:log-group:/anyscale/${var.anyscale_org_id}/*" : null
+  log_group_cloud_id_arn         = local.cloud_id_provided ? "arn:aws:logs:*:${local.account_id}:log-group:/anyscale/*/${var.anyscale_cloud_id}*" : null
+  log_group_arn = coalesce(
+    local.log_group_cloud_and_org_id_arn,
+    local.log_group_org_id_arn,
+    local.log_group_cloud_id_arn,
+    "arn:aws:logs:*:${local.account_id}:log-group:/anyscale/*"
+  )
 }
 # Allow Anyscale account access to assume this role.
 data "aws_iam_policy_document" "iam_anyscale_crossacct_assumerole_policy" {
@@ -387,17 +399,6 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
       values   = ["elasticloadbalancing.amazonaws.com"]
     }
   }
-  # statement {
-  #   sid    = "UpdateELBServiceLinkedRole"
-  #   effect = "Allow"
-  #   actions = [
-  #     "iam:AttachRolePolicy",
-  #     "iam:PutRolePolicy",
-  #   ]
-  #   resources = [
-  #     "arn:aws:iam::${local.account_id}:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing"
-  #   ]
-  # }
 
   statement {
     sid    = "ELBRead"
@@ -405,8 +406,10 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
     actions = [
       "elasticloadbalancing:DescribeListeners",
       "elasticloadbalancing:DescribeLoadBalancers",
+      "elasticloadbalancing:DescribeLoadBalancerAttributes",
       "elasticloadbalancing:DescribeRules",
       "elasticloadbalancing:DescribeTargetGroups",
+      "elasticloadbalancing:DescribeTargetGroupAttributes",
       "elasticloadbalancing:DescribeTargetHealth",
       "elasticloadbalancing:DescribeListenerCertificates"
     ]
@@ -471,22 +474,28 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
     effect = "Allow"
     actions = [
       "elasticloadbalancing:AddTags",
+      "elasticloadbalancing:RemoveTags",
       "elasticloadbalancing:CreateRule",
       "elasticloadbalancing:ModifyRule",
       "elasticloadbalancing:DeleteRule",
+      "elasticloadbalancing:SetRulePriorities",
       "elasticloadbalancing:CreateListener",
       "elasticloadbalancing:ModifyListener",
       "elasticloadbalancing:DeleteListener",
       "elasticloadbalancing:CreateLoadBalancer",
       "elasticloadbalancing:DeleteLoadBalancer",
+      "elasticloadbalancing:ModifyLoadBalancerAttributes",
       "elasticloadbalancing:CreateTargetGroup",
       "elasticloadbalancing:ModifyTargetGroup",
       "elasticloadbalancing:DeleteTargetGroup",
+      "elasticloadbalancing:ModifyTargetGroupAttributes",
       "elasticloadbalancing:RegisterTargets",
       "elasticloadbalancing:DeregisterTargets",
       "elasticloadbalancing:AddListenerCertificates",
       "elasticloadbalancing:RemoveListenerCertificates",
-      "elasticloadbalancing:ModifyLoadBalancerAttributes"
+      "elasticloadbalancing:SetIpAddressType",
+      "elasticloadbalancing:SetSecurityGroups",
+      "elasticloadbalancing:SetSubnets"
     ]
     resources = [
       "arn:aws:elasticloadbalancing:*:${local.account_id}:loadbalancer/app/Anyscale*",
@@ -500,4 +509,51 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
       values   = ["cloudformation.amazonaws.com"]
     }
   }
+}
+
+#tfsec:ignore:aws-iam-no-policy-wildcards
+data "aws_iam_policy_document" "cluster_node_cloudwatch_access" {
+  #checkov:skip=CKV_AWS_356:Policy requires wildcards in resource permissions'
+  statement {
+    sid    = "CloudwatchMetricsWrite"
+    effect = "Allow"
+    actions = [
+      "cloudwatch:PutMetricData",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "CloudwatchLogsRead"
+    effect = "Allow"
+    actions = [
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "CloudwatchLogsEventsWrite"
+    effect = "Allow"
+    actions = [
+      "logs:PutLogEvents",
+    ]
+    resources = ["${local.log_group_arn}:*"]
+
+  }
+
+  statement {
+    sid    = "CloudwatchLogsWrite"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:CreateLogGroup",
+      # "logs:PutRetentionPolicy",
+    ]
+    resources = [
+      local.log_group_arn,
+    ]
+  }
+
 }

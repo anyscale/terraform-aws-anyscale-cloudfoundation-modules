@@ -23,6 +23,9 @@ module "aws_anyscale_v2_common_name" {
 
   anyscale_deploy_env = var.anyscale_deploy_env
   anyscale_cloud_id   = var.anyscale_cloud_id
+  anyscale_org_id     = var.anyscale_org_id
+
+  create_cluster_node_cloudwatch_policy = true
 
   # VPC Related
   anyscale_vpc_cidr_block     = "172.24.0.0/16"
@@ -34,4 +37,6 @@ module "aws_anyscale_v2_common_name" {
 
   # Security Group Related
   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges
+
+
 }
