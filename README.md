@@ -40,7 +40,7 @@ Additional examples can be requested via an [issues] ticket.
 ### Specific Module Notes
 
 #### IAM sub-module - Cloudwatch Logs Policy
-By default, we do not create the IAM policies for enabling [Cloudwatch logging](https://docs.anyscale.com/integrations/monitoring). This can be enabled by setting a couple optional parameters. At a minimum, the variable `create_cluster_node_cloudwatch_policy` needs to be set to `true`.
+By default, we do not create the IAM policies for enabling [Cloudwatch logging](https://docs.anyscale.com/integrations/monitoring). This can be enabled by setting the variable `create_cluster_node_cloudwatch_policy` to `true`.
 
 ex:
 ```

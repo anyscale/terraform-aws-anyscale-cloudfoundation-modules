@@ -1,3 +1,33 @@
+## 0.15.0 (Released)
+FEATURES:
+- New IAM policy to allow writing AWS Cloudwatch logs and metrics. This is an optional policy controlled via variable. See the [readme.md](./README.md) for more information and the Anyscale Docs for [Cloudwatch logging](https://docs.anyscale.com/integrations/monitoring).
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
+## 0.14.3 (Released)
+FEATURES:
+
+BUG FIXES:
+- Incremental updates to IAM permissions to allow modifications to ALB resources after creation for Anyscale Services.
+
+BREAKING CHANGES:
+
+NOTES:
+
+## 0.14.2 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+- Documentation and example updates
+
 ## 0.14.1 (Released)
 FEATURES:
 
