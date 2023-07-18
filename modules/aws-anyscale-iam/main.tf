@@ -145,6 +145,9 @@ locals {
 
   anyscale_cluster_node_custom_policy_name   = try(var.anyscale_cluster_node_custom_policy_name, null)
   anyscale_cluster_node_custom_policy_prefix = local.anyscale_cluster_node_custom_policy_name != null ? null : var.anyscale_cluster_node_custom_policy_prefix != null ? var.anyscale_cluster_node_custom_policy_prefix : "anyscale-cluster-node-"
+
+  anyscale_cluster_node_cloudwatch_policy_name   = try(var.anyscale_cluster_node_cloudwatch_policy_name, null)
+  anyscale_cluster_node_cloudwatch_policy_prefix = local.anyscale_cluster_node_cloudwatch_policy_name != null ? null : var.anyscale_cluster_node_cloudwatch_policy_prefix != null ? var.anyscale_cluster_node_cloudwatch_policy_prefix : "anyscale-cluster-cloudwatch-"
 }
 resource "aws_iam_role" "anyscale_cluster_node_role" {
   count = var.module_enabled && var.create_cluster_node_instance_profile ? 1 : 0
@@ -190,6 +193,21 @@ resource "aws_iam_policy" "anyscale_cluster_node_custom_policy" {
   )
 }
 
+resource "aws_iam_policy" "anyscale_cluster_node_cloudwatch_policy" {
+  count = var.module_enabled && var.create_cluster_node_cloudwatch_policy ? 1 : 0
+
+  name        = local.anyscale_cluster_node_cloudwatch_policy_name
+  name_prefix = local.anyscale_cluster_node_cloudwatch_policy_prefix
+  path        = var.anyscale_cluster_node_cloudwatch_policy_path
+  description = var.anyscale_cluster_node_cloudwatch_policy_description
+  policy      = data.aws_iam_policy_document.cluster_node_cloudwatch_access.json
+
+  tags = merge(
+    local.module_tags,
+    var.tags,
+  )
+}
+
 # Policy attachments
 resource "aws_iam_role_policy_attachment" "anyscale_cluster_node_container_registry_policy_attach" {
   count = var.module_enabled && var.enable_ec2_container_registry_readonly_access && var.create_cluster_node_instance_profile ? 1 : 0
@@ -210,6 +228,13 @@ resource "aws_iam_role_policy_attachment" "anyscale_cluster_node_managed_policy_
 
   role       = aws_iam_role.anyscale_cluster_node_role[0].name
   policy_arn = var.anyscale_cluster_node_managed_policy_arns[count.index]
+}
+
+resource "aws_iam_role_policy_attachment" "anyscale_cluster_node_cloudwatch_policy_attach" {
+  count = var.module_enabled && var.create_cluster_node_cloudwatch_policy ? 1 : 0
+
+  role       = aws_iam_role.anyscale_cluster_node_role[0].name
+  policy_arn = aws_iam_policy.anyscale_cluster_node_cloudwatch_policy[0].arn
 }
 
 # S3 Policy and attachments

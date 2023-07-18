@@ -6,6 +6,7 @@
 locals {
   full_tags = merge(tomap({
     anyscale-cloud-id           = var.anyscale_cloud_id,
+    anyscale-org-id             = var.anyscale_org_id,
     anyscale-deploy-environment = var.anyscale_deploy_env
     tf_module                   = "anyscale-cloudfoundations"
     }),
@@ -69,6 +70,8 @@ locals {
   iam_steadystate_policy_name         = var.anyscale_access_steadystate_policy_name != null ? var.anyscale_access_steadystate_policy_name : local.common_name != null ? "${local.common_name}-crossacct-steadystate-policy" : null
   iam_servicesv2_policy_name          = var.anyscale_access_servicesv2_policy_name != null ? var.anyscale_access_servicesv2_policy_name : local.common_name != null ? "${local.common_name}-crossacct-servicesv2-policy" : null
   iam_cluster_node_custom_policy_name = var.anyscale_cluster_node_custom_policy_name != null ? var.anyscale_cluster_node_custom_policy_name : local.common_name != null ? "${local.common_name}-clusternode-custom-policy" : null
+  cluster_node_cloudwatch_policy_name = var.anyscale_cluster_node_cloudwatch_policy_name != null ? var.anyscale_cluster_node_cloudwatch_policy_name : local.common_name != null ? "${local.common_name}-clusternode-cloudwatch-policy" : null
+  cluster_node_cloudwatch_policy_prfx = var.anyscale_cluster_node_cloudwatch_policy_prefix != null ? var.anyscale_cluster_node_cloudwatch_policy_prefix : local.common_name != null ? "${local.common_name}-clusternode-cloudwatch-policy-" : null
   iam_accessrole_custom_policy_name   = var.anyscale_accessrole_custom_policy_name != null ? var.anyscale_accessrole_custom_policy_name : local.common_name != null ? "${local.common_name}-crossacct-custom-policy" : null
   iam_s3_policy_name                  = var.anyscale_iam_s3_policy_name != null ? var.anyscale_iam_s3_policy_name : local.common_name != null ? "${local.common_name}-s3-policy" : null
 }
@@ -120,6 +123,11 @@ module "aws_anyscale_iam" {
   anyscale_cluster_node_role_name_prefix = local.iam_cluster_node_role_name_prefix
   anyscale_cluster_node_role_description = var.anyscale_cluster_node_role_description
 
+  create_cluster_node_cloudwatch_policy               = var.create_cluster_node_cloudwatch_policy
+  anyscale_cluster_node_cloudwatch_policy_name        = local.cluster_node_cloudwatch_policy_name
+  anyscale_cluster_node_cloudwatch_policy_prefix      = local.cluster_node_cloudwatch_policy_prfx
+  anyscale_cluster_node_cloudwatch_policy_description = var.anyscale_cluster_node_cloudwatch_policy_description
+
   anyscale_cluster_node_custom_policy_name        = local.iam_cluster_node_custom_policy_name
   anyscale_cluster_node_custom_policy_prefix      = local.cluster_node_custom_policy_prefix
   anyscale_cluster_node_custom_policy_description = var.anyscale_cluster_node_custom_policy_description
@@ -131,6 +139,7 @@ module "aws_anyscale_iam" {
   anyscale_iam_s3_policy_description = var.anyscale_iam_s3_policy_description
 
   anyscale_cloud_id = var.anyscale_cloud_id
+  anyscale_org_id   = var.anyscale_org_id
 }
 
 # ------------------------------

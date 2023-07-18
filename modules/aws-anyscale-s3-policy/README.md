@@ -8,16 +8,16 @@ This module creates the default S3 resources needed for Anyscale to work in a cu
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-| Name                                                                      | Version |
-| ------------------------------------------------------------------------- | ------- |
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0  |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws)                   | ~> 5.0  |
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
 
 ## Providers
 
-| Name                                              | Version |
-| ------------------------------------------------- | ------- |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.5.0   |
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.5.0 |
 
 ## Modules
 
@@ -25,21 +25,21 @@ No modules.
 
 ## Resources
 
-| Name                                                                                                                                                            | Type        |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| [aws_s3_bucket_policy.anyscale_bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy)                     | resource    |
+| Name | Type |
+|------|------|
+| [aws_s3_bucket_policy.anyscale_bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
 | [aws_iam_policy_document.anyscale_managed_s3_bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
-| Name                                                                                                                                               | Description                                                                       | Type     | Default | Required |
-| -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | -------- | ------- | :------: |
-| <a name="input_anyscale_bucket_name"></a> [anyscale\_bucket\_name](#input\_anyscale\_bucket\_name)                                                 | (Required) The S3 bucket name to apply the policy to.                             | `string` | n/a     |   yes    |
-| <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id)                                                          | (Optional) Anyscale Cloud ID. Default is `null`.                                  | `string` | `null`  |    no    |
-| <a name="input_anyscale_iam_access_role_arn"></a> [anyscale\_iam\_access\_role\_arn](#input\_anyscale\_iam\_access\_role\_arn)                     | (Required) The Anyscale IAM SteadyState role arn.                                 | `string` | n/a     |   yes    |
-| <a name="input_anyscale_iam_cluster_node_role_arn"></a> [anyscale\_iam\_cluster\_node\_role\_arn](#input\_anyscale\_iam\_cluster\_node\_role\_arn) | (Required) The Anyscale IAM cluster node role arn.                                | `string` | n/a     |   yes    |
-| <a name="input_custom_s3_policy"></a> [custom\_s3\_policy](#input\_custom\_s3\_policy)                                                             | (Optional) A valid bucket policy in JSON. Default is `null`.                      | `string` | `null`  |    no    |
-| <a name="input_module_enabled"></a> [module\_enabled](#input\_module\_enabled)                                                                     | (Optional) Whether to create the resources inside this module. Default is `true`. | `bool`   | `true`  |    no    |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_anyscale_bucket_name"></a> [anyscale\_bucket\_name](#input\_anyscale\_bucket\_name) | (Required) The S3 bucket name to apply the policy to. | `string` | n/a | yes |
+| <a name="input_anyscale_iam_access_role_arn"></a> [anyscale\_iam\_access\_role\_arn](#input\_anyscale\_iam\_access\_role\_arn) | (Required) The Anyscale IAM SteadyState role arn. | `string` | n/a | yes |
+| <a name="input_anyscale_iam_cluster_node_role_arn"></a> [anyscale\_iam\_cluster\_node\_role\_arn](#input\_anyscale\_iam\_cluster\_node\_role\_arn) | (Required) The Anyscale IAM cluster node role arn. | `string` | n/a | yes |
+| <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID. Default is `null`. | `string` | `null` | no |
+| <a name="input_custom_s3_policy"></a> [custom\_s3\_policy](#input\_custom\_s3\_policy) | (Optional) A valid bucket policy in JSON. Default is `null`. | `string` | `null` | no |
+| <a name="input_module_enabled"></a> [module\_enabled](#input\_module\_enabled) | (Optional) Whether to create the resources inside this module. Default is `true`. | `bool` | `true` | no |
 
 ## Outputs
 

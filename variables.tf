@@ -2,24 +2,18 @@
 # REQUIRED VARIABLES
 # These variables must be set when using this module.
 # ------------------------------------------------------------------------------
-variable "anyscale_deploy_env" {
-  description = "(Required) Anyscale deploy environment. Used in resource names and tags."
-  type        = string
-  validation {
-    condition = (
-      var.anyscale_deploy_env == "production" || var.anyscale_deploy_env == "development" || var.anyscale_deploy_env == "test"
-    )
-    error_message = "The anyscale_deploy_env only allows `production`, `test`, or `development`"
-  }
-}
 
 variable "security_group_ingress_allow_access_from_cidr_range" {
   description = <<-EOT
     (Required) Comma delimited string of IPv4 CIDR range to allow access to anyscale resources.
-    This should be the list of CIDR ranges that have access to the clusters. If using Anyscale v1,
-    this should be public IPs. If using Anyscale v2, public or private IPs are supported. SSH and HTTPs
-    ports will be opened to these CIDR ranges.
-    ex: "10.0.1.0/24,24.1.24.24/32"
+    This should be the list of CIDR ranges that have access to the clusters. Public or private IPs are supported.
+    This is added to the security group and allows port 443 (https) and 22 (ssh) access.
+
+    While not recommended, you can set this to `0.0.0.0/0` to allow access from anywhere.
+    ex:
+    ```
+    security_group_ingress_allow_access_from_cidr_range = "10.0.1.0/24,24.1.24.24/32"
+    ```
   EOT
   type        = string
 }
@@ -28,8 +22,39 @@ variable "security_group_ingress_allow_access_from_cidr_range" {
 # OPTIONAL VARIABLES
 # These variables have defaults, but may be overridden.
 # ------------------------------------------------------------------------------
+variable "anyscale_deploy_env" {
+  description = <<-EOF
+    (Optional) Anyscale deployment environment.
+    Used in resource names and tags.
+
+    ex:
+    ```
+    anyscale_deploy_env = "production"
+    ```
+  EOF
+  type        = string
+  validation {
+    condition = (
+      var.anyscale_deploy_env == "production" || var.anyscale_deploy_env == "development" || var.anyscale_deploy_env == "test"
+    )
+    error_message = "The anyscale_deploy_env only allows `production`, `test`, or `development`"
+  }
+  default = "production"
+}
+
 variable "anyscale_cloud_id" {
-  description = "(Optional) Anyscale Cloud ID. Default is `null`."
+  description = <<-EOF
+    (Optional) Anyscale Cloud ID.
+
+    This is used to lock down the cross account access role by Cloud ID. Because the Cloud ID is unique to each
+    customer, this ensures that only the customer can access their own resources. The Cloud ID is not known until the
+    Cloud is created, so this is an optional variable.
+
+    ex:
+    ```
+    anyscale_cloud_id = "cld_abcdefghijklmnop1234567890"
+    ```
+  EOF
   type        = string
   default     = null
   validation {
@@ -43,11 +68,38 @@ variable "anyscale_cloud_id" {
   }
 }
 
+variable "anyscale_org_id" {
+  description = <<-EOT
+    (Optional) Anyscale Organization ID.
+
+    This is used to lock down the cross account access role by Organization ID. Because the Organization ID is unique to each
+    customer, this ensures that only the customer can access their own resources.
+
+    ex:
+    ```
+    anyscale_org_id = "org_abcdefghijklmn1234567890"
+    ```
+  EOT
+  type        = string
+  default     = null
+  validation {
+    condition = (
+      var.anyscale_org_id == null ? true : (
+        length(var.anyscale_org_id) > 4 &&
+        substr(var.anyscale_org_id, 0, 4) == "org_"
+      )
+    )
+    error_message = "The anyscale_org_id value must start with \"org_\"."
+  }
+}
+
 variable "tags" {
   description = <<-EOT
-    (Optional)
+    (Optional) A map of tags.
+
     A map of default tags to be added to all resources that accept tags.
     Resource dependent tags will be appended to this list.
+
     ex:
     ```
     tags = {
@@ -55,7 +107,6 @@ variable "tags" {
       environment = "prod"
     }
     ```
-    Default is an empty map.
   EOT
   type        = map(string)
   default     = {}
@@ -63,7 +114,8 @@ variable "tags" {
 
 variable "common_prefix" {
   description = <<-EOT
-    (Optional)
+    (Optional) Common prefix.
+
     A common prefix to add to resources created (where prefixes are allowed).
     If paired with `use_common_name`, this will apply to all resources.
     If this is not paired with `use_common_name`, this applies to:
@@ -72,7 +124,11 @@ variable "common_prefix" {
       - Security Groups
     Resource specific prefixes override this variable.
     Max length is 30 characters.
-    Default is `null`
+
+    ex:
+    ```
+    common_prefix = "anyscale-"
+    ```
   EOT
   type        = string
   default     = null
@@ -84,12 +140,17 @@ variable "common_prefix" {
 
 variable "use_common_name" {
   description = <<-EOT
-    (Optional)
+    (Optional) Use a common name.
+
     Determines if a standard name should be used across all resources.
     If set to true and `common_prefix` is also provided, the `common_prefix` will be used prefixed to a common name.
     If set to true and `common_prefix` is not provided, the prefix will be `anyscale-`
     If set to true, this will also use a random suffix to avoid name collisions.
-    Default is `false`
+
+    ex:
+    ```
+    use_common_name = true
+    ```
   EOT
   type        = bool
   default     = false
@@ -97,12 +158,17 @@ variable "use_common_name" {
 
 variable "random_name_suffix_length" {
   description = <<-EOT
-    (Optional)
+    (Optional) Random name suffix length.
+
     Determines the random suffix length that is used to generate a common name.
     Certain AWS resources have a hard limit on name lengths and this will allow
     the ability to control how many characters are added as a suffix.
     Must be >= 2 and <= 30.
-    Default is `6`
+
+    ex:
+    ```
+    random_name_suffix_length = 6
+    ```
   EOT
   type        = number
   default     = 6
@@ -116,30 +182,63 @@ variable "random_name_suffix_length" {
 # VPC Variables
 #--------------------------------------------
 variable "existing_vpc_id" {
-  description = "(Optional) An existing VPC ID. If provided, this will skip creating resources with the Anyscale VPC module. Subnet IDs is also required if this is provided. Default is `null`."
+  description = <<-EOT
+    (Optional) An existing VPC ID.
+
+    If provided, this will skip creating resources a new VPC with the Anyscale VPC module.
+    Subnet IDs are also required if this is provided.
+
+    ex:
+    ```
+    existing_vpc_id = "vpc-1234567890"
+    ```
+  EOT
   type        = string
   default     = null
 }
+
 variable "existing_vpc_subnet_ids" {
-  description = "(Optional) Existing subnet IDs to create Anyscale resources in. If provided, this will skip creating resources with the Anyscale VPC module. VPC ID is also required is this is provided. Default is an empty list."
-  type        = list(string)
-  default     = []
-}
-variable "existing_vpc_private_route_table_ids" {
   description = <<-EOT
-    (Optional)
-    Existing VPC Private Route Table IDs.
-    If provided, this will map new private subnets to these route table IDs.
-    If no new subnets are created, these route tables will be used to create VPC Endpoint(s).
+    (Optional) Existing subnet IDs.
+
+    If provided, this will skip creating a new VPC with the Anyscale VPC module.
+    The variable `existing_vpc_id` also needs to be provided.
+
+    ex:
+    ```
+    existing_vpc_subnet_ids = ["subnet-1234567890", "subnet-0987654321"]
+    ```
   EOT
   type        = list(string)
   default     = []
 }
+
+variable "existing_vpc_private_route_table_ids" {
+  description = <<-EOT
+    (Optional) Existing VPC Private Route Table IDs.
+
+    If provided, this will map new private subnets to these route table IDs.
+    If no new subnets are created, these route tables will be used to create VPC Endpoint(s).
+
+    ex:
+    ```
+    existing_vpc_private_route_table_ids = ["rtb-1234567890", "rtb-0987654321"]
+    ```
+  EOT
+  type        = list(string)
+  default     = []
+}
+
 variable "existing_vpc_public_route_table_ids" {
   description = <<-EOT
-    (Optional)
-    Existing VPC Public Route Table IDs.
+    (Optional) Existing VPC Public Route Table IDs.
+
     If provided, these route tables will be used to create VPC Endpoint(s).
+
+    ex:
+    ```
+    existing_vpc_public_route_table_ids = ["rtb-1234567890", "rtb-0987654321"]
+    ```
   EOT
   type        = list(string)
   default     = []
@@ -470,6 +569,65 @@ variable "anyscale_cluster_node_custom_policy" {
     responsible for any problems that may occur due to misconfiguring the policy and/or Cluster Role.
     Must be a valid IAM policy.
     Default is `null`.
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "create_cluster_node_cloudwatch_policy" {
+  description = <<-EOT
+    (Optional) Create the Anyscale Cluster Node Cloudwatch Policy
+    Determines whether to create the CloudWatch IAM policy for the cluster node role.
+
+    ex:
+    ```
+    create_cluster_node_cloudwatch_policy = true
+    ```
+  EOT
+  type        = bool
+  default     = false
+}
+
+variable "anyscale_cluster_node_cloudwatch_policy_description" {
+  description = <<-EOT
+    (Optional)
+    Anyscale IAM cluster node CloudWatch policy description.
+
+    ex:
+    ```
+    anyscale_cluster_node_cloudwatch_policy_description = "Anyscale cluster node CloudWatch IAM policy"
+    ```
+  EOT
+  type        = string
+  default     = "Anyscale cluster node CloudWatch IAM policy"
+}
+
+variable "anyscale_cluster_node_cloudwatch_policy_name" {
+  description = <<-EOT
+    (Optional)
+    Name for the Anyscale cluster node CloudWatch IAM policy.
+    If left `null`, will default to `anyscale_cluster_node_cloudwatch_policy_prefix`.
+    ex:
+    ```
+    anyscale_cluster_node_cloudwatch_policy_name = "anyscale-cluster-node-cloudwatch-policy"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_cluster_node_cloudwatch_policy_prefix" {
+  description = <<-EOT
+    (Optional)
+    Name prefix for the Anyscale cluster node CloudWatch IAM policy.
+    If `anyscale_cluster_node_cloudwatch_policy_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+
+    Default is `null` but is set to `anyscale-cluster-node-cloudwatch-policy-` in a local variable.
+    ex:
+    ```
+    anyscale_cluster_node_cloudwatch_policy_prefix = "anyscale-cluster-node-cloudwatch-policy-"
+    ```
   EOT
   type        = string
   default     = null
