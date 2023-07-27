@@ -65,7 +65,7 @@ You can also update the region that resources are created in.
 ### 6. Create a `terraform.tfvars` file:
 Create a `terraform.tfvars` file in the example directory to store your project-specific variables. Update the variables according to your AWS setup. For example:
 ```
-aws_region        = "<your-anyscale_org_id>"
+aws_region        = "<aws_region_you_want_to_use>"
 common_prefix     = "anyscale-tf-"
 customer_ingress_cidr_ranges = "0.0.0.0/0"
 ```
@@ -118,9 +118,9 @@ Using this additional variable, you can run multiple secure Anyscale Clouds in t
 
 Update the `terraform.tfvars` file and add
 ```
-anyscale_cloud_id` = "cld_123457890abcdefg"
+anyscale_cloud_id` = "<your_anyscale_cloud_id>"
 ```
-Where the Cloud ID is the ID that is returned by the Anyscale CLI when you registered it in the previous step.
+Where the Cloud ID is the ID that is returned by the Anyscale CLI when you registered it in the previous step - the Cloud ID should look like `cld_1234567890abcdefgh1235abcd`.
 
 Then, re-run `terraform apply` - this will update only the cross account role.
 To verify that this applied correctly, you can run: `anyscale cloud verify --id <cloud-id>` which will double check all permissions and configurations.
