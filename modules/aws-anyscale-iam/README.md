@@ -17,7 +17,7 @@ This module creates the default IAM resources needed for Anyscale to work in a c
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.5.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.8.0 |
 
 ## Modules
 
