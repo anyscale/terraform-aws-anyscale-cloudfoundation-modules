@@ -74,6 +74,8 @@ locals {
   cluster_node_cloudwatch_policy_prfx = var.anyscale_cluster_node_cloudwatch_policy_prefix != null ? var.anyscale_cluster_node_cloudwatch_policy_prefix : local.common_name != null ? "${local.common_name}-clusternode-cloudwatch-policy-" : null
   iam_accessrole_custom_policy_name   = var.anyscale_accessrole_custom_policy_name != null ? var.anyscale_accessrole_custom_policy_name : local.common_name != null ? "${local.common_name}-crossacct-custom-policy" : null
   iam_s3_policy_name                  = var.anyscale_iam_s3_policy_name != null ? var.anyscale_iam_s3_policy_name : local.common_name != null ? "${local.common_name}-s3-policy" : null
+
+  iam_assume_role_external_id = var.anyscale_cloud_id != null && var.anyscale_cloud_id != "" ? [var.anyscale_cloud_id] : []
 }
 
 # ------------------------------
@@ -137,6 +139,8 @@ module "aws_anyscale_iam" {
   anyscale_iam_s3_policy_name        = local.iam_s3_policy_name
   anyscale_iam_s3_policy_name_prefix = local.iam_s3_policy_prefix
   anyscale_iam_s3_policy_description = var.anyscale_iam_s3_policy_description
+
+  anyscale_trusted_role_sts_externalid = local.iam_assume_role_external_id
 
   anyscale_cloud_id = var.anyscale_cloud_id
   anyscale_org_id   = var.anyscale_org_id
