@@ -1,3 +1,34 @@
+## 0.15.3 (Released)
+FEATURES:
+
+BUG FIXES:
+- Fix repetive executions removing assume rule condition when anyscale_cloud_id was null or ""
+
+BREAKING CHANGES:
+
+
+## 0.15.2 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+- New example added for existing S3 bucket
+
+
+## 0.15.1 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+- Cleaned up the descriptions of the root module's variables.tf file to make it easier to read and understand.
+
+
 ## 0.15.0 (Released)
 FEATURES:
 - New IAM policy to allow writing AWS Cloudwatch logs and metrics. This is an optional policy controlled via variable. See the [readme.md](./README.md) for more information and the Anyscale Docs for [Cloudwatch logging](https://docs.anyscale.com/integrations/monitoring).
