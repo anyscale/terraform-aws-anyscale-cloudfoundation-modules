@@ -17,6 +17,7 @@ locals {
   )
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 module "aws_anyscale_v2_common_name" {
   source = "../.." #this should be changed if executing this example outside of this repository
   tags   = local.full_tags
@@ -32,11 +33,33 @@ module "aws_anyscale_v2_common_name" {
   anyscale_vpc_public_subnets = ["172.24.21.0/24", "172.24.22.0/24", "172.24.23.0/24"]
   # anyscale_vpc_private_subnets = ["172.24.101.0/24", "172.24.102.0/24", "172.24.103.0/24"]
 
+  # IAM Related
+  anyscale_cluster_node_managed_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonSQSReadOnlyAccess",
+    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+  ]
+
+  #checkov:skip=CKV_AWS_355:Wildcards allowed for these items
+  anyscale_cluster_node_custom_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "dynamodb:Describe*",
+        "dynamodb:List*"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+
   common_prefix   = var.common_prefix
   use_common_name = true
 
   # Security Group Related
   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges
-
 
 }

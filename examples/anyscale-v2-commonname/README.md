@@ -4,6 +4,7 @@ This **example** will build the resources necessary to run Anyscale in an AWS ac
 [Direct Networking](https://docs.anyscale.com/cloud-deployment/aws/manage-clouds#anyscale-clouds-on-aws) solution.
 The resources built by this Terraform will all have a common name prefix.
 
+This also adds additional IAM policies to the Cluster role.
 
 ## To execute
 A general understanding of Terraform and AWS are useful for executing this Terraform. For a high level overview of both,

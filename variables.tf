@@ -757,6 +757,24 @@ variable "anyscale_cluster_node_custom_policy" {
   default     = null
 }
 
+variable "anyscale_cluster_node_managed_policy_arns" {
+  description = <<-EOT
+    (Optional) List of IAM policy ARNs to attach to the role.
+
+    This allows custom or managed policies to be attached to the Anyscale Cluster Role which can be used to grant additional permissions.
+
+    ex:
+    ```
+    anyscale_cluster_node_managed_policy_arns = [
+      "arn:aws:iam::aws:policy/AmazonSQSReadOnlyAccess",
+      "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+    ]
+    ```
+  EOT
+  type        = list(string)
+  default     = []
+}
+
 variable "create_cluster_node_cloudwatch_policy" {
   description = <<-EOT
     (Optional) Create the Anyscale Cluster Node Cloudwatch Policy

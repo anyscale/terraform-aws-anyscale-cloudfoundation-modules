@@ -1,3 +1,12 @@
+## 0.16.0 (Released)
+FEATURES:
+- Additional root-module variable to allow adding a list of IAM Policy ARNs to the IAM Cluster Role
+
+BUG FIXES:
+
+
+BREAKING CHANGES:
+
 ## 0.15.3 (Released)
 FEATURES:
 
