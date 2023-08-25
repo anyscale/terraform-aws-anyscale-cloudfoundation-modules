@@ -1,3 +1,18 @@
+## 0.17.0 (Released)
+FEATURES:
+- (Optional) IAM policy for Anyscale Clusters to support reading Secrets Manager - this enables Bring Your Own Docker integrations where the docker host requires a username and password.
+
+BUG FIXES:
+- General cleanup of IAM Submodule including bugfix for custom IAM policy integrations.
+
+OTHER:
+- E2E test of Terraform with Cloud Register and Functional Verification script added. Not integrated with Github yet.
+- Tested with latest Terraform and Terraform AWS Provider
+- Pre-Commit Updates including latest checkov
+
+
+BREAKING CHANGES:
+
 ## 0.16.0 (Released)
 FEATURES:
 - Additional root-module variable to allow adding a list of IAM Policy ARNs to the IAM Cluster Role

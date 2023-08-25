@@ -74,6 +74,8 @@ locals {
   cluster_node_cloudwatch_policy_prfx = var.anyscale_cluster_node_cloudwatch_policy_prefix != null ? var.anyscale_cluster_node_cloudwatch_policy_prefix : local.common_name != null ? "${local.common_name}-clusternode-cloudwatch-policy-" : null
   iam_accessrole_custom_policy_name   = var.anyscale_accessrole_custom_policy_name != null ? var.anyscale_accessrole_custom_policy_name : local.common_name != null ? "${local.common_name}-crossacct-custom-policy" : null
   iam_s3_policy_name                  = var.anyscale_iam_s3_policy_name != null ? var.anyscale_iam_s3_policy_name : local.common_name != null ? "${local.common_name}-s3-policy" : null
+  iam_cluster_node_secrets_plcy_name  = var.anyscale_cluster_node_byod_secrets_policy_name != null ? var.anyscale_cluster_node_byod_secrets_policy_name : local.common_name != null ? "${local.common_name}-clusternode-secrets-policy" : null
+  iam_cluster_node_secrets_plcy_prfx  = var.anyscale_cluster_node_byod_secrets_policy_prefix != null ? var.anyscale_cluster_node_byod_secrets_policy_prefix : local.common_name != null ? "${local.common_name}-clusternode-secrets-" : null
 
   iam_assume_role_external_id = var.anyscale_cloud_id != null && var.anyscale_cloud_id != "" ? [var.anyscale_cloud_id] : []
 }
@@ -135,9 +137,17 @@ module "aws_anyscale_iam" {
   anyscale_cluster_node_custom_policy_description = var.anyscale_cluster_node_custom_policy_description
   anyscale_cluster_node_custom_policy             = var.anyscale_cluster_node_custom_policy
 
+  anyscale_cluster_node_byod_secrets_policy_name        = local.iam_cluster_node_secrets_plcy_name
+  anyscale_cluster_node_byod_secrets_policy_prefix      = local.iam_cluster_node_secrets_plcy_prfx
+  anyscale_cluster_node_byod_secrets_policy_description = var.anyscale_cluster_node_byod_secrets_policy_description
+  anyscale_cluster_node_byod_custom_secrets_policy      = var.anyscale_cluster_node_byod_custom_secrets_policy
+  anyscale_cluster_node_byod_secret_arns                = var.anyscale_cluster_node_byod_secret_arns
+  anyscale_cluster_node_byod_secret_kms_arn             = var.anyscale_cluster_node_byod_secret_kms_arn
+
   anyscale_cluster_node_managed_policy_arns = var.anyscale_cluster_node_managed_policy_arns
 
-  anyscale_s3_bucket_arn             = local.create_new_s3_bucket ? module.aws_anyscale_s3.s3_bucket_arn : var.existing_s3_bucket_arn
+  create_iam_s3_policy               = local.create_new_s3_bucket || var.existing_s3_bucket_arn != null ? true : false
+  anyscale_s3_bucket_arn             = try(module.aws_anyscale_s3.s3_bucket_arn, var.existing_s3_bucket_arn, null)
   anyscale_iam_s3_policy_name        = local.iam_s3_policy_name
   anyscale_iam_s3_policy_name_prefix = local.iam_s3_policy_prefix
   anyscale_iam_s3_policy_description = var.anyscale_iam_s3_policy_description

@@ -8,6 +8,11 @@ output "node_cluster_role_arn" {
   value       = module.iam_cluster_node_instance_profile.iam_cluster_node_instance_profile_role_arn
 }
 
+output "secretsmanager_role_arn" {
+  description = "The arn of the secretsmanager role"
+  value       = module.iam_secretsmanager_instance_profile.iam_cluster_node_instance_profile_role_arn
+}
+
 output "kitchen_sink_anyscale_role_arn" {
   description = "The arn of the kitchen sink anyscale role"
   value       = module.kitchen_sink.iam_anyscale_access_role_arn
