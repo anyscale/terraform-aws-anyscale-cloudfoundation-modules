@@ -288,9 +288,10 @@ data "aws_iam_policy_document" "iam_anyscale_cluster_node_assumerole_policy" {
   }
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "iam_anyscale_s3_bucket_access" {
   dynamic "statement" {
-    for_each = local.create_s3_bucket_policy ? [1] : []
+    for_each = local.create_s3_bucket_access_policy ? [1] : []
     content {
       sid    = "S3BucketAccess"
       effect = "Allow"
@@ -513,7 +514,7 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "cluster_node_cloudwatch_access" {
-  #checkov:skip=CKV_AWS_356:Policy requires wildcards in resource permissions'
+  #checkov:skip=CKV_AWS_356:Policy requires wildcards in resource permissions
   statement {
     sid    = "CloudwatchMetricsWrite"
     effect = "Allow"
@@ -556,4 +557,25 @@ data "aws_iam_policy_document" "cluster_node_cloudwatch_access" {
     ]
   }
 
+}
+
+locals {
+  secrets_policy_body = var.anyscale_cluster_node_byod_secret_kms_arn != null ? templatefile(
+    "${path.module}/cluster_node-secretsmanager-getsecret-kms.tmpl",
+    {
+      anyscale_cluster_node_byod_secret_arns    = jsonencode(var.anyscale_cluster_node_byod_secret_arns)
+      anyscale_cluster_node_byod_secret_kms_arn = jsonencode(var.anyscale_cluster_node_byod_secret_kms_arn)
+    }
+    ) : templatefile(
+    "${path.module}/cluster_node-secretsmanager-getsecret.tmpl",
+    {
+      anyscale_cluster_node_byod_secret_arns = jsonencode(var.anyscale_cluster_node_byod_secret_arns)
+    }
+  )
+  secrets_policy_doc = try(length(var.anyscale_cluster_node_byod_custom_secrets_policy), 0) > 0 ? var.anyscale_cluster_node_byod_custom_secrets_policy : local.secrets_policy_body
+}
+data "aws_iam_policy_document" "cluster_node_secretmanager_read_access" {
+  count = var.module_enabled && local.create_secrets_policy ? 1 : 0
+
+  source_policy_documents = [local.secrets_policy_doc]
 }

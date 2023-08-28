@@ -301,20 +301,153 @@ variable "anyscale_cluster_node_cloudwatch_policy_description" {
   default     = "Anyscale Cluster Node CloudWatch Policy"
 }
 
+# ------------------
+# Cluster Node Secrets Policy
+# ------------------
+variable "anyscale_cluster_node_byod_secrets_policy_name" {
+  description = <<-EOT
+    (Optional) Name for the Anyscale cluster node Secrets IAM policy.
+
+    If left `null`, will default to `anyscale_cluster_node_secrets_policy_prefix`.
+    If provided, overrides the `anyscale_cluster_node_secrets_policy_prefix` variable.
+
+    ex:
+    ```
+    anyscale_cluster_node_secrets_policy_name = "anyscale-cluster-node-secrets-policy"
+    #checkov:skip=CKV_SECRET_6:Secrets Policy Name is not a secret'
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+variable "anyscale_cluster_node_byod_secrets_policy_prefix" {
+  description = <<-EOT
+    (Optional) Name prefix for the Anyscale cluster node Secrets IAM policy.
+
+    If `anyscale_cluster_node_secrets_policy_name` is provided, it will override this variable.
+    Default is `null` but is set to `anyscale-cluster-node-secrets-` in a local variable.
+
+    ex:
+    ```
+    anyscale_cluster_node_secrets_policy_prefix = "anyscale-cluster-node-secrets-"
+    #checkov:skip=CKV_SECRET_6:Secrets Policy Prefix is not a secret'
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_cluster_node_byod_secrets_policy_path" {
+  description = <<-EOT
+    (Optional) Path of the Anyscale cluster node SecretsManager IAM policy.
+
+    ex:
+    ```
+    anyscale_cluster_node_secrets_policy_path = "/"
+    ```
+  EOT
+  type        = string
+  default     = "/"
+}
+variable "anyscale_cluster_node_byod_secrets_policy_description" {
+  description = <<-EOT
+    (Optional) Anyscale IAM cluster node Secrets policy description.
+
+    ex:
+    ```
+    anyscale_cluster_node_secrets_policy_description = "Anyscale Cluster Node Secrets Policy"
+    ```
+  EOT
+  type        = string
+  default     = "Anyscale Cluster Node Secrets Policy"
+}
+variable "anyscale_cluster_node_byod_secret_arns" {
+  description = <<-EOT
+    (Optional) A list of Secrets Manager ARNs.
+    The Secrets Manager secret ARNs that the cluster node role needs access to for BYOD clusters.
+
+    ex:
+    ```
+    anyscale_cluster_node_secret_arns = [
+      "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",
+      "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",
+    ]
+    ```
+  EOT
+  type        = list(string)
+  default     = []
+}
+
+variable "anyscale_cluster_node_byod_secret_kms_arn" {
+  description = <<-EOT
+    (Optional) The KMS key ARN that the Secrets Manager secrets are encrypted with.
+    This is only used if `anyscale_cluster_node_byod_secret_arns` is also provided.
+
+    ex:
+    ```
+    anyscale_cluster_node_secret_arns = [
+      "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",
+      "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",
+    ]
+    anyscale_cluster_node_secret_kms_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_cluster_node_byod_custom_secrets_policy" {
+  description = <<-EOT
+  (Optional) A custom IAM policy to attach to the cluster node role with access to the Secrets Manager secrets.
+  If provided, this will be used instead of generating a policy automatically.
+
+  ex:
+  ```
+  anyscale_cluster_node_byod_custom_secrets_policy = {
+      "Version": "2012-10-17",
+      "Statement": [
+        "Sid": "SecretsManagerGetSecretValue",
+        "Effect": "Allow",
+        "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",
+      ]
+    }
+  EOT
+  type        = string
+  default     = null
+}
+
+# ------------------
 # S3 Bucket Access Related
 variable "create_iam_s3_policy" {
-  description = "(Optional) Determines whether to create the S3 Access Policy for IAM roles. Requires anyscale_s3_bucket_arn (below). Default is `true`."
+  description = <<-EOT
+    (Optional) Determines whether to create the S3 Access Policy for IAM roles.
+    Requires anyscale_s3_bucket_arn (below).
+
+    ex:
+    ```
+    create_iam_s3_policy = true
+    ```
+  EOT
   type        = bool
   default     = true
 }
 variable "anyscale_s3_bucket_arn" {
   description = <<-EOT
     (Optional) The S3 Bucket arn that the IAM Roles need access to.
-    If not provided, make sure to set `create_iam_s3_policy` to `false` otherwise this will throw an error.
-    Default is `null`.
+
+    If not provided, we will not create an S3 Bucket Access Policy.
+
+    ex:
+    ```
+    anyscale_s3_bucket_arn = "arn:aws:s3:::demo-bucket"
+    ```
   EOT
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "anyscale_iam_s3_policy_name" {

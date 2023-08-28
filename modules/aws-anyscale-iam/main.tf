@@ -20,14 +20,10 @@ locals {
   create_servicesv2_policy          = var.create_anyscale_access_role && var.create_anyscale_access_servicesv2_policy ? true : false
   anyscale_servicesv2_policy_name   = try(var.anyscale_access_servicesv2_policy_name, null)
   anyscale_servicesv2_policy_prefix = local.anyscale_servicesv2_policy_name != null ? null : var.anyscale_access_servicesv2_policy_prefix != null ? var.anyscale_access_servicesv2_policy_prefix : "anyscale-servicesv2-"
-  # split_cloudid                     = try(split("_", var.anyscale_cloud_id), [])
-  # capitalized_cloudid_parts = [
-  #   for part in local.split_cloudid : "${upper(substr(part, 0, 1))}${substr(part, 1, -1)}"
-  # ]
-  # joined_cloudid         = try(substr(join("", local.capitalized_cloudid_parts), 0, 19), null)
-  # servicev2_policy_cldid = try("AnyscaleALB${local.joined_cloudid}", "*")
 
-  create_s3_bucket_policy            = var.anyscale_s3_bucket_arn != null ? true : false
+  create_secrets_policy = var.module_enabled && (length(var.anyscale_cluster_node_byod_secret_arns) > 0 || var.anyscale_cluster_node_byod_custom_secrets_policy != null) ? true : false
+
+  create_s3_bucket_access_policy     = var.module_enabled && var.create_iam_s3_policy ? true : false
   anyscale_iam_s3_policy_name_cld_id = var.anyscale_cloud_id != null && var.anyscale_iam_s3_policy_name_prefix == null && var.anyscale_iam_s3_policy_name == null ? "anyscale-${var.anyscale_cloud_id}-s3-" : null
   anyscale_iam_s3_policy_name_prefix = var.anyscale_iam_s3_policy_name != null ? null : local.anyscale_iam_s3_policy_name_cld_id == null ? var.anyscale_iam_s3_policy_name_prefix : local.anyscale_iam_s3_policy_name_cld_id != null ? local.anyscale_iam_s3_policy_name_cld_id : "anyscale-s3-"
 
@@ -148,6 +144,9 @@ locals {
 
   anyscale_cluster_node_cloudwatch_policy_name   = try(var.anyscale_cluster_node_cloudwatch_policy_name, null)
   anyscale_cluster_node_cloudwatch_policy_prefix = local.anyscale_cluster_node_cloudwatch_policy_name != null ? null : var.anyscale_cluster_node_cloudwatch_policy_prefix != null ? var.anyscale_cluster_node_cloudwatch_policy_prefix : "anyscale-cluster-cloudwatch-"
+
+  anyscale_cluster_node_secrets_policy_name   = try(var.anyscale_cluster_node_byod_secrets_policy_name, null)
+  anyscale_cluster_node_secrets_policy_prefix = local.anyscale_cluster_node_secrets_policy_name != null ? null : var.anyscale_cluster_node_byod_secrets_policy_prefix != null ? var.anyscale_cluster_node_byod_secrets_policy_prefix : "anyscale-cluster-secrets-"
 }
 resource "aws_iam_role" "anyscale_cluster_node_role" {
   count = var.module_enabled && var.create_cluster_node_instance_profile ? 1 : 0
@@ -179,6 +178,7 @@ resource "aws_iam_instance_profile" "anyscale_cluster_node_role" {
 
 
 resource "aws_iam_policy" "anyscale_cluster_node_custom_policy" {
+  #checkov:skip=CKV_AWS_355:Policy requires wildcards in resource permissions
   count = var.module_enabled && local.create_cluster_node_custom_policy ? 1 : 0
 
   name        = local.anyscale_cluster_node_custom_policy_name
@@ -186,6 +186,22 @@ resource "aws_iam_policy" "anyscale_cluster_node_custom_policy" {
   path        = var.anyscale_cluster_node_custom_policy_path
   description = var.anyscale_cluster_node_custom_policy_description
   policy      = var.anyscale_cluster_node_custom_policy
+
+  tags = merge(
+    local.module_tags,
+    var.tags,
+  )
+}
+
+resource "aws_iam_policy" "anyscale_cluster_node_secretsmanager_policy" {
+  count = local.create_secrets_policy ? 1 : 0
+
+  name        = local.anyscale_cluster_node_secrets_policy_name
+  name_prefix = local.anyscale_cluster_node_secrets_policy_prefix
+  path        = var.anyscale_cluster_node_byod_secrets_policy_path
+  description = var.anyscale_cluster_node_byod_secrets_policy_description
+  # policy      = local.secrets_policy_body
+  policy = one(data.aws_iam_policy_document.cluster_node_secretmanager_read_access[*].json)
 
   tags = merge(
     local.module_tags,
@@ -237,9 +253,16 @@ resource "aws_iam_role_policy_attachment" "anyscale_cluster_node_cloudwatch_poli
   policy_arn = aws_iam_policy.anyscale_cluster_node_cloudwatch_policy[0].arn
 }
 
+resource "aws_iam_role_policy_attachment" "anyscale_cluster_node_secretsmanager_policy_attach" {
+  count = var.module_enabled && local.create_secrets_policy ? 1 : 0
+
+  role       = one(aws_iam_role.anyscale_cluster_node_role[*].name)
+  policy_arn = one(aws_iam_policy.anyscale_cluster_node_secretsmanager_policy[*].arn)
+}
+
 # S3 Policy and attachments
 resource "aws_iam_policy" "anyscale_s3_access_policy" {
-  count = var.module_enabled && var.create_iam_s3_policy ? 1 : 0
+  count = local.create_s3_bucket_access_policy ? 1 : 0
 
   name        = var.anyscale_iam_s3_policy_name
   name_prefix = local.anyscale_iam_s3_policy_name_prefix
@@ -254,14 +277,14 @@ resource "aws_iam_policy" "anyscale_s3_access_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "anyscale_cluster_node_s3_policy_attach" {
-  count = var.module_enabled && var.create_cluster_node_instance_profile && var.create_iam_s3_policy ? 1 : 0
+  count = var.module_enabled && var.create_cluster_node_instance_profile && local.create_s3_bucket_access_policy ? 1 : 0
 
   role       = aws_iam_role.anyscale_cluster_node_role[0].name
   policy_arn = aws_iam_policy.anyscale_s3_access_policy[0].arn
 }
 
 resource "aws_iam_role_policy_attachment" "anyscale_access_role_s3_policy_attach" {
-  count = var.module_enabled && var.create_anyscale_access_role && var.create_iam_s3_policy ? 1 : 0
+  count = var.module_enabled && var.create_anyscale_access_role && local.create_s3_bucket_access_policy ? 1 : 0
 
   role       = aws_iam_role.anyscale_access_role[0].name
   policy_arn = aws_iam_policy.anyscale_s3_access_policy[0].arn

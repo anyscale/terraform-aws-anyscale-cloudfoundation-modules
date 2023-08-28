@@ -34,4 +34,12 @@ module "aws_anyscale_v2_existing_vpc" {
     "resource_tag_test" : true,
     "s3_tagging" : var.s3_tag_value
   }
+
+  # Optionally, the following create VPC endpoints for S3 in the existing VPC
+  anyscale_gateway_vpc_endpoints = {
+    "s3" = {
+      name   = "s3"
+      policy = null
+    }
+  }
 }

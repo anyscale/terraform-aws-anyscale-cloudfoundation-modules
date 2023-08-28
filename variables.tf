@@ -836,6 +836,112 @@ variable "anyscale_cluster_node_cloudwatch_policy_prefix" {
   default     = null
 }
 
+#- Secrets Manager Policy
+variable "anyscale_cluster_node_byod_secrets_policy_name" {
+  description = <<-EOT
+    (Optional) Name for the Anyscale cluster node Secrets IAM policy.
+
+    If left `null`, will default to `anyscale_cluster_node_secrets_policy_prefix` or `general_prefix`.
+    If provided, overrides the `anyscale_cluster_node_secrets_policy_prefix` variable.
+
+    ex:
+    ```
+    anyscale_cluster_node_secrets_policy_name = "anyscale-cluster-node-secrets-policy"
+    #checkov:skip=CKV_SECRET_6:Secret Policy is not a secret'
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+variable "anyscale_cluster_node_byod_secrets_policy_prefix" {
+  description = <<-EOT
+    (Optional) Name prefix for the Anyscale cluster node Secrets IAM policy.
+
+    If `anyscale_cluster_node_secrets_policy_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `anyscale-cluster-node-secrets-` in a local variable.
+
+    ex:
+    ```
+    anyscale_cluster_node_secrets_policy_prefix = "anyscale-cluster-node-secrets-"
+    #checkov:skip=CKV_SECRET_6:Secret Name Prefix is not a secret'
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_cluster_node_byod_secrets_policy_description" {
+  description = <<-EOT
+    (Optional) Anyscale IAM cluster node Secrets policy description.
+
+    ex:
+    ```
+    anyscale_cluster_node_secrets_policy_description = "Anyscale Cluster Node Secrets Policy"
+    ```
+  EOT
+  type        = string
+  default     = "Anyscale Cluster Node Secrets Policy"
+}
+variable "anyscale_cluster_node_byod_secret_arns" {
+  description = <<-EOT
+    (Optional) A list of Secrets Manager ARNs.
+    The Secrets Manager secret ARNs that the cluster node role needs access to for BYOD clusters.
+
+    ex:
+    ```
+    anyscale_cluster_node_secret_arns = [
+      "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",
+      "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",
+    ]
+    ```
+  EOT
+  type        = list(string)
+  default     = []
+}
+
+variable "anyscale_cluster_node_byod_secret_kms_arn" {
+  description = <<-EOT
+    (Optional) The KMS key ARN that the Secrets Manager secrets are encrypted with.
+    This is only used if `anyscale_cluster_node_byod_secret_arns` is also provided.
+
+    ex:
+    ```
+    anyscale_cluster_node_secret_arns = [
+      "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",
+      "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",
+    ]
+    anyscale_cluster_node_secret_kms_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+variable "anyscale_cluster_node_byod_custom_secrets_policy" {
+  description = <<-EOT
+  (Optional) A custom IAM policy to attach to the cluster node role with access to the Secrets Manager secrets.
+  If provided, this will be used instead of generating a policy automatically.
+
+  ex:
+  ```
+  anyscale_cluster_node_byod_custom_secrets_policy = {
+      "Version": "2012-10-17",
+      "Statement": [
+        "Sid": "SecretsManagerGetSecretValue",
+        "Effect": "Allow",
+        "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",
+      ]
+    }
+  EOT
+  type        = string
+  default     = null
+}
+
+#- S3 Policy
 variable "anyscale_iam_s3_policy_name" {
   description = <<-EOT
     (Optional) Name for the Anyscale S3 access IAM policy.
@@ -1005,7 +1111,7 @@ variable "security_group_override_ingress_from_cidr_map" {
       {
         rule        = "https-443-tcp"
         cidr_blocks = "10.100.10.10/32"
-      }
+      },
       { rule = "nfs-tcp" },
       {
         rule        = "ssh-tcp"
@@ -1199,7 +1305,7 @@ variable "anyscale_s3_server_side_encryption" {
 
     ex using KMS:
     ```
-    apply_server_side_encryption_by_default = {
+    anyscale_s3_server_side_encryption = {
       kms_master_key_id = "1234abcd-12ab-34cd-56ef-1234567890ab"
       sse_algorithm     = "aws:kms"
     }
@@ -1207,7 +1313,7 @@ variable "anyscale_s3_server_side_encryption" {
 
     ex using AES256:
     ```
-    apply_server_side_encryption_by_default = {
+    anyscale_s3_server_side_encryption = {
       sse_algorithm = "AES256"
     }
     ```
@@ -1265,6 +1371,21 @@ variable "anyscale_custom_s3_policy" {
 
     ex:
     ```
+    data "aws_iam_policy_document" "bucket_policy" {
+    statement {
+        principals {
+          type        = "AWS"
+          identifiers = [aws_iam_role.this.arn]
+        }
+
+      actions = [
+        "s3:ListBucket",
+      ]
+
+      resources = [
+        "module.aws_anyscale_s3.s3_bucket_arn,
+      ]
+    }
     anyscale_custom_s3_policy = data.aws_iam_policy_document.bucket_policy.json
     ```
   EOT
