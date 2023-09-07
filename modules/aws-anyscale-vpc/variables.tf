@@ -210,7 +210,10 @@ variable "existing_private_subnet_ids" {
     If this variable and var.existing_vpc_id are both provided, the aws-anyscale-vpc sub-module will not create a VPC or Subnets.
     It will only create VPC Endpoints if the gateway_vpc_endpoints variable is defined.
 
-    Default is an empty list.
+    ex:
+    ```
+    existing_private_subnet_ids = ["subnet-1234567890", "subnet-0987654321"]
+    ```
   EOT
   type        = list(string)
   default     = []

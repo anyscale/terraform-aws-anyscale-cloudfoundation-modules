@@ -402,6 +402,60 @@ variable "anyscale_gateway_vpc_endpoints" {
   }
 }
 
+# variable "create_memorydb_subnets" {
+#   description = <<-EOT
+#     (Optional) Create MemoryDB subnets.
+
+#     If set to true, this will create MemoryDB subnets in the VPC. In this case, if the `create_memorydb_resources` is set to true, private subnets for MemoryDB will be created and used.
+#     If set to false, this will not create MemoryDB subnets in the VPC. In this case, if the `create_memorydb_resources` is set to true, the private subnets will be used to create MemoryDB subnets.
+
+#     Also requires `create_memorydb_resources` to be set to true.
+
+#     ex:
+#     ```
+#     create_memorydb_subnets = true
+#     ```
+#   EOT
+#   type        = bool
+#   default     = false
+# }
+
+# variable "anyscale_vpc_memorydb_subnets" {
+#   description = <<-EOT
+#     (Optional) A list of MemoryDB subnets inside the VPC.
+
+#     MemoryDB subnets will be created with these CIDR blocks. Also requires `create_memorydb_subnets` and `create_memorydb_resources` to both be set to true.
+
+#     ex:
+#     ```
+#     anyscale_vpc_memorydb_subnets = [
+#       "10.0.130.0/24",
+#       "10.0.131.0/24",
+#     ]
+#     ```
+#   EOT
+#   type        = list(string)
+#   default     = []
+# }
+
+# variable "anyscale_vpc_memorydb_subnet_tags" {
+#   description = <<-EOT
+#     (Optional) A map of tags for MemoryDB subnets.
+
+#     Duplicate tags found in the `tags` or `anyscale_vpc_tags` variables will get duplicated on the resource.
+
+#     ex:
+#     ```
+#     anyscale_vpc_memorydb_subnet_tags = {
+#       "purpose" : "networking",
+#       "criticality" : "critical"
+#     }
+#     ```
+#   EOT
+#   type        = map(string)
+#   default     = {}
+# }
+
 #--------------------------------------------
 # IAM Variables
 #--------------------------------------------
@@ -1448,4 +1502,209 @@ variable "anyscale_s3_lifecycle_rule" {
   EOT
   type        = any
   default     = []
+}
+
+#--------------------------------------------
+# MemoryDB Variables
+#--------------------------------------------
+variable "create_memorydb_resources" {
+  description = <<-EOT
+    (Optional) Determines whether to create the MemoryDB resources.
+
+    ex:
+    ```
+    create_memorydb_resources = true
+    ```
+  EOT
+  type        = bool
+  default     = false
+}
+
+variable "anyscale_memorydb_tags" {
+  description = <<-EOT
+    (Optional) A map of tags for MemoryDB resources.
+
+    Duplicate tags found in the "tags" variable will get duplicated on the resource.
+
+    ex:
+    ```
+    anyscale_memorydb_tags = {
+      "purpose" : "memorydb",
+      "criticality" : "critical"
+    }
+    ```
+    Default is an empty map.
+  EOT
+  type        = map(string)
+  default     = {}
+}
+
+variable "anyscale_memorydb_cluster_name" {
+  description = <<-EOT
+    (Optional) The name of the MemoryDB cluster.
+
+    If left `null`, will default to `anyscale_memorydb_cluster_name` or `general_prefix`.
+    If provided, overrides the `anyscale_memorydb_cluster_name` variable.
+
+    ex:
+    ```
+    anyscale_memorydb_cluster_name = "anyscale-memorydb-cluster"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+variable "anyscale_memorydb_cluster_name_prefix" {
+  description = <<-EOT
+    (Optional) The prefix of the MemoryDB cluster.
+
+    If `anyscale_memorydb_cluster_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `anyscale-memorydb-cluster-` in a local variable.
+
+    ex:
+    ```
+    anyscale_memorydb_cluster_name_prefix = "anyscale-memorydb-cluster-"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_memorydb_cluster_description" {
+  description = <<-EOT
+    (Optional) The description of the MemoryDB cluster.
+
+    ex:
+    ```
+    anyscale_memorydb_cluster_description = "Anyscale MemoryDB cluster"
+    ```
+  EOT
+  type        = string
+  default     = "Anyscale MemoryDB Cluster"
+}
+
+variable "anyscale_memorydb_parameter_group_name" {
+  description = <<-EOT
+    (Optional) The name of the MemoryDB parameter group.
+
+    If left `null`, will default to `anyscale_memorydb_parameter_group_name_prefix` or `general_prefix`.
+    If provided, overrides the `anyscale_memorydb_parameter_group_name_prefix` variable.
+
+    ex:
+    ```
+    memorydb_parameter_group_name = "anyscale-memorydb-parameter-group"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_memorydb_parameter_group_name_prefix" {
+  description = <<-EOT
+    (Optional) The prefix of the MemoryDB parameter group.
+
+    If `anyscale_memorydb_parameter_group_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `anyscale-memorydb-parameter-group-` in a local variable.
+
+    ex:
+    ```
+    anyscale_memorydb_parameter_group_name_prefix = "anyscale-memorydb-parameter-group-"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_memorydb_parameter_group_description" {
+  description = <<-EOT
+    (Optional) The description of the MemoryDB parameter group.
+
+    ex:
+    ```
+    anyscale_memorydb_parameter_group_description = "Anyscale MemoryDB Parameter Group"
+    ```
+  EOT
+  type        = string
+  default     = "Anyscale MemoryDB Parameter Group"
+}
+
+variable "anyscale_memorydb_subnet_group_name" {
+  description = <<-EOT
+    (Optional) The name of the MemoryDB subnet group.
+
+    If left `null`, will default to `anyscale_memorydb_subnet_group_name_prefix` or `general_prefix`.
+    If provided, overrides the `memorydb_subnet_group_name_prefix` variable.
+
+    ex:
+    ```
+    anyscale_memorydb_subnet_group_name = "anyscale-memorydb-subnet-group"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_memorydb_subnet_group_name_prefix" {
+  description = <<-EOT
+    (Optional) The prefix of the MemoryDB subnet group.
+
+    If `anyscale_memorydb_subnet_group_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `memorydb-subnet-group-` in a local variable.
+
+    ex:
+    ```
+    anyscale_memorydb_subnet_group_name_prefix = "anyscale-memorydb-subnet-group-"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_memorydb_subnet_group_description" {
+  description = <<-EOT
+    (Optional) The description of the MemoryDB subnet group.
+
+    ex:
+    ```
+    anyscale_memorydb_subnet_group_description = "Anyscale MemoryDB Subnet Group"
+    ```
+  EOT
+  type        = string
+  default     = "Anyscale MemoryDB Subnet Group"
+}
+
+variable "anyscale_memorydb_acl_name" {
+  description = <<-EOT
+    (Optional) The name of the MemoryDB ACL.
+
+    If left `null`, will default to `anyscale_memorydb_acl_name_prefix` or `general_prefix`.
+    If provided, overrides the `anyscale_memorydb_acl_name_prefix` variable.
+
+    ex:
+    ```
+    anyscale_memorydb_acl_name = "anyscale-memorydb-acl"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_memorydb_acl_name_prefix" {
+  description = <<-EOT
+    (Optional) The prefix of the MemoryDB ACL.
+
+    If `anyscale_memorydb_acl_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `memorydb-acl-` in a local variable.
+
+    ex:
+    ```
+    anyscale_memorydb_acl_name_prefix = "anyscale-memorydb-acl-"
+    ```
+  EOT
+  type        = string
+  default     = null
 }

@@ -74,3 +74,26 @@ output "anyscale_efs_mount_target_ids" {
   description = "Anyscale Elastic File System mount target IDs. If EFS mount targets were not created, return an empty list."
   value       = try(module.aws_anyscale_efs.efs_mount_target_ids, [])
 }
+
+# -------------------------------
+# MemoryDB Outputs
+# -------------------------------
+output "anyscale_memorydb_cluster_id" {
+  description = "Anyscale MemoryDB Cluster ID. If a MemoryDB cluster was not created, return an empty string."
+  value       = try(module.aws_anyscale_memorydb.memorydb_cluster_id, "")
+}
+
+output "anyscale_memorydb_cluster_arn" {
+  description = "Anyscale MemoryDB Cluster ARN. If a MemoryDB cluster was not created, return an empty string."
+  value       = try(module.aws_anyscale_memorydb.memorydb_cluster_arn, "")
+}
+
+output "anyscale_memorydb_cluster_endpoint_address" {
+  description = "Anyscale MemoryDB Cluster Endpoint Address. If a MemoryDB cluster was not created, return an empty string."
+  value       = try(module.aws_anyscale_memorydb.memorydb_cluster_endpoint_address, "")
+}
+
+output "anyscale_memorydb_cluster_endpoint_port" {
+  description = "Anyscale MemoryDB Cluster Endpoint Port. If a MemoryDB cluster was not created, return an empty string."
+  value       = try(module.aws_anyscale_memorydb.memorydb_cluster_endpoint_port, "")
+}
