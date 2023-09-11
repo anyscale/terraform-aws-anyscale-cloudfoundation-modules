@@ -18,14 +18,14 @@ locals {
   cloud_and_org_id_provided = var.anyscale_cloud_id != null && var.anyscale_org_id != null ? true : false
   org_id_provided           = var.anyscale_org_id != null ? true : false
 
-  log_group_cloud_and_org_id_arn = local.cloud_and_org_id_provided ? "arn:aws:logs:*:${local.account_id}:log-group:/anyscale/${var.anyscale_org_id}/${var.anyscale_cloud_id}*" : null
-  log_group_org_id_arn           = local.org_id_provided ? "arn:aws:logs:*:${local.account_id}:log-group:/anyscale/${var.anyscale_org_id}/*" : null
-  log_group_cloud_id_arn         = local.cloud_id_provided ? "arn:aws:logs:*:${local.account_id}:log-group:/anyscale/*/${var.anyscale_cloud_id}*" : null
+  log_group_cloud_and_org_id_arn = local.cloud_and_org_id_provided ? "arn:aws:logs:*:${local.account_id}:log-group:/anyscale*" : null
+  log_group_org_id_arn           = local.org_id_provided ? "arn:aws:logs:*:${local.account_id}:log-group:/anyscale*" : null
+  log_group_cloud_id_arn         = local.cloud_id_provided ? "arn:aws:logs:*:${local.account_id}:log-group:/anyscale*" : null
   log_group_arn = coalesce(
     local.log_group_cloud_and_org_id_arn,
     local.log_group_org_id_arn,
     local.log_group_cloud_id_arn,
-    "arn:aws:logs:*:${local.account_id}:log-group:/anyscale/*"
+    "arn:aws:logs:*:${local.account_id}:log-group:/anyscale*"
   )
 }
 # Allow Anyscale account access to assume this role.
