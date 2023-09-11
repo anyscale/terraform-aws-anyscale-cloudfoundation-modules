@@ -4,7 +4,9 @@
 #     - IAM Roles
 #     - S3 Bucket
 #     - Private VPC
+#     - VPC Security Groups
 #     - EFS
+#     - MemoryDB
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
   full_tags = merge(tomap({
@@ -21,8 +23,9 @@ module "aws_anyscale_v2_kitchen_sink" {
 
   anyscale_cloud_id = var.anyscale_cloud_id
 
-  #--------------
+  # --------------------------
   # VPC Related
+  # --------------------------
   anyscale_vpc_cidr_block     = "172.24.0.0/16"
   anyscale_vpc_public_subnets = ["172.24.21.0/24", "172.24.22.0/24", "172.24.23.0/24"]
   anyscale_vpc_public_subnet_tags = tomap({
@@ -38,16 +41,18 @@ module "aws_anyscale_v2_kitchen_sink" {
     "vpc_tag_test" : "kitchen_sink"
   }
 
-  #--------------
+  # --------------------------
   # EFS Related
+  # --------------------------
   efs_lifecycle_transition_to_ia                    = ["AFTER_90_DAYS"]
   efs_lifecycle_transition_to_primary_storage_class = ["AFTER_1_ACCESS"]
   anyscale_efs_tags = {
     "efs_tag_test" : "kitchen_sink"
   }
 
-  #--------------
+  # --------------------------
   # S3 Related
+  # --------------------------
   anyscale_s3_bucket_name = "anyscale-kitchensink-s3"
   anyscale_s3_tags = {
     "s3_tag_test" : "kitchen_sink",
@@ -81,8 +86,9 @@ module "aws_anyscale_v2_kitchen_sink" {
     }
   ]
 
-  #--------------------------
+  # --------------------------
   # Security Group Related
+  # --------------------------
   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges
   anyscale_securitygroup_tags = {
     "sg_tag_test" = "kitchen_sink"
@@ -103,8 +109,9 @@ module "aws_anyscale_v2_kitchen_sink" {
     }
   ]
 
-  #--------------
+  # --------------------------
   # IAM Related
+  # --------------------------
   anyscale_iam_tags = {
     "iam_tag_example" : "kitchen_sink"
   }
@@ -112,4 +119,15 @@ module "aws_anyscale_v2_kitchen_sink" {
   anyscale_cluster_node_byod_secrets_policy_name = "anyscale-tf-byod-secrets-policy" #checkov:skip=CKV_SECRET_6:Secret Name is not a secret'
   anyscale_cluster_node_byod_secret_arns         = var.anyscale_cluster_node_byod_secret_arns
   anyscale_cluster_node_byod_secret_kms_arn      = var.anyscale_cluster_node_byod_secret_kms_arn
+
+  # --------------------------
+  # MemoryDB Related
+  # --------------------------
+  create_memorydb_resources                     = true
+  anyscale_memorydb_cluster_name                = "anyscale-kitchensink-memorydb"
+  anyscale_memorydb_cluster_description         = "MemoryDB for Anyscale Services"
+  anyscale_memorydb_parameter_group_name_prefix = "anyscale-ks-pg-"
+  anyscale_memorydb_parameter_group_description = "MemoryDB Parameter Group for Anyscale Services"
+  anyscale_memorydb_subnet_group_name           = "anyscale-ks-sg"
+  anyscale_memorydb_subnet_group_description    = "MemoryDB Subnet Group for Anyscale Services"
 }

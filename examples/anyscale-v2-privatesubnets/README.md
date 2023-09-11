@@ -77,4 +77,5 @@ No resources.
 | <a name="output_anyscale_v2_s3_bucket_id"></a> [anyscale\_v2\_s3\_bucket\_id](#output\_anyscale\_v2\_s3\_bucket\_id) | Anyscale S3 Bucket ID. If a bucket was not created, return an empty string. |
 | <a name="output_anyscale_v2_security_group_id"></a> [anyscale\_v2\_security\_group\_id](#output\_anyscale\_v2\_security\_group\_id) | Anyscale Security Group ID. If a security group was not created, return an empty string. |
 | <a name="output_anyscale_v2_vpc_id"></a> [anyscale\_v2\_vpc\_id](#output\_anyscale\_v2\_vpc\_id) | Anyscale VPC ID. If there was not one created, return the one that was used during other resource creation. |
+| <a name="output_memorydb_address_for_anyscaleservices"></a> [memorydb\_address\_for\_anyscaleservices](#output\_memorydb\_address\_for\_anyscaleservices) | Anyscale MemoryDB Cluster Address. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

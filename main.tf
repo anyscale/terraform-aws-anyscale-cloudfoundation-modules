@@ -13,25 +13,12 @@ locals {
     var.tags
   )
 
-  vpc_tags           = merge(local.full_tags, var.anyscale_vpc_tags)
   iam_tags           = merge(local.full_tags, var.anyscale_iam_tags)
   securitygroup_tags = merge(local.full_tags, var.anyscale_securitygroup_tags)
   efs_tags           = merge(local.full_tags, var.anyscale_efs_tags)
   s3_tags            = merge(local.full_tags, var.anyscale_s3_tags)
 
-  existing_subnet_count          = length(var.existing_vpc_subnet_ids)
-  anyscale_private_subnet_count  = length(var.anyscale_vpc_private_subnets)
-  anyscale_public_subnet_count   = length(var.anyscale_vpc_public_subnets)
-  efs_mount_targets_subnet_count = max(local.existing_subnet_count, local.anyscale_private_subnet_count, local.anyscale_public_subnet_count)
-
   create_new_s3_bucket = var.existing_s3_bucket_arn == null ? true : false
-
-  create_new_vpc              = var.existing_vpc_id == null ? true : false
-  create_vpc_subnets          = local.anyscale_private_subnet_count > 0 || local.anyscale_public_subnet_count > 0 ? true : false
-  create_vpc_gateway_endpoint = length(var.anyscale_gateway_vpc_endpoints) > 0 && (local.create_new_vpc || length(var.existing_vpc_private_route_table_ids) > 0 || length(var.existing_vpc_public_route_table_ids) > 0) ? true : false
-  create_internet_gw          = local.create_new_vpc ? true : false
-  create_nat_gw               = local.create_new_vpc ? true : false
-  execute_vpc_sub_module      = local.create_new_vpc || local.create_vpc_subnets || local.create_vpc_gateway_endpoint ? true : false
 
   s3_bucket_prefix                  = coalesce(var.anyscale_s3_bucket_prefix, var.common_prefix, "anyscale-")
   iam_access_role_name_prefix       = coalesce(var.anyscale_iam_access_role_name_prefix, var.common_prefix, "anyscale-iam-role-")
@@ -59,7 +46,6 @@ resource "random_id" "common_name" {
 locals {
   common_name         = try(random_id.common_name[0].hex, null)
   s3_bucket_name      = var.anyscale_s3_bucket_name != null ? var.anyscale_s3_bucket_name : local.common_name
-  vpc_name            = var.anyscale_vpc_name != null ? var.anyscale_vpc_name : local.common_name
   efs_name            = var.anyscale_efs_name != null ? var.anyscale_efs_name : local.common_name
   security_group_name = var.security_group_name != null ? var.security_group_name : local.common_name
 
@@ -176,6 +162,22 @@ module "aws_anyscale_s3_policy" {
 # ------------------------------
 # VPC (Networking) Module
 # ------------------------------
+locals {
+  vpc_name_from_prefix = var.common_prefix != null && try(length(var.common_prefix), 0) > 0 && (try(substr(var.common_prefix, -1, 1), null) == "-" || try(substr(var.common_prefix, -1, 1), null) == "_") ? substr(var.common_prefix, 0, length(var.common_prefix) - 1) : var.common_prefix
+  vpc_name             = coalesce(var.anyscale_vpc_name, local.common_name, local.vpc_name_from_prefix, "vpc-anyscale")
+  vpc_tags             = merge(local.full_tags, var.anyscale_vpc_tags)
+
+  existing_subnet_count         = length(var.existing_vpc_subnet_ids)
+  anyscale_private_subnet_count = length(var.anyscale_vpc_private_subnets)
+  anyscale_public_subnet_count  = length(var.anyscale_vpc_public_subnets)
+
+  create_new_vpc              = var.existing_vpc_id == null ? true : false
+  create_vpc_subnets          = local.anyscale_private_subnet_count > 0 || local.anyscale_public_subnet_count > 0 ? true : false
+  create_vpc_gateway_endpoint = length(var.anyscale_gateway_vpc_endpoints) > 0 && (local.create_new_vpc || length(var.existing_vpc_private_route_table_ids) > 0 || length(var.existing_vpc_public_route_table_ids) > 0) ? true : false
+  create_internet_gw          = local.create_new_vpc ? true : false
+  create_nat_gw               = local.create_new_vpc ? true : false
+  execute_vpc_sub_module      = local.create_new_vpc || local.create_vpc_subnets || local.create_vpc_gateway_endpoint ? true : false
+}
 module "aws_anyscale_vpc" {
   source = "./modules/aws-anyscale-vpc"
   tags   = local.vpc_tags
@@ -236,6 +238,9 @@ module "aws_anyscale_securitygroup_self" {
 # ------------------------------
 # EFS Module
 # ------------------------------
+locals {
+  efs_mount_targets_subnet_count = max(local.existing_subnet_count, local.anyscale_private_subnet_count, local.anyscale_public_subnet_count)
+}
 module "aws_anyscale_efs" {
   source = "./modules/aws-anyscale-efs"
   tags   = local.efs_tags
@@ -254,4 +259,46 @@ module "aws_anyscale_efs" {
 
   # Backup policy
   enable_backup_policy = true
+}
+
+# ------------------------------
+# MemoryDB Module
+# ------------------------------
+locals {
+  memorydb_tags = merge(local.full_tags, var.anyscale_memorydb_tags)
+
+  memorydb_cluster_name      = var.anyscale_memorydb_cluster_name != null ? var.anyscale_memorydb_cluster_name : local.common_name
+  memorydb_cluster_name_prfx = local.memorydb_cluster_name != null ? null : coalesce(var.anyscale_memorydb_cluster_name_prefix, var.common_prefix, "anyscale-mdb-")
+
+  memorydb_acl_name      = var.anyscale_memorydb_acl_name != null ? var.anyscale_memorydb_acl_name : local.common_name
+  memorydb_acl_name_prfx = local.memorydb_acl_name != null ? null : coalesce(var.anyscale_memorydb_acl_name_prefix, var.common_prefix, "anyscale-mdb-acl-")
+
+  memorydb_parameter_group_name      = var.anyscale_memorydb_parameter_group_name != null ? var.anyscale_memorydb_parameter_group_name : local.common_name
+  memorydb_parameter_group_name_prfx = local.memorydb_parameter_group_name != null ? null : coalesce(var.anyscale_memorydb_parameter_group_name_prefix, var.common_prefix, "anyscale-mdb-pg-")
+}
+module "aws_anyscale_memorydb" {
+  source         = "./modules/aws-anyscale-memorydb"
+  tags           = local.memorydb_tags
+  module_enabled = var.create_memorydb_resources #We default to false for this sub-module
+
+  # MemoryDB
+  anyscale_memorydb_name        = local.memorydb_cluster_name
+  anyscale_memorydb_name_prefix = local.memorydb_cluster_name_prfx
+  anyscale_memorydb_description = var.anyscale_memorydb_cluster_description
+  memorydb_subnet_ids           = coalescelist(var.existing_vpc_subnet_ids, module.aws_anyscale_vpc.private_subnet_ids, module.aws_anyscale_vpc.public_subnet_ids)
+  memorydb_security_group_ids   = [module.aws_anyscale_securitygroup_self.security_group_id]
+
+  # Parameter Group
+  memorydb_parameter_group_name        = local.memorydb_parameter_group_name
+  memorydb_parameter_group_name_prefix = local.memorydb_parameter_group_name_prfx
+  memorydb_parameter_group_description = var.anyscale_memorydb_parameter_group_description
+
+  # ACL
+  memorydb_acl_name        = local.memorydb_acl_name
+  memorydb_acl_name_prefix = local.memorydb_acl_name_prfx
+
+  # Subnet Group
+  memorydb_subnet_group_name        = var.anyscale_memorydb_subnet_group_name != null ? var.anyscale_memorydb_subnet_group_name : local.common_name
+  memorydb_subnet_group_name_prefix = coalesce(var.anyscale_memorydb_subnet_group_name_prefix, var.common_prefix, "anyscale-mdb-sg-")
+  memorydb_subnet_group_description = var.anyscale_memorydb_subnet_group_description
 }

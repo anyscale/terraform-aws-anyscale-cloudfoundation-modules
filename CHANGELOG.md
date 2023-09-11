@@ -1,3 +1,16 @@
+## 0.18.0 (Released)
+FEATURES:
+- (Optional) MemoryDB Redis Cluster - this optional submodule creates a MemoryDB Redis Cluster for Anyscale Production Services. There are addditional updates to the VPC Submodule to optionaly create new VPC Subnets for the MemoryDB resource. The MemoryDB functionality provides [head node fault tolerance](https://docs.anyscale.com/productionize/services/head-node-fault-tolerance).
+
+BUG FIXES:
+- Fixed an error with the VPC name when using the `common_prefix` variable.
+
+OTHER:
+- Pre-Commit Updates
+- Tests with latest Terraform and AWS provider
+
+BREAKING CHANGES:
+
 ## 0.17.0 (Released)
 FEATURES:
 - (Optional) IAM policy for Anyscale Clusters to support reading Secrets Manager - this enables Bring Your Own Docker integrations where the docker host requires a username and password.
@@ -9,7 +22,6 @@ OTHER:
 - E2E test of Terraform with Cloud Register and Functional Verification script added. Not integrated with Github yet.
 - Tested with latest Terraform and Terraform AWS Provider
 - Pre-Commit Updates including latest checkov
-
 
 BREAKING CHANGES:
 
