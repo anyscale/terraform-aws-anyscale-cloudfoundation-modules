@@ -1,3 +1,13 @@
+## 0.18.1 (Released)
+FEATURES:
+
+BUG FIXES:
+- IAM Policy fix for Cloudwatch Log/Metrics integration.
+
+BREAKING CHANGES:
+
+NOTES:
+
 ## 0.18.0 (Released)
 FEATURES:
 - (Optional) MemoryDB Redis Cluster - this optional submodule creates a MemoryDB Redis Cluster for Anyscale Production Services. There are addditional updates to the VPC Submodule to optionaly create new VPC Subnets for the MemoryDB resource. The MemoryDB functionality provides [head node fault tolerance](https://docs.anyscale.com/productionize/services/head-node-fault-tolerance).
