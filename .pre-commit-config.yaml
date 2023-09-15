@@ -6,6 +6,9 @@ repos:
     hooks:
       - id: terraform_fmt
       - id: terraform_validate
+        args:
+          - --tf-init-args=-upgrade
+          - --hook-config=--retry-once-with-cleanup=true # requires jq - cleans up broken .terraform directories
       - id: terraform_tflint
         args:
           - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
@@ -16,10 +19,10 @@ repos:
       - id: terraform_docs
         args:
           - --args=--config=.terraform-docs.yml
-      - id: tfupdate
-        name: Autoupdate Terraform AWS Provider
-        args:
-          - --args=provider aws -v "~> 5.0"
+      # - id: tfupdate
+      #   name: Autoupdate Terraform AWS Provider
+      #   args:
+      #     - --args=provider aws -v "~> 5.16.0"
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:

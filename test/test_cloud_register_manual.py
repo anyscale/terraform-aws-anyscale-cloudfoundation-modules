@@ -16,6 +16,9 @@ import re
 import subprocess
 import argparse
 import boto3
+from google.cloud import storage
+import time
+from rich.progress import track
 
 from python_terraform import IsFlagged, IsNotFlagged, Terraform
 
@@ -39,19 +42,19 @@ def _get_terraform_anyscale_v2_e2e_public_vars_aws():
 
 
 # Feel free to edit the following variables for GCP
-def _get_terraform_anyscale_v2_e2e_public_vars_gcp():
+def _get_terraform_anyscale_v2_e2e_public_vars_gcp(
+    billing_account_id: str, anyscale_org_id: str, root_folder_number: str
+):
     """Get the variables for the gcp anyscale-v2-commonname terraform apply.
     The variables are required by the terraform as input variables.
     """
     return {
         "anyscale_google_region": "us-central1",
         "anyscale_google_zone": "us-central1-a",
-        "anyscale_org_id": "org_7c1Kalm9WcX2bNIjW53GUT",  # Anyscale org id.
-        "billing_account_id": "01D34E-9FCF25-2A378C",  # Anyscale billing account id.
-        "customer_ingress_cidr_ranges": "52.1.1.23/32,10.1.0.0/16",  # Suggested by the terraform.  # noqa: E501
-        "root_folder_number": "953296303039",  # This is the folder id of the folder "cloud-setup-terraform-test" in gcp.  # noqa: E501
-        # 623395924981 for staging, 521861002309 for predeploy, 525325868955 for production  # noqa: E501
-        "workload_identity_account_id": "525325868955",
+        "anyscale_org_id": anyscale_org_id,  # Anyscale org id.
+        "customer_ingress_cidr_ranges": "0.0.0.0/0",  # Suggested by the terraform.  # noqa: E501
+        "root_folder_number": root_folder_number,  # This is the folder id of the folder "cloud-setup-terraform-test" in gcp.  # noqa: E501
+        "billing_account_id": billing_account_id,
     }
 
 
@@ -117,34 +120,53 @@ def start_aws_test(branch_name: str, local_path: str):
     print(f"Parsed stdout_dict: {stdout_dict}")
     s3_bucket_id = stdout_dict.get("s3-bucket-id")
     print("Registering cloud...")
-    cloud_controller = CloudController()
-    cloud_controller.register_aws_cloud(
-        region=stdout_dict.get("region"),
-        name=cloud_name,
-        vpc_id=stdout_dict.get("vpc-id"),
-        subnet_ids=stdout_dict.get("subnet-ids").split(","),
-        efs_id=stdout_dict.get("efs-id"),
-        anyscale_iam_role_id=stdout_dict.get("anyscale-iam-role-id"),
-        instance_iam_role_id=stdout_dict.get("instance-iam-role-id"),
-        security_group_ids=stdout_dict.get("security-group-ids").split(","),
-        s3_bucket_id=s3_bucket_id,
-        # change to functional_verify="workspace,service" once service is ready.
-        # For functional verify, the console will ask for your confirm to proceed.
+    try:
+        cloud_controller = CloudController()
+        cloud_controller.register_aws_cloud(
+            region=stdout_dict.get("region"),
+            name=cloud_name,
+            vpc_id=stdout_dict.get("vpc-id"),
+            subnet_ids=stdout_dict.get("subnet-ids").split(","),
+            efs_id=stdout_dict.get("efs-id"),
+            anyscale_iam_role_id=stdout_dict.get("anyscale-iam-role-id"),
+            instance_iam_role_id=stdout_dict.get("instance-iam-role-id"),
+            security_group_ids=stdout_dict.get("security-group-ids").split(","),
+            s3_bucket_id=s3_bucket_id,
+            # change to functional_verify="workspace,service" once service is ready.
+            # For functional verify, the console will ask for your confirm to proceed.
+            functional_verify=None,
+            private_network=False,
+            cluster_management_stack_version="v2",
+            memorydb_cluster_id=None,
+            yes=True,
+        )
+        print("Cloud registered successfully")
+    except Exception as e:
+        print(f"Error registering cloud: {e}")
+
+    # pause for 3 min to wait for Anyscale to be ready
+    for i in track(range(60 * 3), description="Waiting for Anyscale to ready..."):
+        time.sleep(1)
+
+    cloud_controller.verify_cloud(
+        cloud_name=cloud_name,
+        cloud_id=None,
+        strict=True,
         functional_verify="workspace",
-        private_network=False,
-        cluster_management_stack_version="v2",
         yes=True,
     )
-    print("Cloud registered successfully")
 
     ## Delete the cloud.
-    print("Deleting cloud...")
-    cloud_controller.delete_cloud(
-        cloud_name=cloud_name,
-        cloud_id="",
-        skip_confirmation=True,
-    )
-    print("Cloud deleted successfully")
+    try:
+        print("Deleting cloud...")
+        cloud_controller.delete_cloud(
+            cloud_name=cloud_name,
+            cloud_id="",
+            skip_confirmation=True,
+        )
+        print("Cloud deleted successfully")
+    except Exception as e:
+        print(f"Error deleting cloud: {e}")
 
     ## Emptying the s3 bucket.
     print(f"Emptying s3 bucket {s3_bucket_id}...")
@@ -193,21 +215,32 @@ def start_aws_test(branch_name: str, local_path: str):
     print(f"Destroyed anyscale_v2_e2e_public aws terraform successfully {stdout}")
 
 
-def start_gcp_test(branch_name: str):
-    repo_url = (
-        "https://github.com/anyscale/terraform-google-anyscale-cloudfoundation-modules/"
-    )
-    subprocess.check_call(["git", "clone", repo_url])
-    # Checkout to a specific branch
-    subprocess.check_call(
-        ["git", "checkout", branch_name],
-        cwd="terraform-aws-anyscale-cloudfoundation-modules",
-    )
+def start_gcp_test(
+    branch_name: str,
+    local_path: str,
+    gcp_billing_id: str,
+    anyscale_org_id: str,
+    root_folder_number: str,
+):
+    if local_path:
+        print("Using local path...")
+        working_dir = local_path
+    else:
+        print("Cloning the repo...")
+        repo_url = "https://github.com/anyscale/terraform-google-anyscale-cloudfoundation-modules/"
+        subprocess.check_call(["git", "clone", repo_url])
+        # Checkout to a specific branch
+        subprocess.check_call(
+            ["git", "checkout", branch_name],
+            cwd="terraform-aws-anyscale-cloudfoundation-modules",
+        )
+        working_dir = "terraform-google-anyscale-cloudfoundation-modules/test/anyscale-v2-e2e-public-test"  # noqa: E501  # noqa: E501
 
-    working_dir = "terraform-google-anyscale-cloudfoundation-modules/test/anyscale-v2-e2e-public-test"  # noqa: E501
     tf = Terraform(
         working_dir=working_dir,
-        variables=_get_terraform_anyscale_v2_e2e_public_vars_gcp(),
+        variables=_get_terraform_anyscale_v2_e2e_public_vars_gcp(
+            gcp_billing_id, anyscale_org_id, root_folder_number
+        ),
     )
     tf.init()
     print(
@@ -220,6 +253,11 @@ def start_gcp_test(branch_name: str):
             f"Error applying anyscale_v2_e2e_public gcp terraform: {stderr}"
         )
     print(f"Applied anyscale_v2_e2e_public gcp result: {stdout}")
+
+    # pause for 2 min to wait for GCP to be ready
+    for i in track(range(60 * 1), description="Waiting for GCP to ready..."):
+        time.sleep(1)
+
     ## Register the cloud.
     cloud_name = (
         f"test_terraform_anyscale_v2_e2e_public_gcp_{datetime.now().isoformat()}"
@@ -227,40 +265,70 @@ def start_gcp_test(branch_name: str):
     stdout_dict = _parse_registration_command(stdout)
     print(f"Parsed stdout_dict: {stdout_dict}")
     print("Registering gcp cloud...")
-    cloud_controller = CloudController()
-    cloud_controller.register_gcp_cloud(
-        region=stdout_dict.get("region"),
-        name=cloud_name,
-        project_id=stdout_dict.get("project-id"),
-        vpc_name=stdout_dict.get("vpc-name"),
-        subnet_names=stdout_dict.get("subnet-names").split(","),
-        filestore_instance_id=stdout_dict.get("filestore-instance-id"),
-        filestore_location=stdout_dict.get("filestore-location"),
-        anyscale_service_account_email=stdout_dict.get(
-            "anyscale-service-account-email"
-        ),
-        instance_service_account_email=stdout_dict.get(
-            "instance-service-account-email"
-        ),
-        provider_id=stdout_dict.get("provider-name"),
-        firewall_policy_names=stdout_dict.get("firewall-policy-names").split(","),
-        cloud_storage_bucket_name=stdout_dict.get("cloud-storage-bucket-name"),
-        # change to functional_verify="workspace,service" once service is ready.
-        # For functional verify, the console will ask for your confirm to proceed.
+
+    bucket_name = stdout_dict.get("cloud-storage-bucket-name")
+    try:
+        cloud_controller = CloudController()
+        cloud_controller.register_gcp_cloud(
+            region=stdout_dict.get("region"),
+            name=cloud_name,
+            project_id=stdout_dict.get("project-id"),
+            vpc_name=stdout_dict.get("vpc-name"),
+            subnet_names=stdout_dict.get("subnet-names").split(","),
+            filestore_instance_id=stdout_dict.get("filestore-instance-id"),
+            filestore_location=stdout_dict.get("filestore-location"),
+            anyscale_service_account_email=stdout_dict.get(
+                "anyscale-service-account-email"
+            ),
+            instance_service_account_email=stdout_dict.get(
+                "instance-service-account-email"
+            ),
+            provider_id=stdout_dict.get("provider-name"),
+            firewall_policy_names=stdout_dict.get("firewall-policy-names").split(","),
+            cloud_storage_bucket_name=bucket_name,
+            # change to functional_verify="workspace,service" once service is ready.
+            # For functional verify, the console will ask for your confirm to proceed.
+            functional_verify=None,
+            private_network=False,
+            cluster_management_stack_version="v2",
+            memorystore_instance_name=None,
+            yes=True,
+        )
+        print("Cloud registered successfully")
+    except Exception as e:
+        print(f"Error registering gcp cloud: {e}")
+
+    # pause for 3 min to wait for Anyscale to be ready
+    for i in track(range(60 * 3), description="Waiting for Anyscale to ready..."):
+        time.sleep(1)
+
+    cloud_controller.verify_cloud(
+        cloud_name=cloud_name,
+        cloud_id=None,
+        strict=True,
         functional_verify="workspace",
-        private_network=False,
-        cluster_management_stack_version="v2",
         yes=True,
     )
-    print("Cloud registered successfully")
 
     ## Delete the cloud.
-    cloud_controller.delete_cloud(
-        cloud_name=cloud_name,
-        cloud_id="",
-        skip_confirmation=True,
-    )
-    print("GCP Cloud deleted successfully")
+    try:
+        cloud_controller.delete_cloud(
+            cloud_name=cloud_name,
+            cloud_id="",
+            skip_confirmation=True,
+        )
+        print("GCP Cloud deleted successfully")
+    except Exception as e:
+        print(f"Error deleting gcp cloud: {e}")
+
+    ## Emptying bucket
+    print(f"Emptying bucket {bucket_name}...")
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    # get all objects and delete them
+    blobs = bucket.list_blobs()
+    for blob in track(blobs, description=f"Emptying bucket {bucket_name}"):
+        blob.delete()
 
     ## Destroy the terraform.
     print("Destroying anyscale_v2_e2e_public gcp terraform...")
@@ -281,6 +349,27 @@ if __name__ == "__main__":
         type=str.lower,
         dest="cloudProvider",
         help="The cloud provider to use",
+    )
+    parser.add_argument(
+        "--gcp-billing-id",
+        "-g",
+        type=str,
+        dest="gcpBillingId",
+        help="The GCP billing id to use",
+    )
+    parser.add_argument(
+        "--anyscale-org-id",
+        "-o",
+        type=str,
+        dest="anyscaleOrgId",
+        help="The Anyscale org id to use",
+    )
+    parser.add_argument(
+        "--root-folder-number",
+        "-r",
+        type=str,
+        dest="rootFolderNumber",
+        help="The root folder number to use",
     )
     argGroup = parser.add_mutually_exclusive_group(required=True)
     argGroup.add_argument(
@@ -306,6 +395,23 @@ if __name__ == "__main__":
     if cloud_provider == "aws":
         start_aws_test(branch_name, local_path)
     elif cloud_provider == "gcp":
-        start_gcp_test(branch_name, local_path)
+        gcp_billing_id = args.gcpBillingId
+        if not gcp_billing_id:
+            raise RuntimeError(
+                "Please provide the GCP billing id with --gcp-billing-id"
+            )
+        anyscale_org_id = args.anyscaleOrgId
+        if not anyscale_org_id:
+            raise RuntimeError(
+                "Please provide the Anyscale org id with --anyscale-org-id"
+            )
+        root_folder_number = args.rootFolderNumber
+        if not root_folder_number:
+            raise RuntimeError(
+                "Please provide the root folder number with --root-folder-number"
+            )
+        start_gcp_test(
+            branch_name, local_path, gcp_billing_id, anyscale_org_id, root_folder_number
+        )
     else:
         raise RuntimeError(f"Unsupported cloud provider: {cloud_provider}")
