@@ -73,5 +73,4 @@ No resources.
 | Name | Description |
 |------|-------------|
 | <a name="output_anyscale_register_command"></a> [anyscale\_register\_command](#output\_anyscale\_register\_command) | Anyscale register command.<br>This output can be used with the Anyscale CLI to register a new Anyscale Cloud.<br>You will need to replace `<CUSTOMER_DEFINED_NAME>` with a name of your choosing before running the Anyscale CLI command. |
-| <a name="output_memorydb_address_for_anyscaleservices"></a> [memorydb\_address\_for\_anyscaleservices](#output\_memorydb\_address\_for\_anyscaleservices) | Anyscale MemoryDB Cluster Address. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
