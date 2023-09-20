@@ -2,6 +2,18 @@
 FEATURES:
 
 BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+- Updates to pre-commit and tflint config files
+- Updates to Pull request template
+- Updates to example outputs for the registration command, making it more readable.
+
+## 0.18.2 (Released)
+FEATURES:
+
+BUG FIXES:
 - Force AWS Provider to 5.16 in unit test. 5.17 has a bug with deleting S3 content.
 
 BREAKING CHANGES:
