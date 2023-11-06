@@ -1,4 +1,15 @@
-## 0.18.2 (Released)
+## 0.19.0 (Released)
+FEATURES:
+- Updates to EFS outputs to include IPs
+- Updates to VPC outputs to include Subnets to AZ map
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
+## 0.18.3 (Released)
 FEATURES:
 
 BUG FIXES:

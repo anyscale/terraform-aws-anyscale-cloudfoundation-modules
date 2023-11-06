@@ -7,20 +7,28 @@ output "anyscale_vpc_id" {
 }
 
 output "anyscale_vpc_public_routetable_ids" {
-  description = "Anyscale VPC Public Route Table IDs. If none were created, return an empty string."
+  description = "Anyscale VPC Public Route Table IDs. If none were created, return an empty list."
   value       = try(module.aws_anyscale_vpc.public_route_table_ids, [])
 }
 output "anyscale_vpc_public_subnet_ids" {
-  description = "Anyscale VPC Public Subnet IDs. If there were none created, return an empty string."
+  description = "Anyscale VPC Public Subnet IDs. If there were none created, return an empty list."
   value       = try(module.aws_anyscale_vpc.public_subnet_ids, [])
 }
+output "anyscale_vpc_public_subnet_ids_az_map" {
+  description = "Anyscale VPC Public Subnet IDs to AZ Map. If there were none created, return an empty map."
+  value       = try(module.aws_anyscale_vpc.public_subnet_ids_az_map, {})
+}
 output "anyscale_vpc_private_routetable_ids" {
-  description = "Anyscale VPC Private Route Table IDs. If none were created, return an empty string."
+  description = "Anyscale VPC Private Route Table IDs. If none were created, return an empty list."
   value       = try(module.aws_anyscale_vpc.private_route_table_ids, [])
 }
 output "anyscale_vpc_private_subnet_ids" {
-  description = "Anyscale VPC Private Subnet IDs. If there were none created, return an empty string."
+  description = "Anyscale VPC Private Subnet IDs. If there were none created, return an empty list."
   value       = try(module.aws_anyscale_vpc.private_subnet_ids, [])
+}
+output "anyscale_vpc_private_subnet_ids_az_map" {
+  description = "Anyscale VPC Private Subnet IDs to AZ Map. If there were none created, return an empty map."
+  value       = try(module.aws_anyscale_vpc.private_subnet_ids_az_map, {})
 }
 
 # -------------------------------
@@ -73,6 +81,11 @@ output "anyscale_efs_arn" {
 output "anyscale_efs_mount_target_ids" {
   description = "Anyscale Elastic File System mount target IDs. If EFS mount targets were not created, return an empty list."
   value       = try(module.aws_anyscale_efs.efs_mount_target_ids, [])
+}
+
+output "anyscale_efs_mount_target_ips" {
+  description = "Anyscale Elastic File System mount target IPs. If EFS mount targets were not created, return an empty list."
+  value       = try(module.aws_anyscale_efs.efs_mount_target_ips, [])
 }
 
 # -------------------------------

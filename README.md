@@ -194,6 +194,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | <a name="output_anyscale_efs_arn"></a> [anyscale\_efs\_arn](#output\_anyscale\_efs\_arn) | Anyscale Elastic File System ARN. If an EFS resource was not created, return an empty string. |
 | <a name="output_anyscale_efs_id"></a> [anyscale\_efs\_id](#output\_anyscale\_efs\_id) | Anyscale Elastic File System ID. If an EFS resource was not created, return an empty string. |
 | <a name="output_anyscale_efs_mount_target_ids"></a> [anyscale\_efs\_mount\_target\_ids](#output\_anyscale\_efs\_mount\_target\_ids) | Anyscale Elastic File System mount target IDs. If EFS mount targets were not created, return an empty list. |
+| <a name="output_anyscale_efs_mount_target_ips"></a> [anyscale\_efs\_mount\_target\_ips](#output\_anyscale\_efs\_mount\_target\_ips) | Anyscale Elastic File System mount target IPs. If EFS mount targets were not created, return an empty list. |
 | <a name="output_anyscale_iam_instance_profile_role_arn"></a> [anyscale\_iam\_instance\_profile\_role\_arn](#output\_anyscale\_iam\_instance\_profile\_role\_arn) | Anyscale IAM instance profile role arn. |
 | <a name="output_anyscale_iam_role_arn"></a> [anyscale\_iam\_role\_arn](#output\_anyscale\_iam\_role\_arn) | Anyscale IAM access role arn. |
 | <a name="output_anyscale_iam_role_cluster_node_arn"></a> [anyscale\_iam\_role\_cluster\_node\_arn](#output\_anyscale\_iam\_role\_cluster\_node\_arn) | Anyscale IAM cluster node role arn. |
@@ -204,10 +205,12 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | <a name="output_anyscale_s3_bucket_id"></a> [anyscale\_s3\_bucket\_id](#output\_anyscale\_s3\_bucket\_id) | Anyscale S3 Bucket ID. If a bucket was not created, return an empty string. |
 | <a name="output_anyscale_security_group_id"></a> [anyscale\_security\_group\_id](#output\_anyscale\_security\_group\_id) | Anyscale Security Group ID. If a security group was not created, return an empty string. |
 | <a name="output_anyscale_vpc_id"></a> [anyscale\_vpc\_id](#output\_anyscale\_vpc\_id) | Anyscale VPC ID. If there was not one created, return the one that was used during other resource creation. |
-| <a name="output_anyscale_vpc_private_routetable_ids"></a> [anyscale\_vpc\_private\_routetable\_ids](#output\_anyscale\_vpc\_private\_routetable\_ids) | Anyscale VPC Private Route Table IDs. If none were created, return an empty string. |
-| <a name="output_anyscale_vpc_private_subnet_ids"></a> [anyscale\_vpc\_private\_subnet\_ids](#output\_anyscale\_vpc\_private\_subnet\_ids) | Anyscale VPC Private Subnet IDs. If there were none created, return an empty string. |
-| <a name="output_anyscale_vpc_public_routetable_ids"></a> [anyscale\_vpc\_public\_routetable\_ids](#output\_anyscale\_vpc\_public\_routetable\_ids) | Anyscale VPC Public Route Table IDs. If none were created, return an empty string. |
-| <a name="output_anyscale_vpc_public_subnet_ids"></a> [anyscale\_vpc\_public\_subnet\_ids](#output\_anyscale\_vpc\_public\_subnet\_ids) | Anyscale VPC Public Subnet IDs. If there were none created, return an empty string. |
+| <a name="output_anyscale_vpc_private_routetable_ids"></a> [anyscale\_vpc\_private\_routetable\_ids](#output\_anyscale\_vpc\_private\_routetable\_ids) | Anyscale VPC Private Route Table IDs. If none were created, return an empty list. |
+| <a name="output_anyscale_vpc_private_subnet_ids"></a> [anyscale\_vpc\_private\_subnet\_ids](#output\_anyscale\_vpc\_private\_subnet\_ids) | Anyscale VPC Private Subnet IDs. If there were none created, return an empty list. |
+| <a name="output_anyscale_vpc_private_subnet_ids_az_map"></a> [anyscale\_vpc\_private\_subnet\_ids\_az\_map](#output\_anyscale\_vpc\_private\_subnet\_ids\_az\_map) | Anyscale VPC Private Subnet IDs to AZ Map. If there were none created, return an empty map. |
+| <a name="output_anyscale_vpc_public_routetable_ids"></a> [anyscale\_vpc\_public\_routetable\_ids](#output\_anyscale\_vpc\_public\_routetable\_ids) | Anyscale VPC Public Route Table IDs. If none were created, return an empty list. |
+| <a name="output_anyscale_vpc_public_subnet_ids"></a> [anyscale\_vpc\_public\_subnet\_ids](#output\_anyscale\_vpc\_public\_subnet\_ids) | Anyscale VPC Public Subnet IDs. If there were none created, return an empty list. |
+| <a name="output_anyscale_vpc_public_subnet_ids_az_map"></a> [anyscale\_vpc\_public\_subnet\_ids\_az\_map](#output\_anyscale\_vpc\_public\_subnet\_ids\_az\_map) | Anyscale VPC Public Subnet IDs to AZ Map. If there were none created, return an empty map. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 <!-- References -->
