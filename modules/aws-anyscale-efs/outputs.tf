@@ -38,3 +38,8 @@ output "efs_mount_target_availability_zone_ids" {
   description = "EFS mount target availability zone IDs"
   value       = try(aws_efs_mount_target.anyscale_efs[*].availability_zone_id, [])
 }
+
+output "efs_mount_target_ips" {
+  description = "EFS mount target IPs"
+  value       = try(aws_efs_mount_target.anyscale_efs[*].ip_address, [])
+}

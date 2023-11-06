@@ -26,7 +26,7 @@ EFS Policies to enforce TLS traffic are not currently supported. This requires a
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.15.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.24.0 |
 
 ## Modules
 
@@ -86,6 +86,7 @@ No modules.
 | <a name="output_efs_mount_target_availability_zone_ids"></a> [efs\_mount\_target\_availability\_zone\_ids](#output\_efs\_mount\_target\_availability\_zone\_ids) | EFS mount target availability zone IDs |
 | <a name="output_efs_mount_target_availability_zone_names"></a> [efs\_mount\_target\_availability\_zone\_names](#output\_efs\_mount\_target\_availability\_zone\_names) | EFS mount target availability zone names |
 | <a name="output_efs_mount_target_ids"></a> [efs\_mount\_target\_ids](#output\_efs\_mount\_target\_ids) | EFS Mount Target IDs |
+| <a name="output_efs_mount_target_ips"></a> [efs\_mount\_target\_ips](#output\_efs\_mount\_target\_ips) | EFS mount target IPs |
 | <a name="output_efs_mount_target_network_interface_ids"></a> [efs\_mount\_target\_network\_interface\_ids](#output\_efs\_mount\_target\_network\_interface\_ids) | EFS mount target network interface IDs |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

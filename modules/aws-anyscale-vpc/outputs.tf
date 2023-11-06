@@ -24,6 +24,11 @@ output "public_subnet_ids" {
   value       = try(aws_subnet.public[*].id, [])
 }
 
+output "public_subnet_ids_az_map" {
+  description = "Map of public subnet IDs to Availability Zones"
+  value       = try(zipmap(aws_subnet.public[*].id, aws_subnet.public[*].availability_zone), {})
+}
+
 output "public_subnet_cidrs" {
   description = "IPv4 CIDR blocks for the public subnets"
   value       = try(aws_subnet.public[*].cidr_block, [])
@@ -42,6 +47,10 @@ output "private_subnet_ids" {
 output "private_subnet_cidrs" {
   description = "IPv4 CIDR blocks for the private subnets"
   value       = try(aws_subnet.private[*].cidr_block, [])
+}
+output "private_subnet_ids_az_map" {
+  description = "Map of private subnet IDs to Availability Zones"
+  value       = try(zipmap(aws_subnet.private[*].id, aws_subnet.private[*].availability_zone), {})
 }
 
 output "private_route_table_ids" {
