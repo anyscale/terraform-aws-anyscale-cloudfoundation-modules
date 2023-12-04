@@ -1,9 +1,8 @@
 # ---------------------------------------------------------------------------------------------------------------------
-# Create core Anyscale v2 Stack resources with minimal parameters but a common name
+# Create core Anyscale v2 Stack resources with minimal parameters but use an existing S3 Bucket
 #   Should be executed in us-east-2
 #   Creates a v2 stack including
 #     - IAM Roles
-#     - S3 Bucket
 #     - VPC with publicly routed subnets (no private subnets)
 #     - VPC Security Groups
 #     - EFS
@@ -17,7 +16,7 @@ locals {
   )
 }
 
-module "aws_anyscale_v2_common_name" {
+module "aws_anyscale_v2_existing_s3" {
   source = "../.." #this should be changed if executing this example outside of this repository
   tags   = local.full_tags
 

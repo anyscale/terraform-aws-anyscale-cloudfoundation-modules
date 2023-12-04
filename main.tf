@@ -133,7 +133,7 @@ module "aws_anyscale_iam" {
   anyscale_cluster_node_managed_policy_arns = var.anyscale_cluster_node_managed_policy_arns
 
   create_iam_s3_policy               = local.create_new_s3_bucket || var.existing_s3_bucket_arn != null ? true : false
-  anyscale_s3_bucket_arn             = try(module.aws_anyscale_s3.s3_bucket_arn, var.existing_s3_bucket_arn, null)
+  anyscale_s3_bucket_arn             = try(coalesce(var.existing_s3_bucket_arn, module.aws_anyscale_s3.s3_bucket_arn), null)
   anyscale_iam_s3_policy_name        = local.iam_s3_policy_name
   anyscale_iam_s3_policy_name_prefix = local.iam_s3_policy_prefix
   anyscale_iam_s3_policy_description = var.anyscale_iam_s3_policy_description
