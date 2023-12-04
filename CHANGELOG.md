@@ -1,3 +1,14 @@
+## 0.19.1 (Released)
+FEATURES:
+
+BUG FIXES:
+- Fix issue with IAM policy creation when passing in an existing S3 Bucket.
+- Fix Existing S3 example - Output update to use variable for s3 bucket id.
+
+BREAKING CHANGES:
+
+NOTES:
+
 ## 0.19.0 (Released)
 FEATURES:
 - Updates to EFS outputs to include IPs
