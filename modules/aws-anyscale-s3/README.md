@@ -17,7 +17,7 @@ This module creates the default S3 resources needed for Anyscale to work in a cu
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.15.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.34.0 |
 
 ## Modules
 
@@ -42,7 +42,7 @@ No modules.
 | <a name="input_anyscale_bucket_name"></a> [anyscale\_bucket\_name](#input\_anyscale\_bucket\_name) | (Optional - forces new resource) The name of the bucket. Conflicts with anyscale\_bucket\_prefix. Default is `null`. | `string` | `null` | no |
 | <a name="input_anyscale_bucket_prefix"></a> [anyscale\_bucket\_prefix](#input\_anyscale\_bucket\_prefix) | (Optional - forces new resource) Creates a unique bucket name beginning with the specified prefix. Conflicts with anyscale\_bucket\_name. Default is `anyscale-`. | `string` | `"anyscale-"` | no |
 | <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID. Default is `null`. | `string` | `null` | no |
-| <a name="input_cors_rule"></a> [cors\_rule](#input\_cors\_rule) | (Optional)<br>Object containing a rule of Cross-Origin Resource Sharing.<br>The default allows GET access for the purpose of viewing logs<br>from Anyscale Clusters from the Anyscale Web UI (console.anyscale.com). | `any` | <pre>{<br>  "allowed_headers": [<br>    "*"<br>  ],<br>  "allowed_methods": [<br>    "GET"<br>  ],<br>  "allowed_origins": [<br>    "https://console.anyscale.com"<br>  ],<br>  "expose_headers": []<br>}</pre> | no |
+| <a name="input_cors_rule"></a> [cors\_rule](#input\_cors\_rule) | (Optional)<br>Object containing a rule of Cross-Origin Resource Sharing.<br>The default allows GET access for the purpose of viewing logs<br>from Anyscale Clusters from the Anyscale Web UI (*.anyscale.com).<br><br>ex:<pre>cors_rule = {<br>  allowed_headers = ["*"]<br>  allowed_methods = ["PUT", "POST"]<br>  allowed_origins = ["https://*.anyscale.com"]<br>}</pre> | `any` | <pre>{<br>  "allowed_headers": [<br>    "*"<br>  ],<br>  "allowed_methods": [<br>    "GET",<br>    "PUT"<br>  ],<br>  "allowed_origins": [<br>    "https://*.anyscale.com"<br>  ],<br>  "expose_headers": []<br>}</pre> | no |
 | <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | (Optional) Set to true to delete all objects from the bucket so that the bucket can be destroyed without error.<br>These objects are not recoverable.<br>Default is `false`. With this default, you need to empty the bucket if there are objects before `terraform destroy` can be completed. | `bool` | `false` | no |
 | <a name="input_lifecycle_rule"></a> [lifecycle\_rule](#input\_lifecycle\_rule) | (Optional) List of maps containing configuration of object lifecycle management. Default is an empty list. | `any` | `[]` | no |
 | <a name="input_logging"></a> [logging](#input\_logging) | (Optional) Map containing access bucket logging configuration. Default is an empty map. | `map(string)` | `{}` | no |

@@ -12,7 +12,8 @@ locals {
   anyscale_bucket_prefix = local.anyscale_bucketname != null ? null : var.anyscale_bucket_prefix
 
   module_tags = tomap({
-    tf_sub_module = "aws-anyscale-s3"
+    tf_sub_module     = "aws-anyscale-s3",
+    anyscale_cloud_id = try(var.anyscale_cloud_id, "")
   })
 }
 
