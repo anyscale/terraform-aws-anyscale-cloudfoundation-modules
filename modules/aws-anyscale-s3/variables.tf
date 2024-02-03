@@ -98,7 +98,7 @@ variable "cors_rule" {
     ```
     cors_rule = {
       allowed_headers = ["*"]
-      allowed_methods = ["PUT", "POST"]
+      allowed_methods = ["PUT", "POST", "GET"]
       allowed_origins = ["https://*.anyscale.com"]
     }
     ```
