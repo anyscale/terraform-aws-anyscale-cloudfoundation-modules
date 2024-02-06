@@ -91,14 +91,24 @@ variable "cors_rule" {
   description = <<-EOT
     (Optional)
     Object containing a rule of Cross-Origin Resource Sharing.
-    The default allows GET access for the purpose of viewing logs
-    from Anyscale Clusters from the Anyscale Web UI (console.anyscale.com).
+    The default allows GET, POST, PUT, HEAD, and DELETE
+    access for the purpose of viewing logs and other functionality
+    from within the Anyscale Web UI (*.anyscale.com).
+
+    ex:
+    ```
+    cors_rule = {
+      allowed_headers = ["*"]
+      allowed_methods = [GET", "POST", "PUT", "HEAD", "DELETE"]
+      allowed_origins = ["https://*.anyscale.com"]
+    }
+    ```
   EOT
   type        = any
   default = {
     allowed_headers = ["*"]
-    allowed_methods = ["GET"]
-    allowed_origins = ["https://console.anyscale.com"]
+    allowed_methods = ["GET", "POST", "PUT", "HEAD", "DELETE"]
+    allowed_origins = ["https://*.anyscale.com"]
     expose_headers  = []
   }
 }

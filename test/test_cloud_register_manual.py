@@ -119,6 +119,7 @@ def start_aws_test(branch_name: str, local_path: str):
     stdout_dict = _parse_registration_command(stdout)
     print(f"Parsed stdout_dict: {stdout_dict}")
     s3_bucket_id = stdout_dict.get("s3-bucket-id")
+    memorydb_cluster_id = stdout_dict.get("memorydb-cluster-id", None)
     print("Registering cloud...")
     try:
         cloud_controller = CloudController()
@@ -137,7 +138,7 @@ def start_aws_test(branch_name: str, local_path: str):
             functional_verify=None,
             private_network=False,
             cluster_management_stack_version="v2",
-            memorydb_cluster_id=None,
+            memorydb_cluster_id=memorydb_cluster_id,
             yes=True,
         )
         print("Cloud registered successfully")
@@ -152,7 +153,7 @@ def start_aws_test(branch_name: str, local_path: str):
         cloud_name=cloud_name,
         cloud_id=None,
         strict=True,
-        functional_verify="workspace",
+        functional_verify="workspace,service",
         yes=True,
     )
 
