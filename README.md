@@ -13,7 +13,7 @@
 
 For deploying Anyscale on AWS, the minimum required resources are detailed in the [Anyscale AWS Deployment Guide](https://docs.anyscale.com/user-guide/onboard/clouds/deploy-on-aws). This can be used to build the resources to support Customer Defined Networking Clouds (diagrammed below) as well as a Direct Networking clouds.
 
-<img src="https://docs.anyscale.com/assets/images/gcp-customer-defined-networking-dc6762cbc8412dfdeb1a7b41361236cc.png" alt="Customer Defined Networking" width="800"/>
+<img src="https://docs.anyscale.com/assets/images/aws-customer-defined-82bbc708788049d8b94ea61e383ce313.png" alt="Customer Defined Networking" width="800"/>
 
 To streamline long-term management and to enable customization, we've modularized the resources into the following Terraform sub-modules:
 * aws-anyscale-vpc - Creates a basic (opinionated) VPC for Anyscale.
