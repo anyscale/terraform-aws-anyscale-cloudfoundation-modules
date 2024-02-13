@@ -1,3 +1,33 @@
+## 0.19.4 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+- README updates
+
+## 0.19.3 (Released)
+FEATURES:
+- S3 bucket CORS updates to support additional Anyscale UI functionality
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
+## 0.19.2 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+- Removed unused Go tests
+
 ## 0.19.1 (Released)
 FEATURES:
 
