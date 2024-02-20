@@ -1,4 +1,4 @@
-# aws-anyscale-vpc module unit tests
+# aws-anyscale-memorydb module unit tests
 
 You can run the `anyscale-test` terraform and validate outputs.
 
