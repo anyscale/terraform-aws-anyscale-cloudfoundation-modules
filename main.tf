@@ -257,6 +257,9 @@ module "aws_anyscale_efs" {
   mount_targets_subnets         = coalescelist(var.existing_vpc_subnet_ids, module.aws_anyscale_vpc.private_subnet_ids, module.aws_anyscale_vpc.public_subnet_ids)
   associated_security_group_ids = [module.aws_anyscale_securitygroup_self.security_group_id]
 
+  # Encryption
+  kms_key_arn = var.efs_kms_key_id
+
   # Backup policy
   enable_backup_policy = true
 }

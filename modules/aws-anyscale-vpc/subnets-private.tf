@@ -23,7 +23,7 @@ resource "aws_subnet" "private" {
     {
       Name = try(
         var.private_subnet_names[count.index],
-        format("${local.vpc_name}-${var.private_subnet_suffix}-%s", lookup(local.az_id_map, local.subnet_availability_zones[count.index])),
+        format("${local.vpc_name}-${var.private_subnet_suffix}-%s", local.az_id_map[local.subnet_availability_zones[count.index]]),
         format("${local.vpc_name}-${var.private_subnet_suffix}-%s", local.subnet_availability_zones[count.index])
       )
     },
@@ -47,7 +47,7 @@ resource "aws_route_table" "private" {
     {
       Name = try(
         var.private_subnet_names[count.index],
-        format("${local.vpc_name}-${var.private_subnet_suffix}-%s", lookup(local.az_id_map, local.subnet_availability_zones[count.index])),
+        format("${local.vpc_name}-${var.private_subnet_suffix}-%s", local.az_id_map[local.subnet_availability_zones[count.index]]),
         format("${local.vpc_name}-${var.private_subnet_suffix}-%s", local.subnet_availability_zones[count.index])
       )
     },

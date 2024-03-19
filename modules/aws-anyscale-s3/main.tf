@@ -17,7 +17,7 @@ locals {
   })
 }
 
-#tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-enable-bucket-logging
+#trivy:ignore:avd-aws-0089 trivy:ignore:avd-aws-0090
 resource "aws_s3_bucket" "anyscale_managed_s3_bucket" {
   #checkov:skip=CKV_AWS_145:Encryption is managed below as a customer choice
   #checkov:skip=CKV_AWS_144:Replication is managed as a choice
@@ -46,15 +46,9 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "anyscale_managed_
       kms_master_key_id = lookup(var.server_side_encryption, "kms_master_key_id", null)
       sse_algorithm     = lookup(var.server_side_encryption, "sse_algorithm", lookup(var.server_side_encryption, "kms_master_key_id", null) == null ? "AES256" : "aws:kms")
     }
+    bucket_key_enabled = lookup(var.server_side_encryption, "kms_master_key_id", null) == null ? false : true
   }
 }
-
-# resource "aws_s3_bucket_acl" "anyscale_managed_s3_bucket" {
-#   count = var.module_enabled ? 1 : 0
-
-#   bucket = aws_s3_bucket.anyscale_managed_s3_bucket[0].id
-#   acl    = var.acl
-# }
 
 resource "aws_s3_bucket_cors_configuration" "anyscale_managed_s3_bucket" {
   count  = var.module_enabled && local.cors_enabled ? 1 : 0

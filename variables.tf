@@ -1275,6 +1275,21 @@ variable "efs_lifecycle_transition_to_primary_storage_class" {
   }
 }
 
+variable "efs_kms_key_id" {
+  description = <<-EOT
+    (Optional) The KMS key ID used to encrypt the Elastic File System.
+
+    If not provided, the default AWS managed key will be used.
+
+    ex:
+    ```
+    efs_kms_key_id = "1234abcd-12ab-34cd-56ef-1234567890ab"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
 variable "anyscale_efs_tags" {
   description = <<-EOT
     (Optional) A map of tags for EFS resources.

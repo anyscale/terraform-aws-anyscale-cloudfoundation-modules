@@ -1,3 +1,17 @@
+## 0.20.0 (Released)
+FEATURES:
+- Proper KMS support for EFS and S3 buckets
+
+BUG FIXES:
+- VPC Subnet name changes to remove deprecated double lookup call.
+
+BREAKING CHANGES:
+
+NOTES:
+- README updates
+- Add functional-verify to example outputs
+- Upgrade pre-commit from tfsec (deprecated) to trivy
+
 ## 0.19.4 (Released)
 FEATURES:
 

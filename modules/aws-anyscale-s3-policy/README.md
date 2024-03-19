@@ -3,7 +3,7 @@
 [![AWS Provider Version][badge-tf-aws]](https://github.com/terraform-providers/terraform-provider-aws/releases)
 
 # aws-anyscale-vpc
-This module creates the default S3 resources needed for Anyscale to work in a customers environment.
+This sub-module creates the default S3 resources needed for Anyscale to work in a customers environment. It should be used from the [root module](../../README.md).
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -17,7 +17,7 @@ This module creates the default S3 resources needed for Anyscale to work in a cu
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.15.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.41.0 |
 
 ## Modules
 
@@ -37,7 +37,6 @@ No modules.
 | <a name="input_anyscale_bucket_name"></a> [anyscale\_bucket\_name](#input\_anyscale\_bucket\_name) | (Required) The S3 bucket name to apply the policy to. | `string` | n/a | yes |
 | <a name="input_anyscale_iam_access_role_arn"></a> [anyscale\_iam\_access\_role\_arn](#input\_anyscale\_iam\_access\_role\_arn) | (Required) The Anyscale IAM SteadyState role arn. | `string` | n/a | yes |
 | <a name="input_anyscale_iam_cluster_node_role_arn"></a> [anyscale\_iam\_cluster\_node\_role\_arn](#input\_anyscale\_iam\_cluster\_node\_role\_arn) | (Required) The Anyscale IAM cluster node role arn. | `string` | n/a | yes |
-| <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID. Default is `null`. | `string` | `null` | no |
 | <a name="input_custom_s3_policy"></a> [custom\_s3\_policy](#input\_custom\_s3\_policy) | (Optional) A valid bucket policy in JSON. Default is `null`. | `string` | `null` | no |
 | <a name="input_module_enabled"></a> [module\_enabled](#input\_module\_enabled) | (Optional) Whether to create the resources inside this module. Default is `true`. | `bool` | `true` | no |
 

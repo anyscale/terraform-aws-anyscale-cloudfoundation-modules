@@ -16,6 +16,11 @@ variable "aws_region" {
   type        = string
 }
 
+
+# ------------------------------------------------------------------------------
+# OPTIONAL PARAMETERS
+# These variables have defaults, but may be overridden.
+# ------------------------------------------------------------------------------
 variable "anyscale_deploy_env" {
   description = "(Required) Anyscale deploy environment. Used in resource names and tags."
   type        = string
@@ -25,12 +30,9 @@ variable "anyscale_deploy_env" {
     )
     error_message = "The anyscale_deploy_env only allows `production`, `test`, or `development`"
   }
+  default = "production"
 }
 
-# ------------------------------------------------------------------------------
-# OPTIONAL PARAMETERS
-# These variables have defaults, but may be overridden.
-# ------------------------------------------------------------------------------
 variable "anyscale_cloud_id" {
   description = "(Optional) Anyscale Cloud ID. Default is `null`."
   type        = string
@@ -71,6 +73,7 @@ variable "common_prefix" {
 variable "s3_tag_value" {
   description = "This is used to set the S3 tag value for testing purposes"
   type        = string
+  default     = "anyscale-pfx-test-s3-value"
 }
 
 variable "anyscale_access_role_trusted_role_arns" {

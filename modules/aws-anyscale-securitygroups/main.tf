@@ -3,7 +3,8 @@ locals {
   security_group_id = try(aws_security_group.anyscale_security_group[0].id, var.existing_security_group_id, "")
 
   module_tags = tomap({
-    tf_sub_module = "aws-anyscale-securitygroups"
+    tf_sub_module     = "aws-anyscale-securitygroups",
+    anyscale_cloud_id = try(var.anyscale_cloud_id, "")
   })
 
   allow_all_egress = var.module_enabled && var.allow_all_egress

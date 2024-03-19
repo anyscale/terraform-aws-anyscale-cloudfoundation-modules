@@ -26,7 +26,7 @@ EFS Policies to enforce TLS traffic are not currently supported. This requires a
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.24.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.41.0 |
 
 ## Modules
 
@@ -58,11 +58,11 @@ No modules.
 | <a name="input_create_backup_policy"></a> [create\_backup\_policy](#input\_create\_backup\_policy) | (Optional) Determines whether a backup policy is created. Default is `true`. | `bool` | `true` | no |
 | <a name="input_create_replication_configuration"></a> [create\_replication\_configuration](#input\_create\_replication\_configuration) | (Optional) Determines whether a replication configuration is created. Default is `false`. | `bool` | `false` | no |
 | <a name="input_efs_creation_token"></a> [efs\_creation\_token](#input\_efs\_creation\_token) | (Optional) A unique token used as reference when creating the Elastic File System to ensure idempotent file system creation. Default is `null` which forces Terraform to generate it. | `string` | `null` | no |
-| <a name="input_efs_encrypted"></a> [efs\_encrypted](#input\_efs\_encrypted) | (Optional) Deterimnes if the elastic file system disk will be encrypted. Default is `true`. | `bool` | `true` | no |
+| <a name="input_efs_encrypted"></a> [efs\_encrypted](#input\_efs\_encrypted) | (Optional)<br>Deterimnes if the Elastic File System disk will be encrypted.<br><br>ex:<pre>efs_encrypted = true</pre> | `bool` | `true` | no |
 | <a name="input_efs_performance_mode"></a> [efs\_performance\_mode](#input\_efs\_performance\_mode) | (Optional) The file system performance mode. Can be either `generalPurpose` or `maxIO`. Default is `generalPurpose` | `string` | `"generalPurpose"` | no |
 | <a name="input_efs_throughput_mode"></a> [efs\_throughput\_mode](#input\_efs\_throughput\_mode) | (Optional) Throughput mode for the file system. Defaults to `bursting`. Valid values: `bursting`, `provisioned`. When using `provisioned`, also set `provisioned_throughput_in_mibps`. Default is `bursting`. | `string` | `"bursting"` | no |
 | <a name="input_enable_backup_policy"></a> [enable\_backup\_policy](#input\_enable\_backup\_policy) | (Optional) Determines whether a backup policy is `ENABLED` or `DISABLED`. Default is `true`. | `bool` | `true` | no |
-| <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | (Optional) The ARN for the KMS encryption key. When specifying `kms_key_arn`, efs\_encrypted needs to be set to `true`. Default is `null`. | `string` | `null` | no |
+| <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | (Optional)<br>The ARN for the KMS encryption key to be used for encrypting EFS.<br>When specifying `kms_key_arn`, efs\_encrypted needs to be set to `true`.<br><br>ex:<pre>kms_key_arn = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</pre> | `string` | `null` | no |
 | <a name="input_lifecycle_policy_transition_to_ia"></a> [lifecycle\_policy\_transition\_to\_ia](#input\_lifecycle\_policy\_transition\_to\_ia) | (Optional) Indicates how long it takes to transition files to Infrequent Access storage class. No value, or an empty list, means never. Default is to transition to IA after 60 days. | `list(string)` | <pre>[<br>  "AFTER_60_DAYS"<br>]</pre> | no |
 | <a name="input_lifecycle_policy_transition_to_primary_storage_class"></a> [lifecycle\_policy\_transition\_to\_primary\_storage\_class](#input\_lifecycle\_policy\_transition\_to\_primary\_storage\_class) | (Optional) Indicates the policy used to transition a file from Infrequent Access (IA) storage to primary storage. Default is `AFTER_1_ACCESS`. | `list(string)` | <pre>[<br>  "AFTER_1_ACCESS"<br>]</pre> | no |
 | <a name="input_module_enabled"></a> [module\_enabled](#input\_module\_enabled) | (Optional) Whether to create the resources inside this module. Default is `true`. | `bool` | `true` | no |

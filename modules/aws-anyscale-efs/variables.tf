@@ -66,13 +66,30 @@ variable "efs_performance_mode" {
 }
 
 variable "efs_encrypted" {
-  description = "(Optional) Deterimnes if the elastic file system disk will be encrypted. Default is `true`."
+  description = <<-EOT
+    (Optional)
+    Deterimnes if the Elastic File System disk will be encrypted.
+
+    ex:
+    ```
+    efs_encrypted = true
+    ```
+  EOT
   type        = bool
   default     = true
 }
 
 variable "kms_key_arn" {
-  description = "(Optional) The ARN for the KMS encryption key. When specifying `kms_key_arn`, efs_encrypted needs to be set to `true`. Default is `null`."
+  description = <<-EOT
+    (Optional)
+    The ARN for the KMS encryption key to be used for encrypting EFS.
+    When specifying `kms_key_arn`, efs_encrypted needs to be set to `true`.
+
+    ex:
+    ```
+    kms_key_arn = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+    ```
+  EOT
   type        = string
   default     = null
 }

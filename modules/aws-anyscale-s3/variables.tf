@@ -40,34 +40,6 @@ variable "anyscale_bucket_prefix" {
   default     = "anyscale-"
 }
 
-# variable "acl" {
-#   description = "(Optional) The canned ACL to apply. Default is `private`."
-#   type        = string
-#   default     = "private"
-#   validation {
-#     condition = contains(
-#       [
-#         "private",
-#         "public-read",
-#         "public-read-write",
-#         "aws-exec-read",
-#         "authenticated-read",
-#         "bucket-owner-read",
-#         "bucket-owner-full-control",
-#         "log-delivery-write"
-#       ],
-#       var.acl
-#     )
-#     error_message = "Not a valid ACL. See more at https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl"
-#   }
-# }
-
-# variable "bucket_policy" {
-#   description = "(Optional) A bucket policy in JSON format."
-#   type        = string
-#   default     = null
-# }
-
 variable "force_destroy" {
   description = <<-EOT
     (Optional) Set to true to delete all objects from the bucket so that the bucket can be destroyed without error.
@@ -133,12 +105,30 @@ variable "logging" {
 
 # Example:
 #
-# apply_server_side_encryption_by_default = {
+# server_side_encryption = {
 #   kms_master_key_id = "key_id"
 #   sse_algorithm     = "aws:kms"
 # }
 variable "server_side_encryption" {
-  description = "(Optional) Map containing server-side encryption configuration. Default is `AES256`."
+  description = <<-EOT
+    (Optional)
+    Map containing server-side encryption configuration.
+
+    ex using KMS:
+    ```
+    server_side_encryption = {
+      kms_master_key_id = "key_id"
+      sse_algorithm     = "aws:kms"
+    }
+    ```
+
+    ex using AES256 (default):
+    ```
+    server_side_encryption = {
+      sse_algorithm = "AES256"
+    }
+    ```
+  EOT
   type        = map(string)
   default = {
     sse_algorithm = "AES256"

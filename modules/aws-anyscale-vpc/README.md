@@ -3,7 +3,8 @@
 [![AWS Provider Version][badge-tf-aws]](https://github.com/terraform-providers/terraform-provider-aws/releases)
 
 # aws-anyscale-vpc
-This module creates default VPC resources needed for Anyscale to work in a customers environment.
+This sub-module creates default VPC resources needed for Anyscale to work in a customers environment.  It should be used from the [root module](../../README.md).
+
 This builds a minimal VPC configuration. If you need more complex VPC configuration options...
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -19,8 +20,8 @@ This builds a minimal VPC configuration. If you need more complex VPC configurat
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.24.0 |
-| <a name="provider_time"></a> [time](#provider\_time) | 0.9.1 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.41.0 |
+| <a name="provider_time"></a> [time](#provider\_time) | 0.11.1 |
 
 ## Modules
 

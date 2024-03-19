@@ -10,7 +10,8 @@
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
   full_tags = merge(tomap({
-    anyscale-cloud-id = var.anyscale_cloud_id
+    anyscale-cloud-id = var.anyscale_cloud_id,
+    anyscale-org-id   = var.anyscale_org_id
     }),
     var.tags
   )

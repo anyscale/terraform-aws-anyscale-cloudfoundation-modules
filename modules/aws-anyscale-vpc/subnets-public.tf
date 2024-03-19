@@ -26,7 +26,7 @@ resource "aws_subnet" "public" {
     {
       Name = try(
         var.public_subnet_names[count.index],
-        format("${local.vpc_name}-${var.private_subnet_suffix}-%s", lookup(local.az_id_map, local.subnet_availability_zones[count.index])),
+        format("${local.vpc_name}-${var.private_subnet_suffix}-%s", local.az_id_map[local.subnet_availability_zones[count.index]]),
         format("${local.vpc_name}-${var.public_subnet_suffix}-%s", local.subnet_availability_zones[count.index])
       )
     },

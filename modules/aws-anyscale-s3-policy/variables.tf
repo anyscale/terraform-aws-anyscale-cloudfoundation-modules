@@ -21,21 +21,6 @@ variable "anyscale_iam_cluster_node_role_arn" {
 # OPTIONAL PARAMETERS
 # These variables have defaults, but may be overridden.
 # ------------------------------------------------------------------------------
-variable "anyscale_cloud_id" {
-  description = "(Optional) Anyscale Cloud ID. Default is `null`."
-  type        = string
-  default     = null
-  validation {
-    condition = (
-      var.anyscale_cloud_id == null ? true : (
-        length(var.anyscale_cloud_id) > 4 &&
-        substr(var.anyscale_cloud_id, 0, 4) == "cld_"
-      )
-    )
-    error_message = "The anyscale_cloud_id value must start with \"cld_\"."
-  }
-}
-
 variable "module_enabled" {
   description = "(Optional) Whether to create the resources inside this module. Default is `true`."
   type        = bool
