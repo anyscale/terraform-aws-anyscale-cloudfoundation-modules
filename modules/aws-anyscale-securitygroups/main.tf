@@ -38,7 +38,6 @@ resource "aws_security_group" "anyscale_security_group" {
 # Security Group Ingress Rules
 # -----------------------------
 # Security group rules with "cidr_blocks". This one is specific for Anyscale v1 stack
-#tfsec:ignore:aws-ec2-no-public-egress-sgr #tfsec:ignore:aws-ec2-no-public-ingress-sgr
 resource "aws_security_group_rule" "anyscale_public_ingress_rules" {
   count = var.module_enabled && var.create_anyscale_public_ingress ? length(var.anyscale_ingress_rules_v1) : 0
 
@@ -55,7 +54,6 @@ resource "aws_security_group_rule" "anyscale_public_ingress_rules" {
 }
 
 # Security group rules with "cidr_blocks"
-#tfsec:ignore:aws-ec2-no-public-egress-sgr #tfsec:ignore:aws-ec2-no-public-ingress-sgr
 resource "aws_security_group_rule" "ingress_from_cidr_blocks" {
   count = var.module_enabled ? length(var.ingress_from_cidr_map) : 0
 
@@ -167,7 +165,7 @@ resource "aws_security_group_rule" "ingress_with_existing_security_groups" {
 # Security Group Egress Rules
 # -----------------------------
 # Security group rule - ALL egress
-#tfsec:ignore:aws-ec2-no-public-egress-sgr #tfsec:ignore:aws-ec2-no-public-ingress-sgr
+#trivy:ignore:avd-aws-0104:Allow all egress traffic is a valid use case. Ignoring this alert.
 resource "aws_security_group_rule" "egress_all_allowed" {
   count = local.allow_all_egress ? 1 : 0
 

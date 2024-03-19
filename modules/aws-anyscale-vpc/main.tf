@@ -58,7 +58,7 @@ locals {
 # Top Level VPC Resources
 # ------------------------
 
-#tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs:VPC Flow Logs can be enabled via a boolean variable. Ignoring following alert.
+#trivy:ignore:avd-aws-0178:Flow logs can be enabled via a boolean variable. Ignoring this alert.
 resource "aws_vpc" "anyscale_vpc" {
   #checkov:skip=CKV2_AWS_12:Not managing the default security group in this module
   #checkov:skip=CKV2_AWS_11:Flow logs can be enabled via a boolean variable. Ignoring this alert.

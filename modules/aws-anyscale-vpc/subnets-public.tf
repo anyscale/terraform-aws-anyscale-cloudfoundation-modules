@@ -12,7 +12,7 @@ locals {
 # -----------
 # Subnets
 # -----------
-#tfsec:ignore:aws-ec2-no-public-ip-subnet:Allow public IPs by default in this subnet.
+#trivy:ignore:avd-aws-0164
 resource "aws_subnet" "public" {
   #checkov:skip=CKV_AWS_130:Allow public IPs by default in this subnet
   count = var.module_enabled && local.public_subnet_count > 0 ? local.public_subnet_count : 0

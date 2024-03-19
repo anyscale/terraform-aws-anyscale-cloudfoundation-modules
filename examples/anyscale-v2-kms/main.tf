@@ -18,7 +18,7 @@ locals {
 }
 
 # Create a KMS Key that will be used to encrypt EFS and the S3 bucket
-#tfsec:ignore:aws-kms-auto-rotate-keys
+#trivy:ignore:avd-aws-0065:This is a test KMS key and does not require rotation
 resource "aws_kms_key" "anyscale_v2_kms" {
   #checkov:skip=CKV_AWS_7:Rotation not required for this example
   description             = "Anyscale Terraform Example v2 KMS Key"
@@ -27,7 +27,6 @@ resource "aws_kms_key" "anyscale_v2_kms" {
 }
 
 # Create a policy that will be attached to the KMS Key that allows the Anyscale IAM Roles to use the KMS Key
-#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "anyscale_v2_kms_policy" {
   #checkov:skip=CKV_AWS_111:Constraints are handled outside of this example policy
   #checkov:skip=CKV_AWS_356:Allowed wildcards
