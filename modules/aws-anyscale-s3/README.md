@@ -3,7 +3,7 @@
 [![AWS Provider Version][badge-tf-aws]](https://github.com/terraform-providers/terraform-provider-aws/releases)
 
 # aws-anyscale-s3
-This module creates the default S3 resources needed for Anyscale to work in a customers environment.
+This sub-module creates the default S3 resources needed for Anyscale to work in a customers environment. It should be used from the [root module](../../README.md).
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -17,7 +17,7 @@ This module creates the default S3 resources needed for Anyscale to work in a cu
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.34.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.41.0 |
 
 ## Modules
 
@@ -48,7 +48,7 @@ No modules.
 | <a name="input_logging"></a> [logging](#input\_logging) | (Optional) Map containing access bucket logging configuration. Default is an empty map. | `map(string)` | `{}` | no |
 | <a name="input_module_enabled"></a> [module\_enabled](#input\_module\_enabled) | (Optional) Whether to create the resources inside this module. Default is `true`. | `bool` | `true` | no |
 | <a name="input_object_versioning"></a> [object\_versioning](#input\_object\_versioning) | (Optional) Boolean specifying object versioning configuration. Default is `false`. | `bool` | `false` | no |
-| <a name="input_server_side_encryption"></a> [server\_side\_encryption](#input\_server\_side\_encryption) | (Optional) Map containing server-side encryption configuration. Default is `AES256`. | `map(string)` | <pre>{<br>  "sse_algorithm": "AES256"<br>}</pre> | no |
+| <a name="input_server_side_encryption"></a> [server\_side\_encryption](#input\_server\_side\_encryption) | (Optional)<br>Map containing server-side encryption configuration.<br><br>ex using KMS:<pre>server_side_encryption = {<br>  kms_master_key_id = "key_id"<br>  sse_algorithm     = "aws:kms"<br>}</pre>ex using AES256 (default):<pre>server_side_encryption = {<br>  sse_algorithm = "AES256"<br>}</pre> | `map(string)` | <pre>{<br>  "sse_algorithm": "AES256"<br>}</pre> | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags to all resources that accept tags. | `map(string)` | `{}` | no |
 
 ## Outputs

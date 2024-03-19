@@ -176,7 +176,7 @@ resource "aws_iam_instance_profile" "anyscale_cluster_node_role" {
   # tags = var.tags
 }
 
-
+#trivy:ignore:avd-aws-0057:Wildcard may be passed in IAM policy
 resource "aws_iam_policy" "anyscale_cluster_node_custom_policy" {
   #checkov:skip=CKV_AWS_355:Policy requires wildcards in resource permissions
   count = var.module_enabled && local.create_cluster_node_custom_policy ? 1 : 0

@@ -51,7 +51,7 @@ data "aws_iam_policy_document" "iam_anyscale_crossacct_assumerole_policy" {
 }
 
 #Allow wildcard resources as these are locked down in other ways
-#tfsec:ignore:aws-iam-no-policy-wildcards
+#trivy:ignore:avd-aws-0342 trivy:ignore:avd-aws-0057
 data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
   #checkov:skip=CKV_AWS_111:Write access required for these items
   #checkov:skip=CKV_AWS_356:Wildcards allowed for these items
@@ -239,6 +239,8 @@ data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
     ]
     resources = ["*"]
   }
+
+  #trivy:ignore:avd-aws-0057
   statement {
     sid    = "ResourceManagementExtended"
     effect = "Allow"
@@ -288,7 +290,6 @@ data "aws_iam_policy_document" "iam_anyscale_cluster_node_assumerole_policy" {
   }
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "iam_anyscale_s3_bucket_access" {
   dynamic "statement" {
     for_each = local.create_s3_bucket_access_policy ? [1] : []
@@ -308,7 +309,6 @@ data "aws_iam_policy_document" "iam_anyscale_s3_bucket_access" {
   }
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "iam_anyscale_services_v2" {
   #checkov:skip=CKV_AWS_356:Policy requires wildcards in resource permissions'
   statement {
@@ -417,6 +417,7 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
     resources = ["*"]
   }
 
+  #trivy:ignore:avd-aws-0057:Wildcard required for these actions
   statement {
     sid    = "ACMAllResources"
     effect = "Allow"
@@ -512,7 +513,6 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
   }
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "cluster_node_cloudwatch_access" {
   #checkov:skip=CKV_AWS_356:Policy requires wildcards in resource permissions
   statement {
@@ -524,6 +524,7 @@ data "aws_iam_policy_document" "cluster_node_cloudwatch_access" {
     resources = ["*"]
   }
 
+  #trivy:ignore:avd-aws-0057:Wildcard required for these actions
   statement {
     sid    = "CloudwatchLogsRead"
     effect = "Allow"

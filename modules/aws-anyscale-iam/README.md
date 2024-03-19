@@ -3,7 +3,7 @@
 [![AWS Provider Version][badge-tf-aws]](https://github.com/terraform-providers/terraform-provider-aws/releases)
 
 # aws-anyscale-iam
-This module creates the default IAM resources needed for Anyscale to work in a customers environment.
+This sub-module creates the default IAM resources needed for Anyscale to work in a customers environment. It should be used from the [root module](../../README.md).
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -17,7 +17,7 @@ This module creates the default IAM resources needed for Anyscale to work in a c
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.15.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.41.0 |
 
 ## Modules
 

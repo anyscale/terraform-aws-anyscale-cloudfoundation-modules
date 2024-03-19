@@ -4,7 +4,7 @@
 
 # aws-anyscale-memorydb
 
-This module creates AWS MemoryDB resource that are used for Anyscale Services HA (head node failures)
+This sub-module creates AWS MemoryDB resource that are used for Anyscale Services HA (head node failures).  It should be used from the [root module](../../README.md).
 
 AWS MemoryDB for Redis is a fully managed, in-memory database service built on the popular Redis engine. It provides fast performance, scalability, and durability for use cases that demand high-speed access to data. MemoryDB is designed to offer a fault-tolerant system by replicating data across multiple Availability Zones, ensuring data persistence without sacrificing latency.
 
@@ -24,8 +24,8 @@ Enabling this submodule will increase the deployment time for these modules - th
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.15.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | 3.5.1 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.41.0 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.6.0 |
 
 ## Modules
 

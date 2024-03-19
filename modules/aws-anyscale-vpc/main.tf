@@ -58,7 +58,7 @@ locals {
 # Top Level VPC Resources
 # ------------------------
 
-#tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs:VPC Flow Logs can be enabled via a boolean variable. Ignoring following alert.
+#trivy:ignore:avd-aws-0178:Flow logs can be enabled via a boolean variable. Ignoring this alert.
 resource "aws_vpc" "anyscale_vpc" {
   #checkov:skip=CKV2_AWS_12:Not managing the default security group in this module
   #checkov:skip=CKV2_AWS_11:Flow logs can be enabled via a boolean variable. Ignoring this alert.
@@ -173,6 +173,7 @@ resource "aws_iam_policy" "vpc_flow_log_cloudwatch" {
   )
 }
 
+#trivy:ignore:avd-aws-0057
 data "aws_iam_policy_document" "vpc_flow_log_cloudwatch" {
   #checkov:skip=CKV_AWS_356:Wildcard resource allowed in IAM policy
   count = var.module_enabled && var.create_flow_log_cloudwatch_iam_role ? 1 : 0

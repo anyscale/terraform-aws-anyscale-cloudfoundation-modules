@@ -12,7 +12,7 @@ locals {
 # -----------
 # Subnets
 # -----------
-#tfsec:ignore:aws-ec2-no-public-ip-subnet:Allow public IPs by default in this subnet.
+#trivy:ignore:avd-aws-0164
 resource "aws_subnet" "public" {
   #checkov:skip=CKV_AWS_130:Allow public IPs by default in this subnet
   count = var.module_enabled && local.public_subnet_count > 0 ? local.public_subnet_count : 0
@@ -26,7 +26,7 @@ resource "aws_subnet" "public" {
     {
       Name = try(
         var.public_subnet_names[count.index],
-        format("${local.vpc_name}-${var.private_subnet_suffix}-%s", lookup(local.az_id_map, local.subnet_availability_zones[count.index])),
+        format("${local.vpc_name}-${var.private_subnet_suffix}-%s", local.az_id_map[local.subnet_availability_zones[count.index]]),
         format("${local.vpc_name}-${var.public_subnet_suffix}-%s", local.subnet_availability_zones[count.index])
       )
     },

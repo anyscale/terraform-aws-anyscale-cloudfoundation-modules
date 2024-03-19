@@ -17,7 +17,6 @@ locals {
   )
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
 module "aws_anyscale_v2_common_name" {
   source = "../.." #this should be changed if executing this example outside of this repository
   tags   = local.full_tags
