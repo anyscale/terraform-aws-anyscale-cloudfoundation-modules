@@ -1,3 +1,13 @@
+## 0.21.0 (Released)
+FEATURES:
+- Add IAM policy update for Anyscale Services change to add HTTP headers for versions.
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
 ## 0.20.0 (Released)
 FEATURES:
 - Proper KMS support for EFS and S3 buckets

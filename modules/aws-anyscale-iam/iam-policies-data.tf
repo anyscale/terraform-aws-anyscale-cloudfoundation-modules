@@ -290,6 +290,7 @@ data "aws_iam_policy_document" "iam_anyscale_cluster_node_assumerole_policy" {
   }
 }
 
+#trivy:ignore:avd-aws-0057:Wildcard required for these actions
 data "aws_iam_policy_document" "iam_anyscale_s3_bucket_access" {
   dynamic "statement" {
     for_each = local.create_s3_bucket_access_policy ? [1] : []
@@ -318,7 +319,8 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
       "cloudformation:CreateStack",
       "cloudformation:DescribeStackEvents",
       "cloudformation:DescribeStackResources",
-      "cloudformation:DescribeStacks"
+      "cloudformation:DescribeStacks",
+      "cloudformation:GetTemplate"
     ]
     resources = [
       "arn:aws:cloudformation:*:${local.account_id}:stack/*"
