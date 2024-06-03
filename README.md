@@ -3,7 +3,7 @@
 [![AWS Provider Version][badge-tf-aws]](https://github.com/terraform-providers/terraform-provider-aws/releases)
 
 # Terraform Modules for Anyscale Cloud Foundations on AWS
-[Terraform] modules to manage cloud infrastructure for Anyscale. This builds the foundational cloud resources needed to run Anyscale in a cloud environment. This module and sub-modules support Google Cloud.
+[Terraform] modules to manage cloud infrastructure for Anyscale. This builds the foundational cloud resources needed to run Anyscale in a cloud environment. This module and sub-modules support AWS Cloud.
 
 **THIS IS PROVIDED AS A STARTING POINT**
 
