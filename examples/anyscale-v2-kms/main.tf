@@ -1,6 +1,5 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # Create core Anyscale v2 Stack resources with minimal parameters but a common name
-#   Should be executed in us-east-2
 #   Creates a v2 stack including
 #     - IAM Roles
 #     - S3 Bucket

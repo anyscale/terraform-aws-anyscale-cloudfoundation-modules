@@ -1,21 +1,21 @@
 # Anyscale Networking Stack v2 - KMS Encryption for S3 and EFS
 
-This **example** will build the resources necessary to run Anyscale in an AWS account. This example will build a
+This **example** will build the resources necessary to run Anyscale in an AWS account. This example will create a
 [Direct Networking](https://docs.anyscale.com/cloud-deployment/aws/manage-clouds#anyscale-clouds-on-aws) solution.
 
-EFS and S3 will use a common KMS Key, however each of these could be unique.
+In this example, the EFS and S3 will use a shared KMS Key; however, each could be unique.
 
 ## To execute
-A general understanding of Terraform and AWS are useful for executing this Terraform. For a high level overview of both,
-please see the [getting started guide](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/blob/main/getting-started.md).
+A general understanding of Terraform and AWS is helpful for understanding how to execute this Terraform. For a high-level overview of both,
+please see the [Getting Started guide](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/blob/main/getting-started.md).
 
-## Using with Anyscale CLI
+## Using with the Anyscale CLI
 
 The outputs from this Terraform can be used to build an anyscale cloud with the anyscale CLI. To use:
 1. Make sure you have the latest Anyscale CLI installed `pip install anyscale --upgrade`
-2. The terraform output, `anyscale_register_command` will provide an example Anyscale CLI command that can be used to register an Anyscale Cloud. You will need to change `<CUSTOMER_DEFINED_NAME>` to a cloud name that you would like to use.
+2. The terraform output: `anyscale_register_command` will provide an example of an Anyscale CLI command you can use to register an Anyscale Cloud. You must change the value: `<CUSTOMER_DEFINED_NAME>` to a cloud name you would like to use.
 
-example:
+Example:
 
 ```
 anyscale cloud register --provider aws \
