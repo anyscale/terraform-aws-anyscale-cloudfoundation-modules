@@ -138,3 +138,38 @@ output "anyscale_iam_s3_policy_id" {
   description = "Policy ID of Anyscale IAM S3 policy"
   value       = try(aws_iam_policy.anyscale_s3_access_policy[0].policy_id, "")
 }
+
+# --------------------------------------------
+# Anyscale EKS Role and Policies
+# --------------------------------------------
+# EKS Cluster Role
+output "iam_anyscale_eks_cluster_role_arn" {
+  description = "ARN of Anyscale EKS cluster IAM role"
+  value       = try(aws_iam_role.anyscale_eks_cluster_role[0].arn, "")
+}
+
+output "iam_anyscale_eks_cluster_role_name" {
+  description = "Name of Anyscale EKS cluster IAM role"
+  value       = try(aws_iam_role.anyscale_eks_cluster_role[0].name, "")
+}
+
+output "iam_anyscale_eks_cluster_role_path" {
+  description = "Path of Anyscale EKS cluster IAM role"
+  value       = try(aws_iam_role.anyscale_eks_cluster_role[0].path, "")
+}
+
+# EKS Node Role
+output "iam_anyscale_eks_node_role_arn" {
+  description = "ARN of Anyscale EKS node IAM role"
+  value       = try(aws_iam_role.eks_node_role[0].arn, "")
+}
+
+output "iam_anyscale_eks_node_role_name" {
+  description = "Name of Anyscale EKS node IAM role"
+  value       = try(aws_iam_role.eks_node_role[0].name, "")
+}
+
+output "iam_anyscale_eks_node_role_path" {
+  description = "Path of Anyscale EKS node IAM role"
+  value       = try(aws_iam_role.eks_node_role[0].path, "")
+}

@@ -54,3 +54,13 @@ variable "tags" {
     "environment" : "test"
   }
 }
+
+variable "anyscale_cluster_node_byod_secret_arns" {
+  description = "(Optional) A list of ARNs of secrets to attach to the cluster node role."
+  type        = list(string)
+}
+
+variable "anyscale_cluster_node_byod_secret_kms_arn" {
+  description = "(Optional) The ARN of the KMS key used to encrypt the secrets."
+  type        = string
+}

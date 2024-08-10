@@ -1,3 +1,6 @@
+# -----------------
+# All defaults outputs
+# -----------------
 output "all_defaults_arn" {
   description = "The arn of the anyscale role."
   value       = module.all_defaults.iam_anyscale_access_role_arn
@@ -8,11 +11,29 @@ output "node_cluster_role_arn" {
   value       = module.iam_cluster_node_instance_profile.iam_cluster_node_instance_profile_role_arn
 }
 
+# -----------------
+# Secrets Manager Test
+# -----------------
 output "secretsmanager_role_arn" {
   description = "The arn of the secretsmanager role"
   value       = module.iam_secretsmanager_instance_profile.iam_cluster_node_instance_profile_role_arn
 }
 
+# -----------------
+# EKS Test
+# -----------------
+output "eks_cluster_role_arn" {
+  description = "The arn of the eks cluster role"
+  value       = module.iam_eks_roles.iam_anyscale_eks_cluster_role_arn
+}
+output "eks_node_role_arn" {
+  description = "The arn of the eks node role"
+  value       = module.iam_eks_roles.iam_anyscale_eks_node_role_arn
+}
+
+# -----------------
+# Kitchen Sink Test
+# -----------------
 output "kitchen_sink_anyscale_role_arn" {
   description = "The arn of the kitchen sink anyscale role"
   value       = module.kitchen_sink.iam_anyscale_access_role_arn

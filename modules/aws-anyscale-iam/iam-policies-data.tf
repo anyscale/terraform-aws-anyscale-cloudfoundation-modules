@@ -562,6 +562,9 @@ data "aws_iam_policy_document" "cluster_node_cloudwatch_access" {
 
 }
 
+#-------------------
+# Cluster Node Secrets Manager access
+#-------------------
 locals {
   secrets_policy_body = var.anyscale_cluster_node_byod_secret_kms_arn != null ? templatefile(
     "${path.module}/cluster_node-secretsmanager-getsecret-kms.tmpl",

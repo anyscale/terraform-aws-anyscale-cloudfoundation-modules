@@ -60,45 +60,101 @@ variable "create_anyscale_access_role" {
   default     = true
 }
 variable "anyscale_access_role_name" {
-  description = "(Optional, forces creation of new resource) The name of the Anyscale IAM access role. Conflicts with anyscale_access_role_name_prefix. Default is `null`."
-  type        = string
-  default     = null
+  description = <<-EOT
+    (Optional, forces creation of new resource) The name of the Anyscale IAM access role.
+
+    Overrides/conflicts with `anyscale_access_role_name_prefix`.
+
+    ex:
+    ```
+    anyscale_access_role_name = "anyscale-iam-role"
+    ```
+  EOT
+
+  type    = string
+  default = null
 }
 
 variable "anyscale_access_role_name_prefix" {
-  description = "(Optional, forces creation of new resource) The prefix of the Anyscale IAM access role. Conflicts with anyscale_access_role_name. Default is `anyscale-iam-role-`."
+  description = <<-EOT
+    (Optional, forces creation of new resource) The prefix of the Anyscale IAM access role.
+
+    Conflicts with anyscale_access_role_name.
+
+    ex:
+    ```
+    anyscale_access_role_name_prefix = "anyscale-iam-role-"
+    ```
+  EOT
   type        = string
   default     = "anyscale-iam-role-"
 }
 
 variable "anyscale_access_role_path" {
-  description = "(Optional) The path to the IAM role. Default is `/`"
+  description = <<-EOT
+    (Optional) The path to the IAM role.
+
+    ex:
+    ```
+    anyscale_access_role_path = "/"
+    ```
+  EOT
   type        = string
   default     = "/"
 }
 
 variable "anyscale_access_role_description" {
-  description = "(Optional) IAM Role description. Default is `null`."
+  description = <<-EOT
+    (Optional) IAM Role description. Default is `null`.
+
+    ex:
+    ```
+    anyscale_access_role_description = "Anyscale IAM Role"
+    ```
+  EOT
   type        = string
   default     = null
 }
 
 variable "role_permissions_boundary_arn" {
-  description = "(Optional) Permissions boundary ARN to use for IAM role. Default is `null`."
+  description = <<-EOT
+    (Optional) Permissions boundary ARN to use for IAM role.
+
+    ex:
+    ```
+    role_permissions_boundary_arn = "arn:aws:iam::123456789012:policy/MyPermissionsBoundary"
+    ```
+  EOT
   type        = string
   default     = null
 }
 
 variable "anyscale_default_trusted_role_arns" {
-  description = "(Optional) ARNs of AWS entities who can assume these roles. If `anyscale_trusted_role_arns` is provided, it will override this variable. Default is the AWS account for Anyscale Production."
+  description = <<-EOT
+    (Optional) ARNs of AWS entities who can assume these roles.
+
+    If `anyscale_trusted_role_arns` is provided, it will override this variable.
+
+    Default is the AWS account for Anyscale Production.
+  EOT
   type        = list(string)
   default     = ["arn:aws:iam::525325868955:root"]
 }
 variable "anyscale_trusted_role_arns" {
-  description = "(Optional) ARNs of AWS entities who can assume these roles. If this variable is provided, it will override `anyscale_default_trusted_role_arns`. Default is an empty list."
+  description = <<-EOT
+    (Optional) ARNs of AWS entities who can assume these roles.
+
+    If this variable is provided, it will override `anyscale_default_trusted_role_arns`.
+
+    ex:
+    ```
+    anyscale_trusted_role_arns = ["arn:aws:iam::123456789012:role/role-name"]
+    ```
+  EOT
   type        = list(string)
   default     = []
 }
+
 variable "anyscale_trusted_role_sts_externalid" {
   description = "(Optional) STS ExternalId condition values to use with a role. Default is an empty list."
   type        = any
@@ -276,7 +332,14 @@ variable "anyscale_cluster_node_managed_policy_arns" {
 }
 
 variable "create_cluster_node_cloudwatch_policy" {
-  description = "(Optional) Determines whether to create the CloudWatch IAM policy for the cluster node role. Default is `false`."
+  description = <<-EOT
+    (Optional) Determines whether to create the CloudWatch IAM policy for the cluster node role.
+
+    ex:
+    ```
+    create_cluster_node_cloudwatch_policy = true
+    ```
+  EOT
   type        = bool
   default     = false
 }
@@ -390,6 +453,7 @@ variable "anyscale_cluster_node_byod_secret_kms_arn" {
       "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",
     ]
     anyscale_cluster_node_secret_kms_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+    #checkov:skip=CKV_SECRET_6:Doc example
     ```
   EOT
   type        = string
@@ -451,7 +515,17 @@ variable "anyscale_s3_bucket_arn" {
 }
 
 variable "anyscale_iam_s3_policy_name" {
-  description = "(Optional) Name for the Anyscale S3 access IAM policy. Default is `null`."
+  description = <<-EOT
+    (Optional) Name for the Anyscale S3 access IAM policy.
+
+    If left `null`, will default to `anyscale_iam_s3_policy_prefix`.
+    If provided, overrides the `anyscale_iam_s3_policy_prefix` variable.
+
+    ex:
+    ```
+    anyscale_iam_s3_policy_name = "anyscale-iam-s3-policy"
+    ```
+  EOT
   type        = string
   default     = null
 }
@@ -472,4 +546,235 @@ variable "anyscale_iam_s3_policy_description" {
   description = "(Optional) Anyscale S3 access IAM policy description. Default is `Anyscale S3 Access IAM Policy`."
   type        = string
   default     = "Anyscale S3 Access IAM Policy"
+}
+
+#-------------------
+# Anyscale EKS Service Role
+#   Access Role
+#-------------------
+variable "create_anyscale_eks_cluster_role" {
+  description = <<-EOT
+    (Optional) Determines whether to create the Anyscale EKS cluster role.
+
+    ex:
+    ```
+    create_anyscale_eks_cluster_role = true
+    ```
+  EOT
+  type        = bool
+  default     = false
+}
+
+variable "anyscale_eks_cluster_role_name" {
+  description = <<-EOT
+    (Optional, forces creation of new resource) The name of the Anyscale IAM EKS cluster role.
+
+    If left `null`, will default to `anyscale_eks_cluster_role_name_prefix`.
+    If provided, overrides the `anyscale_eks_cluster_role_name_prefix` variable.
+
+    ex:
+    ```
+    anyscale_eks_cluster_role_name = "anyscale-eks-cluster-role"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_eks_cluster_role_name_prefix" {
+  description = <<-EOT
+    (Optional, forces creation of new resource) The prefix of the Anyscale IAM EKS cluster role.
+
+    If `anyscale_eks_cluster_role_name` is provided, it will override this variable.
+
+    ex:
+    ```
+    anyscale_eks_cluster_role_name_prefix = "anyscale-eks-cluster-role-"
+    ```
+  EOT
+  type        = string
+  default     = "anyscale-eks-cluster-role-"
+}
+
+variable "anyscale_eks_cluster_role_path" {
+  description = <<-EOT
+    (Optional) The path to the IAM role.
+
+    ex:
+    ```
+    anyscale_eks_cluster_role_path = "/"
+    ```
+  EOT
+  type        = string
+  default     = "/"
+}
+
+variable "anyscale_eks_cluster_role_description" {
+  description = <<-EOT
+    (Optional) IAM Role description.
+
+    If left `null`, will default to `Anyscale EKS Cluster Role`.
+
+    ex:
+    ```
+    anyscale_eks_cluster_role_description = "Anyscale EKS Cluster Role"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_eks_cluster_role_permissions_boundary_arn" {
+  description = <<-EOT
+    (Optional) Permissions boundary ARN to use for IAM role.
+
+    ex:
+    ```
+    anyscale_eks_cluster_role_permissions_boundary_arn = "arn:aws:iam::123456789012:policy/MyPermissionsBoundary"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_eks_cluster_autoscaler_policy_name" {
+  description = <<-EOT
+    (Optional) Name for the Anyscale EKS Cluster Autoscaler IAM policy.
+
+    If left `null`, will default to `anyscale_eks_cluster_autoscaler_policy_prefix`.
+    If provided, overrides the `anyscale_eks_cluster_autoscaler_policy_prefix` variable.
+
+    ex:
+    ```
+    anyscale_eks_cluster_policy_name = "anyscale-eks-cluster-policy"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_eks_cluster_autoscaler_policy_prefix" {
+  description = <<-EOT
+    (Optional) Name prefix for the Anyscale EKS Cluster Autoscaler IAM policy.
+
+    If `anyscale_eks_cluster_policy_name` is provided, it will override this variable.
+
+    ex:
+    ```
+    anyscale_eks_cluster_policy_prefix = "anyscale-eks-cluster-autoscaler-"
+    ```
+  EOT
+  type        = string
+  default     = "anyscale-eks-cluster-autoscaler-"
+}
+
+variable "anyscale_eks_cluster_autoscaler_policy_path" {
+  description = <<-EOT
+    (Optional) Path of the Anyscale EKS Cluster Autoscaler IAM policy.
+
+    ex:
+    ```
+    anyscale_eks_cluster_policy_path = "/"
+    ```
+  EOT
+  type        = string
+  default     = "/"
+}
+
+variable "anyscale_eks_cluster_autoscaler_policy_description" {
+  description = <<-EOT
+    (Optional) Anyscale EKS Cluster Autoscaler IAM policy description.
+
+    ex:
+    ```
+    anyscale_eks_cluster_policy_description = "Anyscale EKS Cluster Autoscaler IAM Policy"
+    ```
+  EOT
+  type        = string
+  default     = "Anyscale EKS Cluster Autoscaler IAM Policy"
+}
+
+variable "create_anyscale_eks_node_role" {
+  description = <<-EOT
+    (Optional) Determines whether to create the Anyscale EKS node role.
+
+    ex:
+    ```
+    create_anyscale_eks_node_role = true
+    ```
+  EOT
+  type        = bool
+  default     = false
+}
+
+variable "anyscale_eks_node_role_name" {
+  description = <<-EOT
+    (Optional, forces creation of new resource) The name of the Anyscale IAM EKS node role.
+
+    If left `null`, will default to `anyscale_eks_node_role_name_prefix`.
+    If provided, overrides the `anyscale_eks_node_role_name_prefix` variable.
+
+    ex:
+    ```
+    anyscale_eks_node_role_name = "anyscale-eks-node-role"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_eks_node_role_name_prefix" {
+  description = <<-EOT
+    (Optional, forces creation of new resource) The prefix of the Anyscale IAM EKS node role.
+
+    If `anyscale_eks_node_role_name` is provided, it will override this variable.
+
+    ex:
+    ```
+    anyscale_eks_node_role_name_prefix = "anyscale-eks-node-role-"
+    ```
+  EOT
+  type        = string
+  default     = "anyscale-eks-node-role-"
+}
+
+variable "anyscale_eks_node_role_path" {
+  description = <<-EOT
+    (Optional) The path to the IAM role.
+
+    ex:
+    ```
+    anyscale_eks_node_role_path = "/"
+    ```
+  EOT
+  type        = string
+  default     = "/"
+}
+
+variable "anyscale_eks_node_role_description" {
+  description = <<-EOT
+    (Optional) IAM Role description.
+
+    If left `null`, will default to `Anyscale EKS Node Role`.
+
+    ex:
+    ```
+    anyscale_eks_node_role_description = "Anyscale EKS Node Role"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_eks_node_role_permissions_boundary_arn" {
+  description = <<-EOT
+    (Optional) Permissions boundary ARN to use for IAM role.
+
+    ex:
+    ```
+    anyscale_eks_node_role_permissions_boundary_arn = "arn:aws:iam::123456789012:policy/MyPermissionsBoundary"
+    ```
+  EOT
+  type        = string
+  default     = null
 }
