@@ -61,6 +61,7 @@ No modules.
 | <a name="output_eks_cluster_endpoint"></a> [eks\_cluster\_endpoint](#output\_eks\_cluster\_endpoint) | Endpoint of the Anyscale EKS cluster |
 | <a name="output_eks_cluster_id"></a> [eks\_cluster\_id](#output\_eks\_cluster\_id) | ID of the Anyscale EKS cluster |
 | <a name="output_eks_cluster_name"></a> [eks\_cluster\_name](#output\_eks\_cluster\_name) | Name of the Anyscale EKS cluster |
+| <a name="output_eks_kubeconfig"></a> [eks\_kubeconfig](#output\_eks\_kubeconfig) | Kubeconfig of the Anyscale EKS cluster |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 <!-- References -->

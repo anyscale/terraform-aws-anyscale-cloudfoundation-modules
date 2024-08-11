@@ -19,5 +19,13 @@ output "eks_cluster_endpoint" {
 }
 output "eks_cluster_certificate_authority_data" {
   description = "Certificate Authority Data of the Anyscale EKS cluster"
-  value       = try(aws_eks_cluster.anyscale_dataplane[0].certificate_authority[0].data, "")
+  value       = try(base64decode(aws_eks_cluster.anyscale_dataplane[0].certificate_authority[0].data), "")
+}
+
+output "eks_kubeconfig" {
+  description = "Kubeconfig of the Anyscale EKS cluster"
+  value = {
+    endpoint               = try(aws_eks_cluster.anyscale_dataplane[0].endpoint, "")
+    cluster_ca_certificate = try(base64decode(aws_eks_cluster.anyscale_dataplane[0].certificate_authority[0].data))
+  }
 }
