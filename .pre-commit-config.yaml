@@ -20,9 +20,9 @@ repos:
         args:
           - --args=--config=.terraform-docs.yml
       # - id: tfupdate
-      #   name: Autoupdate Terraform AWS Provider
+      #   name: Autoupdate Terraform Google Provider
       #   args:
-      #     - --args=provider aws -v "~> 5.16.0"
+      #     - --args=provider google -v "~> 5.0"
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
