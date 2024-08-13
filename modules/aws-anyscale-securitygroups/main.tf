@@ -10,6 +10,9 @@ locals {
   allow_all_egress = var.module_enabled && var.allow_all_egress
 }
 
+# -----------------------------
+# Default Anyscale Security Group
+# -----------------------------
 resource "aws_security_group" "anyscale_security_group" {
   #checkov:skip=CKV2_AWS_5:This is a Security Group Module and the security groups will not be attached to a resource in this module.
   count = var.module_enabled && var.create_security_group ? 1 : 0
@@ -35,7 +38,7 @@ resource "aws_security_group" "anyscale_security_group" {
 
 
 # -----------------------------
-# Security Group Ingress Rules
+# Default Anyscale Security Group Ingress Rules
 # -----------------------------
 # Security group rules with "cidr_blocks". This one is specific for Anyscale v1 stack
 resource "aws_security_group_rule" "anyscale_public_ingress_rules" {

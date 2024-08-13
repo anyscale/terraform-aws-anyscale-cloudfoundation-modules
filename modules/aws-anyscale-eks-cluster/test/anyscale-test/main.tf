@@ -74,10 +74,9 @@ module "all_defaults" {
 
   module_enabled = true
 
-  anyscale_subnet_ids        = module.eks_vpc.private_subnet_ids
-  anyscale_subnet_count      = local.anyscale_subnet_count
-  anyscale_security_group_id = module.eks_securitygroup.security_group_id
-  eks_role_arn               = module.eks_iam_roles.iam_anyscale_eks_cluster_role_arn
+  anyscale_subnet_ids   = module.eks_vpc.private_subnet_ids
+  anyscale_subnet_count = local.anyscale_subnet_count
+  eks_role_arn          = module.eks_iam_roles.iam_anyscale_eks_cluster_role_arn
 
   tags = local.full_tags
 }
@@ -159,11 +158,11 @@ module "kitchen_sink" {
 
   module_enabled = true
 
-  anyscale_eks_name          = "anyscale-tftest-kitchensink-eks"
-  anyscale_subnet_ids        = module.eks_vpc.private_subnet_ids
-  anyscale_subnet_count      = local.anyscale_subnet_count
-  anyscale_security_group_id = module.eks_securitygroup.security_group_id
-  eks_role_arn               = module.eks_iam_roles.iam_anyscale_eks_cluster_role_arn
+  anyscale_eks_name             = "anyscale-tftest-kitchensink-eks"
+  anyscale_subnet_ids           = module.eks_vpc.private_subnet_ids
+  anyscale_subnet_count         = local.anyscale_subnet_count
+  additional_security_group_ids = [module.eks_securitygroup.security_group_id]
+  eks_role_arn                  = module.eks_iam_roles.iam_anyscale_eks_cluster_role_arn
 
   kubernetes_version               = "1.29"
   enabled_cluster_log_types        = ["api", "authenticator", "audit", "scheduler", "controllerManager"]

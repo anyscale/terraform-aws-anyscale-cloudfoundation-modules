@@ -1,0 +1,67 @@
+[![Build Status][badge-build]][build-status]
+[![Terraform Version][badge-terraform]](https://github.com/hashicorp/terraform/releases)
+[![AWS Provider Version][badge-tf-aws]](https://github.com/terraform-providers/terraform-provider-aws/releases)
+
+# aws-anyscale-eks-nodegroups
+This sub-module creates EKS Node Groups for Anyscale.
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.62.0 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [aws_eks_node_group.management](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_node_group) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | (Required) The name of the EKS cluster.<br><br>ex:<pre>cluster_name = "anyscale-cluster"</pre> | `string` | n/a | yes |
+| <a name="input_eks_node_role_arn"></a> [eks\_node\_role\_arn](#input\_eks\_node\_role\_arn) | (Required) The ARN of the IAM role to use for the EKS nodes.<br><br>ex:<pre>eks_node_role_arn = "arn:aws:iam::123456789012:role/eks-node-role"</pre> | `string` | n/a | yes |
+| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | (Required) A list of subnet IDs to use for the EKS nodes.<br><br>ex:<pre>subnet_ids = ["subnet-1234567890abcdef0", "subnet-1234567890abcdef1"]</pre> | `list(string)` | n/a | yes |
+| <a name="input_create_eks_management_node_group"></a> [create\_eks\_management\_node\_group](#input\_create\_eks\_management\_node\_group) | (Optional) Determines if this module should create a EKS Management Node Group.<br><br>The EKS Management Node Group will be use for EKS Management pods.<br><br>If set to true, `eks_role_arn`, `anyscale_subnet_ids`, and `anyscale_security_group_id` must be provided.<br>ex:<pre>create_eks_management_node_group = true</pre> | `bool` | `true` | no |
+| <a name="input_eks_management_capacity_type"></a> [eks\_management\_capacity\_type](#input\_eks\_management\_capacity\_type) | (Optional) Type of capacity associated with the EKS Node Group.<br><br>ex:<pre>capacity_type = "ON_DEMAND"</pre> | `string` | `null` | no |
+| <a name="input_eks_management_instance_types"></a> [eks\_management\_instance\_types](#input\_eks\_management\_instance\_types) | (Optional) A list of instance types to use for the EKS Management Node Group.<br><br>ex:<pre>eks_management_instance_types = ["m5.large"]</pre> | `list(string)` | <pre>[<br>  "t3.medium"<br>]</pre> | no |
+| <a name="input_eks_management_labels"></a> [eks\_management\_labels](#input\_eks\_management\_labels) | (Optional) A map of labels to add to the EKS Management Node Group.<br><br>ex:<pre>eks_management_labels = {<br>  "node-type" = "management"<br>}</pre> | `map(string)` | <pre>{<br>  "node-type": "management"<br>}</pre> | no |
+| <a name="input_eks_management_max_size"></a> [eks\_management\_max\_size](#input\_eks\_management\_max\_size) | (Optional) The maximum number of nodes for the EKS Management Node Group.<br><br>ex:<pre>eks_management_max_size = 4</pre> | `number` | `4` | no |
+| <a name="input_eks_management_min_size"></a> [eks\_management\_min\_size](#input\_eks\_management\_min\_size) | (Optional) The minimum number of nodes for the EKS Management Node Group.<br><br>ex:<pre>eks_management_min_size = 1</pre> | `number` | `1` | no |
+| <a name="input_eks_management_node_group_name"></a> [eks\_management\_node\_group\_name](#input\_eks\_management\_node\_group\_name) | (Optional) Anyscale EKS Management Node Group Name.<br><br>ex:<pre>eks_management_node_group_name = "eks-mng"</pre> | `string` | `"eks-mng"` | no |
+| <a name="input_eks_management_tags"></a> [eks\_management\_tags](#input\_eks\_management\_tags) | (Optional) A map of tags to add to the EKS Management Node Group.<br><br>ex:<pre>eks_management_tags = {<br>  "test"        = true<br>  "environment" = "test"<br>}</pre> | `map(string)` | `{}` | no |
+| <a name="input_eks_management_taints"></a> [eks\_management\_taints](#input\_eks\_management\_taints) | (Optional) A list of taints to add to the EKS Management Node Group.<br><br>Valid effects are: `NO_SCHEDULE`, `PREFER_NO_SCHEDULE`, and `NO_EXECUTE`.<br><br>ex:<pre>eks_management_taints = [<br>  {<br>    key    = "node-type"<br>    value  = "management"<br>    effect = "NO_SCHEDULE"<br>  }<br>]</pre> | `list(map(string))` | `[]` | no |
+| <a name="input_eks_management_update_config"></a> [eks\_management\_update\_config](#input\_eks\_management\_update\_config) | (Optional) Configuration block of settings for max unavailable resources during node group updates.<br><br>ex:<pre>eks_management_update_config = {<br>  max_unavailable_percentage = 33,<br>  max_unavailable            = 5<br>}</pre> | `map(string)` | <pre>{<br>  "max_unavailable_percentage": 33<br>}</pre> | no |
+| <a name="input_eks_manamgenet_desired_size"></a> [eks\_manamgenet\_desired\_size](#input\_eks\_manamgenet\_desired\_size) | (Optional) The desired number of nodes for the EKS Management Node Group.<br><br>ex:<pre>eks_manamgenet_desired_size = 2</pre> | `number` | `2` | no |
+| <a name="input_force_update_version"></a> [force\_update\_version](#input\_force\_update\_version) | (Optional) Determines if, when updating the Kubernetes version, pods are foreably removed.<br><br>If set to true, if PodDisruptionBudget or taint/toleration issues would otherwise prevent them from being removed (and cause the update to fail) it will be removed.<br><br>ex:<pre>force_update_version = true</pre> | `bool` | `false` | no |
+| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | (Optional) The Kubernetes version to use for the EKS cluster.<br><br>Must be on EKS v1.28 or greater.<br>Downgrades are not supported.<br><br>ex:<pre>kubernetes_version = "1.28"</pre> | `string` | `"1.30"` | no |
+| <a name="input_module_enabled"></a> [module\_enabled](#input\_module\_enabled) | (Optional) Determines if this module should create resources.<br><br>If set to true, `eks_role_arn`, `anyscale_subnet_ids`, and `anyscale_security_group_id` must be provided.<br>ex:<pre>module_enabled = true</pre> | `bool` | `false` | no |
+| <a name="input_node_group_timeouts"></a> [node\_group\_timeouts](#input\_node\_group\_timeouts) | (Optional) Create, update, and delete timeout configurations for the node group<br><br>ex:<pre>node_group_timeouts = {<br>  create = "30m"<br>  update = "30m"<br>  delete = "30m"<br>}</pre> | `map(string)` | `{}` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags to add to all resources.<br><br>If cloud\_id is provided, it will be added to the tags.<br><br>ex:<pre>tags = {<br>  test        = true<br>  environment = "test"<br>}</pre> | `map(string)` | `{}` | no |
+
+## Outputs
+
+No outputs.
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+<!-- References -->
+[Terraform]: https://www.terraform.io
+[Issues]: https://github.com/anyscale/sa-sandbox-terraform/issues
+[badge-build]: https://github.com/anyscale/sa-sandbox-terraform/workflows/CI/CD%20Pipeline/badge.svg
+[badge-terraform]: https://img.shields.io/badge/terraform-1.x%20-623CE4.svg?logo=terraform
+[badge-tf-aws]: https://img.shields.io/badge/AWS-5.+-F8991D.svg?logo=terraform
+[build-status]: https://github.com/anyscale/sa-sandbox-terraform/actions

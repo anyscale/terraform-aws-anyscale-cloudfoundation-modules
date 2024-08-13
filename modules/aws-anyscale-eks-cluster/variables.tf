@@ -108,7 +108,7 @@ variable "kubernetes_version" {
     ```
   EOT
   type        = string
-  default     = "1.28"
+  default     = "1.30"
 
   validation {
     condition     = can(regex("^(1\\.(2[89]|[3-9][0-9]))$", var.kubernetes_version))
@@ -164,9 +164,25 @@ variable "anyscale_subnet_count" {
   default     = 0
 }
 
-variable "anyscale_security_group_id" {
+
+variable "eks_cluster_securitygroup_id" {
   description = <<-EOT
     (Optional) The ID of the security group to use for the EKS cluster.
+
+    Required if `create_eks_cluster_securitygroup` is false.
+
+    ex:
+    ```
+    eks_cluster_securitygroup_id = "sg-1234567890abcdef0"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_security_group_id" {
+  description = <<-EOT
+    (Optional) Anyscale Security Group ID.
 
     Required if `module_enabled` is true.
 
@@ -256,4 +272,57 @@ variable "eks_cluster_encryption_config_resources" {
   EOT
   type        = list(any)
   default     = ["secrets"]
+}
+
+# ------------------
+# EKS Addons
+# ------------------
+variable "eks_addons" {
+  type = list(object({
+    addon_name                  = string
+    addon_version               = optional(string, null)
+    configuration_values        = optional(string, null)
+    resolve_conflicts_on_create = optional(string, null)
+    resolve_conflicts_on_update = optional(string, null)
+    service_account_role_arn    = optional(string, null)
+    create_timeout              = optional(string, null)
+    update_timeout              = optional(string, null)
+    delete_timeout              = optional(string, null)
+  }))
+  description = <<-EOT
+    (Optional) Manages [`aws_eks_addon`](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon) resources.
+
+    ex:
+    ```
+    addons = [
+      {
+        addon_name           = "vpc-cni"
+        addon_version        = "1.8.0"
+        configuration_values = null
+        resolve_conflicts_on_create = null
+        resolve_conflicts_on_update = null
+        service_account_role_arn    = null
+        create_timeout              = null
+        update_timeout              = null
+        delete_timeout              = null
+      }
+    ]
+    ```
+    EOT
+  default     = []
+}
+
+variable "eks_addons_depends_on" {
+  type        = any
+  description = <<-EOT
+    (Optional) If provided, all addons will depend on this object, and therefore not be installed until this object is finalized.
+
+    This is useful if you want to ensure that addons are not applied before some other condition is met, e.g. node groups are created.
+
+    ex:
+    ```
+    addons_depends_on = [aws_eks_node_group.management]
+    ```
+    EOT
+  default     = null
 }
