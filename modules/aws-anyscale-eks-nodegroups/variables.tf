@@ -68,7 +68,7 @@ variable "module_enabled" {
   description = <<-EOT
     (Optional) Determines if this module should create resources.
 
-    If set to true, `eks_role_arn`, `anyscale_subnet_ids`, and `anyscale_security_group_id` must be provided.
+    If set to true, `eks_cluster_name`, `eks_node_role_arn`, and `anyscale_subnet_ids` must be provided.
     ex:
     ```
     module_enabled = true
@@ -158,7 +158,6 @@ variable "create_eks_management_node_group" {
 
     The EKS Management Node Group will be use for EKS Management pods.
 
-    If set to true, `eks_role_arn`, `anyscale_subnet_ids`, and `anyscale_security_group_id` must be provided.
     ex:
     ```
     create_eks_management_node_group = true
@@ -197,7 +196,7 @@ variable "eks_management_instance_types" {
 variable "eks_management_capacity_type" {
   type        = string
   description = <<-EOT
-    (Optional) Type of capacity associated with the EKS Node Group.
+    (Optional) Type of capacity associated with the EKS Management Node Group.
 
     ex:
     ```
@@ -316,7 +315,7 @@ variable "eks_management_taints" {
 
 variable "eks_management_update_config" {
   description = <<-EOT
-    (Optional) Configuration block of settings for max unavailable resources during node group updates.
+    (Optional) Configuration settings for max unavailable resources during Management Node Group updates.
 
     ex:
     ```
@@ -332,20 +331,116 @@ variable "eks_management_update_config" {
   }
 }
 
-# ------------------
-# EKS Anyscale Node Group Configuration
-# ------------------
-# variable "anyscale_node_group_name" {
-#   description = <<-EOT
-#     (Optional) Anyscale EKS Node Group Name Name.
+# ------------------------------------------------------------------------------
+# Anyscale EKS Node Group Configurations
+# ------------------------------------------------------------------------------
+variable "create_anyscale_node_groups" {
+  description = <<-EOT
+    (Optional) Determines if this module should create Anyscale EKS Node Groups.
 
-#     If not provided, the name will be generated based on the cloud_id.
+    ex:
+    ```
+    create_anyscale_node_groups = true
+    ```
+  EOT
+  type        = bool
+  default     = true
+}
 
-#     ex:
-#     ```
-#     anyscale_eks_name = "anyscale-eks"
-#     ```
-#   EOT
-#   type        = string
-#   default     = null
-# }
+variable "eks_anyscale_node_groups" {
+  description = <<-EOT
+    (Optional) A list of Anyscale EKS Node Group configurations.
+
+    ex:
+    ```
+    eks_anyscale_node_groups = [
+      {
+        name           = "anyscale-spot-cpu"
+        instance_types = ["m5.large"]
+        capacity_type  = "SPOT"
+        labels         = {
+          "node-type" = "anyscale"
+        }
+        tags           = {
+          "test"        = true
+          "environment" = "test"
+        }
+        scaling_config = {
+          desired_size = 0
+          max_size     = 4
+          min_size     = 0
+        }
+        update_config = {
+          max_unavailable_percentage = 33
+        }
+        taints = [
+          {
+            key    = "node-type"
+            value  = "anyscale"
+            effect = "NO_SCHEDULE"
+          }
+        ]
+      },
+      ...
+    ]
+    ```
+  EOT
+  type = list(
+    object({
+      name           = string
+      instance_types = list(string)
+      capacity_type  = string
+      labels         = optional(map(string))
+      tags           = optional(map(string))
+      scaling_config = object({
+        desired_size = number
+        max_size     = number
+        min_size     = number
+      })
+      update_config = optional(object({
+        max_unavailable_percentage = optional(number)
+        max_unavailable            = optional(number)
+      }))
+      taints = optional(list(
+        object({
+          key    = string
+          value  = string
+          effect = string
+        })
+      ))
+    })
+  )
+  default = [
+    {
+      name = "anyscale-ondemand-cpu"
+      instance_types = [
+        "m5.2xlarge",
+        "m5.4xlarge",
+        "m5.8xlarge",
+        "c5.xlarge",
+        "c5.2xlarge",
+        "c5.4xlarge",
+        "c6i.xlarge",
+        "c6i.2xlarge",
+        "c6i.4xlarge",
+        "c6i.8xlarge",
+        "c7i.4xlarge",
+        "c7i.8xlarge",
+        "r6i.4xlarge",
+        "r6i.8xlarge",
+        "r6i.12xlarge"
+      ]
+      capacity_type = "ON_DEMAND"
+      labels = {
+        "node-type" = "anyscale"
+      }
+      tags = {}
+      scaling_config = {
+        desired_size = 0
+        max_size     = 100
+        min_size     = 0
+      }
+      taints = []
+    }
+  ]
+}
