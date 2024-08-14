@@ -167,167 +167,78 @@ variable "create_eks_management_node_group" {
   default     = true
 }
 
-variable "eks_management_node_group_name" {
+variable "eks_management_node_group_config" {
   description = <<-EOT
-    (Optional) Anyscale EKS Management Node Group Name.
+    (Optional) Configuration for the EKS Management Node Group.
 
     ex:
     ```
-    eks_management_node_group_name = "eks-mng"
+    eks_management_node_group_config = {
+      instance_types = ["t3.medium"]
+      capacity_type  = "ON_DEMAND"
+      desired_size   = 2
+      max_size       = 4
+      min_size       = 1
+      labels         = {
+        "node-type" = "management"
+      }
+      tags           = {
+        "test"        = true
+        "environment" = "test"
+      }
+      taints = [
+        {
+          key    = "node-type"
+          value  = "management"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+      update_config = {
+        max_unavailable_percentage = 33
+      }
+    }
     ```
   EOT
-  type        = string
-  default     = "eks-mng"
-}
-
-variable "eks_management_instance_types" {
-  description = <<-EOT
-    (Optional) A list of instance types to use for the EKS Management Node Group.
-
-    ex:
-    ```
-    eks_management_instance_types = ["m5.large"]
-    ```
-  EOT
-  type        = list(string)
-  default     = ["t3.medium"]
-}
-
-variable "eks_management_capacity_type" {
-  type        = string
-  description = <<-EOT
-    (Optional) Type of capacity associated with the EKS Management Node Group.
-
-    ex:
-    ```
-    capacity_type = "ON_DEMAND"
-    ```
-
-    EOT
-  default     = null
-  validation {
-    condition = (
-      var.eks_management_capacity_type == null ? true : (
-        var.eks_management_capacity_type == "ON_DEMAND" || var.eks_management_capacity_type == "SPOT"
-      )
-    )
-    error_message = "`eks_management_capacity_type` only allows `ON_DEMAND`, `SPOT`, or `null`"
-  }
-}
-
-variable "eks_manamgenet_desired_size" {
-  description = <<-EOT
-    (Optional) The desired number of nodes for the EKS Management Node Group.
-
-    ex:
-    ```
-    eks_manamgenet_desired_size = 2
-    ```
-  EOT
-  type        = number
-  default     = 2
-}
-
-variable "eks_management_max_size" {
-  description = <<-EOT
-    (Optional) The maximum number of nodes for the EKS Management Node Group.
-
-    ex:
-    ```
-    eks_management_max_size = 4
-    ```
-  EOT
-  type        = number
-  default     = 4
-}
-
-variable "eks_management_min_size" {
-  description = <<-EOT
-    (Optional) The minimum number of nodes for the EKS Management Node Group.
-
-    ex:
-    ```
-    eks_management_min_size = 1
-    ```
-  EOT
-  type        = number
-  default     = 1
-}
-
-variable "eks_management_labels" {
-  description = <<-EOT
-    (Optional) A map of labels to add to the EKS Management Node Group.
-
-    ex:
-    ```
-    eks_management_labels = {
+  type = object({
+    name           = string
+    instance_types = list(string)
+    capacity_type  = string
+    labels         = optional(map(string))
+    tags           = optional(map(string))
+    scaling_config = object({
+      desired_size = number
+      max_size     = number
+      min_size     = number
+    })
+    update_config = optional(object({
+      max_unavailable_percentage = optional(number)
+      max_unavailable            = optional(number)
+    }))
+    taints = optional(list(
+      object({
+        key    = string
+        value  = string
+        effect = string
+      })
+    ))
+  })
+  default = {
+    name           = "eks-mng"
+    instance_types = ["t3.medium"]
+    capacity_type  = "ON_DEMAND"
+    scaling_config = {
+      desired_size = 2
+      max_size     = 4
+      min_size     = 1
+    }
+    labels = {
       "node-type" = "management"
     }
-    ```
-  EOT
-  type        = map(string)
-  default = {
-    "node-type" = "management"
-  }
-}
-
-variable "eks_management_tags" {
-  description = <<-EOT
-    (Optional) A map of tags to add to the EKS Management Node Group.
-
-    ex:
-    ```
-    eks_management_tags = {
-      "test"        = true
-      "environment" = "test"
+    tags   = {}
+    taints = []
+    update_config = {
+      max_unavailable_percentage = 33
     }
-    ```
-  EOT
-  type        = map(string)
-  default     = {}
-}
-
-variable "eks_management_taints" {
-  description = <<-EOT
-    (Optional) A list of taints to add to the EKS Management Node Group.
-
-    Valid effects are: `NO_SCHEDULE`, `PREFER_NO_SCHEDULE`, and `NO_EXECUTE`.
-
-    ex:
-    ```
-    eks_management_taints = [
-      {
-        key    = "node-type"
-        value  = "management"
-        effect = "NO_SCHEDULE"
-      }
-    ]
-    ```
-  EOT
-  type        = list(map(string))
-  default     = []
-
-  validation {
-    condition     = can(regex("^(NO_SCHEDULE|PREFER_NO_SCHEDULE|NO_EXECUTE)$", var.eks_management_taints[0].effect)) || length(var.eks_management_taints) == 0
-    error_message = "The taint effect must be `NO_SCHEDULE`, `PREFER_NO_SCHEDULE`, or `NO_EXECUTE`."
-  }
-}
-
-variable "eks_management_update_config" {
-  description = <<-EOT
-    (Optional) Configuration settings for max unavailable resources during Management Node Group updates.
-
-    ex:
-    ```
-    eks_management_update_config = {
-      max_unavailable_percentage = 33,
-      max_unavailable            = 5
-    }
-    ```
-  EOT
-  type        = map(string)
-  default = {
-    max_unavailable_percentage = 33
   }
 }
 
@@ -377,7 +288,7 @@ variable "eks_anyscale_node_groups" {
           {
             key    = "node-type"
             value  = "anyscale"
-            effect = "NO_SCHEDULE"
+            effect = "NO_SCHEDULE" # or "NO_EXECUTE" or "PREFER_NO_SCHEDULE"
           }
         ]
       },

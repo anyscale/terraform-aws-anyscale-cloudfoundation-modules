@@ -147,15 +147,99 @@ module "all_defaults" {
 # ---------------------------------------------------------------------------------------------------------------------
 # Use all params and build EKS Node Groups
 # ---------------------------------------------------------------------------------------------------------------------
-# module "kitchen_sink" {
-#   source = "../.."
+module "kitchen_sink" {
+  source = "../.."
 
-#   eks_node_role_arn = module.eks_iam_roles.iam_anyscale_eks_node_role_arn
-#   eks_cluster_name  = module.eks_cluster.eks_cluster_name
-#   subnet_ids        = module.eks_vpc.public_subnet_ids
+  module_enabled = true
 
-#   module_enabled = true
-# }
+  eks_node_role_arn = module.eks_iam_roles.iam_anyscale_eks_node_role_arn
+  eks_cluster_name  = module.eks_cluster.eks_cluster_name
+  subnet_ids        = module.eks_vpc.public_subnet_ids
+
+  create_eks_management_node_group = true
+  eks_management_node_group_config = {
+    name           = "eks-management"
+    instance_types = ["t3.large"]
+    capacity_type  = "ON_DEMAND"
+    labels = {
+      "node-type" = "management"
+      "env"       = "test"
+    }
+    tags = {
+      "node-type" = "management",
+      "test"      = "kitchen-sink"
+    }
+    scaling_config = {
+      desired_size = 2
+      max_size     = 5
+      min_size     = 1
+    }
+    update_config = {
+      max_unavailable_percentage = 66
+    }
+    taints = [
+      {
+        key    = "node-type"
+        value  = "management"
+        effect = "PREFER_NO_SCHEDULE"
+      }
+    ]
+  }
+
+  create_anyscale_node_groups = true
+  eks_anyscale_node_groups = [
+    {
+      name           = "eks-anyscale"
+      instance_types = ["t3.medium"]
+      capacity_type  = "ON_DEMAND"
+      labels = {
+        "node-type" = "anyscale"
+        "env"       = "test"
+      }
+      tags = {
+        "node-type" = "anyscale",
+        "test"      = "kitchen-sink"
+      }
+      scaling_config = {
+        desired_size = 2
+        max_size     = 5
+        min_size     = 1
+      }
+      update_config = {
+        max_unavailable_percentage = 66
+      }
+      taints = [
+        {
+          key    = "node-type"
+          value  = "anyscale"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    },
+    {
+      name           = "eks-anyscale-2"
+      instance_types = ["m5.xlarge"]
+      capacity_type  = "SPOT"
+      labels = {
+        "node-type" = "anyscale"
+        "env"       = "test"
+      }
+      tags = {
+        "node-type" = "anyscale",
+        "test"      = "kitchen-sink"
+      }
+      scaling_config = {
+        desired_size = 0
+        max_size     = 5
+        min_size     = 0
+      }
+      taints = []
+    }
+  ]
+
+  tags = local.full_tags
+
+}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Do not create any resources
