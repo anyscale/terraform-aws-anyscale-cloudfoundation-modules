@@ -84,7 +84,7 @@ variable "anyscale_eks_name" {
   description = <<-EOT
     (Optional) Anyscale EKS Name.
 
-    If not provided, the name will be generated based on the cloud_id.
+    If left `null`, will default to `anyscale-eks` in a local variable.
 
     ex:
     ```
@@ -93,6 +93,21 @@ variable "anyscale_eks_name" {
   EOT
   type        = string
   default     = null
+}
+
+variable "include_version_in_name" {
+  description = <<-EOT
+    (Optional) Determines if the Kubernetes version should be included in the EKS cluster name.
+
+    If `anyscale_eks_name` is provided, it will override this variable.
+
+    ex:
+    ```
+    include_version_in_name = true
+    ```
+  EOT
+  type        = bool
+  default     = true
 }
 
 variable "kubernetes_version" {
