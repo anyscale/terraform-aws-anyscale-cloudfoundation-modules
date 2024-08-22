@@ -145,8 +145,18 @@ variable "node_group_timeouts" {
     }
     ```
   EOT
-  type        = map(string)
-  default     = {}
+  type = list(object({
+    create = optional(string)
+    update = optional(string)
+    delete = optional(string)
+  }))
+  default = [
+    {
+      create = "15m"
+      update = "15m"
+      delete = "15m"
+    }
+  ]
 }
 
 # ------------------
