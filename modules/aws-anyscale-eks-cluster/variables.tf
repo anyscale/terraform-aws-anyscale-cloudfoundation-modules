@@ -309,7 +309,7 @@ variable "eks_addons" {
 
     ex:
     ```
-    addons = [
+    eks_addons = [
       {
         addon_name           = "vpc-cni"
         addon_version        = "1.8.0"

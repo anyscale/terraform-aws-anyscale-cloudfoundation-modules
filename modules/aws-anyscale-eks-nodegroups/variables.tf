@@ -152,9 +152,9 @@ variable "node_group_timeouts" {
   }))
   default = [
     {
-      create = "15m"
-      update = "15m"
-      delete = "15m"
+      create = "20m"
+      update = "20m"
+      delete = "20m"
     }
   ]
 }

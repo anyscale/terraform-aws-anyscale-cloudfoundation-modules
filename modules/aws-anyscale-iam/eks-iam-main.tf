@@ -113,3 +113,36 @@ resource "aws_iam_role_policy_attachment" "anyscale_eks_node_amazonec2containerr
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.eks_node_role[0].name
 }
+
+
+# ---------------------------
+# EKS EBS CSI Driver Role
+#   - This role is used by the EKS CSI driver to manage the EKS cluster
+# ---------------------------
+locals {
+  create_eks_csi_driver_role = var.create_eks_ebs_csi_driver_role && var.module_enabled
+
+  eks_ebs_csi_role_desc        = var.eks_ebs_csi_role_description != null ? var.eks_ebs_csi_role_description : var.anyscale_cloud_id != null ? "Anyscale EKS EBS CBI Role for cloud ${var.anyscale_cloud_id} in region ${local.region_name}" : "Anyscale EKS EBS CBI role"
+  eks_ebs_csi_role_name        = try(var.eks_ebs_csi_role_name, null)
+  eks_ebs_csi_role_name_prefix = local.eks_ebs_csi_role_name != null ? null : var.eks_ebs_csi_role_name_prefix != null ? var.eks_ebs_csi_role_name_prefix : "anyscale-eks-ebs-cbi-"
+}
+
+resource "aws_iam_role" "anyscale_eks_csi_driver_role" {
+  count = local.create_eks_csi_driver_role ? 1 : 0
+
+  name        = local.eks_ebs_csi_role_name
+  name_prefix = local.eks_ebs_csi_role_name_prefix
+  path        = var.eks_ebs_csi_role_path
+  description = local.eks_ebs_csi_role_desc
+
+  permissions_boundary = var.eks_ebs_csi_role_permissions_boundary_arn
+  assume_role_policy   = one(data.aws_iam_policy_document.eks_ebs_csi_driver_assume_role[*].json)
+}
+
+# EKS EBS CSI Driver Policy Attachments
+resource "aws_iam_role_policy_attachment" "anyscale_eks_csi_driver_amazonebscsidriver_attach" {
+  count = local.create_eks_csi_driver_role ? 1 : 0
+
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  role       = aws_iam_role.anyscale_eks_csi_driver_role[0].name
+}

@@ -62,6 +62,11 @@ module "eks_iam_roles" {
   create_anyscale_eks_node_role    = true
   anyscale_eks_node_role_name      = "anyscale-tftest-eks-node-role"
 
+  create_eks_ebs_csi_driver_role = true
+  eks_ebs_csi_role_name          = "anyscale-tftest-eks-ebs-csi-role"
+  anyscale_eks_cluster_oidc_arn  = module.kitchen_sink.eks_cluster_oidc_provider_arn
+  anyscale_eks_cluster_oidc_url  = module.kitchen_sink.eks_cluster_oidc_provider_url
+
   tags = local.full_tags
 }
 
@@ -153,6 +158,43 @@ resource "aws_kms_alias" "anyscale_kms_eks_cluster_key" {
   target_key_id = aws_kms_key.anyscale_kms_eks_cluster_key.key_id
 }
 
+# Example of providing add-on configuration
+locals {
+  coredns_config = jsonencode({
+    affinity = {
+      nodeAffinity = {
+        requiredDuringSchedulingIgnoredDuringExecution = {
+          nodeSelectorTerms = [
+            {
+              matchExpressions = [
+                {
+                  key      = "node-type"
+                  operator = "In"
+                  values   = ["management"]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    nodeSelector = {
+      "node-type" = "management"
+    },
+    tolerations = [
+      {
+        key      = "CriticalAddonsOnly"
+        operator = "Exists"
+      },
+      {
+        effect = "NoSchedule"
+        key    = "node-role.kubernetes.io/control-plane"
+      }
+    ],
+    replicaCount = 2
+  })
+}
+
 module "kitchen_sink" {
   source = "../.."
 
@@ -164,13 +206,34 @@ module "kitchen_sink" {
   additional_security_group_ids = [module.eks_securitygroup.security_group_id]
   eks_role_arn                  = module.eks_iam_roles.iam_anyscale_eks_cluster_role_arn
 
-  kubernetes_version               = "1.29"
+  kubernetes_version               = "1.30"
   enabled_cluster_log_types        = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
   eks_endpoint_private_access      = false
   eks_endpoint_public_access       = true
   eks_endpoint_public_access_cidrs = var.public_access_cidrs
 
   eks_cluster_encryption_config_kms_key_arn = aws_kms_key.anyscale_kms_eks_cluster_key.arn
+
+  eks_addons = [
+    {
+      addon_name           = "coredns"
+      addon_version        = "v1.11.1-eksbuild.8"
+      configuration_values = local.coredns_config
+    }
+  ]
+  eks_addons_depends_on = module.eks_node_groups
+
+  tags = local.full_tags
+}
+
+module "eks_node_groups" {
+  source = "../../../aws-anyscale-eks-nodegroups"
+
+  module_enabled = true
+
+  eks_node_role_arn = module.eks_iam_roles.iam_anyscale_eks_node_role_arn
+  eks_cluster_name  = module.kitchen_sink.eks_cluster_name
+  subnet_ids        = module.eks_vpc.public_subnet_ids
 
   tags = local.full_tags
 }

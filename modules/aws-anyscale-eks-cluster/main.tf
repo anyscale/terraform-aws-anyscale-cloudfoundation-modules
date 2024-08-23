@@ -54,6 +54,20 @@ resource "aws_eks_cluster" "anyscale_dataplane" {
   )
 }
 
+data "tls_certificate" "anyscale_dataplane" {
+  count = local.module_enabled ? 1 : 0
+
+  url = aws_eks_cluster.anyscale_dataplane[0].identity[0].oidc[0].issuer
+}
+
+resource "aws_iam_openid_connect_provider" "anyscale_dataplane" {
+  count = local.module_enabled ? 1 : 0
+
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.anyscale_dataplane[0].certificates[0].sha1_fingerprint]
+  url             = data.tls_certificate.anyscale_dataplane[0].url
+}
+
 resource "aws_eks_addon" "cluster" {
   for_each = local.module_enabled ? {
     for addon in var.eks_addons :

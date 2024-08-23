@@ -29,6 +29,21 @@ output "kitchen_sink_id" {
   value       = module.kitchen_sink.eks_cluster_id
 }
 
+output "kitchen_sink_oidc_arn" {
+  description = "The OIDC issuer of the anyscale resource."
+  value       = module.kitchen_sink.eks_cluster_oidc_provider_arn
+}
+
+output "kitchen_sink_oidc_url" {
+  description = "The OIDC issuer of the anyscale resource."
+  value       = module.kitchen_sink.eks_cluster_oidc_provider_url
+}
+
+output "kitchen_sink_resources" {
+  description = "The resources of the anyscale resource."
+  value       = module.kitchen_sink
+}
+
 # -----------------
 # No resource test
 # -----------------

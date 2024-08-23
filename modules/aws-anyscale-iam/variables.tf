@@ -778,3 +778,121 @@ variable "anyscale_eks_node_role_permissions_boundary_arn" {
   type        = string
   default     = null
 }
+
+#-------------------
+# Anyscale EKS EBS CSI Driver Role
+#-------------------
+variable "create_eks_ebs_csi_driver_role" {
+  description = <<-EOT
+    (Optional) Determines whether to create the EKS EBS CSI driver role.
+
+    ex:
+    ```
+    create_eks_ebs_csi_driver_role = true
+    ```
+  EOT
+  type        = bool
+  default     = false
+}
+
+variable "eks_ebs_csi_role_name" {
+  description = <<-EOT
+    (Optional, forces creation of new resource) The name of the Anyscale IAM EBS CSI role.
+
+    If left `null`, will default to `eks_ebs_csi_role_name_prefix`.
+    If provided, overrides the `eks_ebs_csi_role_name_prefix` variable.
+
+    ex:
+    ```
+    eks_ebs_csi_role_name = "anyscale-eks-ebs-csi"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "eks_ebs_csi_role_name_prefix" {
+  description = <<-EOT
+    (Optional, forces creation of new resource) The prefix of the Anyscale IAM EBS CSI role.
+
+    If `eks_ebs_csi_role_name` is provided, it will override this variable.
+
+    ex:
+    ```
+    eks_ebs_csi_role_name_prefix = "anyscale-eks-ebs-csi-role-"
+    ```
+  EOT
+  type        = string
+  default     = "anyscale-eks-ebs-csi-role-"
+}
+
+variable "eks_ebs_csi_role_path" {
+  description = <<-EOT
+    (Optional) The path to the IAM role.
+
+    ex:
+    ```
+    eks_ebs_csi_role_path = "/"
+    ```
+  EOT
+  type        = string
+  default     = "/"
+}
+
+variable "eks_ebs_csi_role_description" {
+  description = <<-EOT
+    (Optional) IAM Role description.
+
+    If left `null`, will default to `Anyscale EKS EBS CSI Role`.
+
+    ex:
+    ```
+    eks_ebs_csi_role_description = "Anyscale EKS EBS CSI Role"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "eks_ebs_csi_role_permissions_boundary_arn" {
+  description = <<-EOT
+    (Optional) Permissions boundary ARN to use for IAM role.
+
+    ex:
+    ```
+    eks_ebs_csi_role_permissions_boundary_arn = "arn:aws:iam::123456789012:policy/MyPermissionsBoundary"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_eks_cluster_oidc_arn" {
+  description = <<-EOT
+    (Optional) The OIDC ARN for the EKS Cluster.
+
+    This will be used to create the assumption policy for the EKS EBS CSI driver role.
+
+    ex:
+    ```
+    anyscale_eks_cluster_oidc_arn = "arn:aws:iam::123456789012:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_eks_cluster_oidc_url" {
+  description = <<-EOT
+    (Optional) The OIDC URL for the EKS Cluster.
+
+    This will be used to create the assumption policy for the EKS EBS CSI driver role.
+
+    ex:
+    ```
+    anyscale_eks_cluster_oidc_url = "https://oidc.eks.us-east-1.amazonaws.com/id/12345678901234567890"
+    ```
+  EOT
+  type        = string
+  default     = null
+}

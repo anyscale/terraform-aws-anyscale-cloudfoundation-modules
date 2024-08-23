@@ -14,12 +14,14 @@ EKS is a managed service that simplifies running Kubernetes on AWS without insta
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
+| <a name="requirement_tls"></a> [tls](#requirement\_tls) | ~> 4.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.62.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.64.0 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | 4.0.5 |
 
 ## Modules
 
@@ -31,6 +33,8 @@ No modules.
 |------|------|
 | [aws_eks_addon.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon) | resource |
 | [aws_eks_cluster.anyscale_dataplane](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster) | resource |
+| [aws_iam_openid_connect_provider.anyscale_dataplane](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_openid_connect_provider) | resource |
+| [tls_certificate.anyscale_dataplane](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/data-sources/certificate) | data source |
 
 ## Inputs
 
@@ -42,7 +46,7 @@ No modules.
 | <a name="input_anyscale_security_group_id"></a> [anyscale\_security\_group\_id](#input\_anyscale\_security\_group\_id) | (Optional) Anyscale Security Group ID.<br><br>Required if `module_enabled` is true.<br><br>ex:<pre>anyscale_security_group_id = "sg-1234567890abcdef0"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_subnet_count"></a> [anyscale\_subnet\_count](#input\_anyscale\_subnet\_count) | (Optional) The mount targets subnet count.<br><br>This is included as the number of subnets is not always known at the creation time.<br><br>ex:<pre>anyscale_subnet_count = 2</pre> | `number` | `0` | no |
 | <a name="input_anyscale_subnet_ids"></a> [anyscale\_subnet\_ids](#input\_anyscale\_subnet\_ids) | (Optional) A list of subnet IDs to use for the EKS cluster.<br><br>Required if `module_enabled` is true.<br><br>ex:<pre>anyscale_subnet_ids = ["subnet-1234567890abcdef0", "subnet-1234567890abcdef1"]</pre> | `list(string)` | `[]` | no |
-| <a name="input_eks_addons"></a> [eks\_addons](#input\_eks\_addons) | (Optional) Manages [`aws_eks_addon`](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon) resources.<br><br>ex:<pre>addons = [<br>  {<br>    addon_name           = "vpc-cni"<br>    addon_version        = "1.8.0"<br>    configuration_values = null<br>    resolve_conflicts_on_create = null<br>    resolve_conflicts_on_update = null<br>    service_account_role_arn    = null<br>    create_timeout              = null<br>    update_timeout              = null<br>    delete_timeout              = null<br>  }<br>]</pre> | <pre>list(object({<br>    addon_name                  = string<br>    addon_version               = optional(string, null)<br>    configuration_values        = optional(string, null)<br>    resolve_conflicts_on_create = optional(string, null)<br>    resolve_conflicts_on_update = optional(string, null)<br>    service_account_role_arn    = optional(string, null)<br>    create_timeout              = optional(string, null)<br>    update_timeout              = optional(string, null)<br>    delete_timeout              = optional(string, null)<br>  }))</pre> | `[]` | no |
+| <a name="input_eks_addons"></a> [eks\_addons](#input\_eks\_addons) | (Optional) Manages [`aws_eks_addon`](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon) resources.<br><br>ex:<pre>eks_addons = [<br>  {<br>    addon_name           = "vpc-cni"<br>    addon_version        = "1.8.0"<br>    configuration_values = null<br>    resolve_conflicts_on_create = null<br>    resolve_conflicts_on_update = null<br>    service_account_role_arn    = null<br>    create_timeout              = null<br>    update_timeout              = null<br>    delete_timeout              = null<br>  }<br>]</pre> | <pre>list(object({<br>    addon_name                  = string<br>    addon_version               = optional(string, null)<br>    configuration_values        = optional(string, null)<br>    resolve_conflicts_on_create = optional(string, null)<br>    resolve_conflicts_on_update = optional(string, null)<br>    service_account_role_arn    = optional(string, null)<br>    create_timeout              = optional(string, null)<br>    update_timeout              = optional(string, null)<br>    delete_timeout              = optional(string, null)<br>  }))</pre> | `[]` | no |
 | <a name="input_eks_addons_depends_on"></a> [eks\_addons\_depends\_on](#input\_eks\_addons\_depends\_on) | (Optional) If provided, all addons will depend on this object, and therefore not be installed until this object is finalized.<br><br>This is useful if you want to ensure that addons are not applied before some other condition is met, e.g. node groups are created.<br><br>ex:<pre>addons_depends_on = [aws_eks_node_group.management]</pre> | `any` | `null` | no |
 | <a name="input_eks_cluster_encryption_config_kms_key_arn"></a> [eks\_cluster\_encryption\_config\_kms\_key\_arn](#input\_eks\_cluster\_encryption\_config\_kms\_key\_arn) | (Optional) KMS Key ID to use for cluster encryption config<br><br>ex:<pre>eks_cluster_encryption_config_kms_key_arn = "arn:aws:kms:us-west-2:123456789012:key/12345678-1234-1234-1234-123456789012"</pre> | `string` | `null` | no |
 | <a name="input_eks_cluster_encryption_config_resources"></a> [eks\_cluster\_encryption\_config\_resources](#input\_eks\_cluster\_encryption\_config\_resources) | (Optional) Cluster Encryption Config Resources to encrypt.<br><br>ex:<pre>eks_cluster_encryption_config_resources = ["secrets"]</pre> | `list(any)` | <pre>[<br>  "secrets"<br>]</pre> | no |
@@ -66,6 +70,8 @@ No modules.
 | <a name="output_eks_cluster_endpoint"></a> [eks\_cluster\_endpoint](#output\_eks\_cluster\_endpoint) | Endpoint of the Anyscale EKS cluster |
 | <a name="output_eks_cluster_id"></a> [eks\_cluster\_id](#output\_eks\_cluster\_id) | ID of the Anyscale EKS cluster |
 | <a name="output_eks_cluster_name"></a> [eks\_cluster\_name](#output\_eks\_cluster\_name) | Name of the Anyscale EKS cluster |
+| <a name="output_eks_cluster_oidc_provider_arn"></a> [eks\_cluster\_oidc\_provider\_arn](#output\_eks\_cluster\_oidc\_provider\_arn) | OIDC provider of the Anyscale EKS cluster |
+| <a name="output_eks_cluster_oidc_provider_url"></a> [eks\_cluster\_oidc\_provider\_url](#output\_eks\_cluster\_oidc\_provider\_url) | OIDC provider URL of the Anyscale EKS cluster |
 | <a name="output_eks_kubeconfig"></a> [eks\_kubeconfig](#output\_eks\_kubeconfig) | Kubeconfig of the Anyscale EKS cluster |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

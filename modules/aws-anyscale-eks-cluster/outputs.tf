@@ -22,6 +22,16 @@ output "eks_cluster_ca_data" {
   value       = try(aws_eks_cluster.anyscale_dataplane[0].certificate_authority[0].data, "")
 }
 
+output "eks_cluster_oidc_provider_arn" {
+  description = "OIDC provider of the Anyscale EKS cluster"
+  value       = try(aws_iam_openid_connect_provider.anyscale_dataplane[0].arn, "")
+}
+
+output "eks_cluster_oidc_provider_url" {
+  description = "OIDC provider URL of the Anyscale EKS cluster"
+  value       = try(aws_iam_openid_connect_provider.anyscale_dataplane[0].url, "")
+}
+
 output "eks_kubeconfig" {
   description = "Kubeconfig of the Anyscale EKS cluster"
   value = {

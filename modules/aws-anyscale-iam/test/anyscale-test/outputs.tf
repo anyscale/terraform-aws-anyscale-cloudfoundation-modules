@@ -30,6 +30,10 @@ output "eks_node_role_arn" {
   description = "The arn of the eks node role"
   value       = module.iam_eks_roles.iam_anyscale_eks_node_role_arn
 }
+output "eks_ebs_csi_driver_role_arn" {
+  description = "The arn of the eks ebs csi driver role"
+  value       = module.iam_eks_roles.iam_anyscale_eks_csi_driver_role_arn
+}
 
 # -----------------
 # Kitchen Sink Test
