@@ -16,32 +16,25 @@ output "all_defaults_id" {
   value       = module.all_defaults.eks_cluster_id
 }
 
+output "all_defaults_resources" {
+  description = "The resources of the All Defaults test"
+  value       = module.all_defaults
+}
+
 # ------------------
 # Kitchen Sink Test
 # ------------------
-output "kitchen_sink_arn" {
-  description = "The arn of the anyscale resource."
-  value       = module.kitchen_sink.eks_cluster_arn
-}
-
-output "kitchen_sink_id" {
-  description = "The ID of the anyscale resource."
-  value       = module.kitchen_sink.eks_cluster_id
-}
-
-output "kitchen_sink_oidc_arn" {
-  description = "The OIDC issuer of the anyscale resource."
-  value       = module.kitchen_sink.eks_cluster_oidc_provider_arn
-}
-
-output "kitchen_sink_oidc_url" {
-  description = "The OIDC issuer of the anyscale resource."
-  value       = module.kitchen_sink.eks_cluster_oidc_provider_url
-}
-
 output "kitchen_sink_resources" {
-  description = "The resources of the anyscale resource."
+  description = "The resources of the Kitchen Sink test"
   value       = module.kitchen_sink
+}
+
+# ------------------
+# EKS Standard Test
+# ------------------
+output "eks_cluster_standard_resources" {
+  description = "The resources of the EKS Standard Test"
+  value       = module.eks_cluster_standard
 }
 
 # -----------------

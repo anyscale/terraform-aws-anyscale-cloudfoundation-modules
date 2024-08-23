@@ -64,8 +64,8 @@ module "eks_iam_roles" {
 
   create_eks_ebs_csi_driver_role = true
   eks_ebs_csi_role_name          = "anyscale-tftest-eks-ebs-csi-role"
-  anyscale_eks_cluster_oidc_arn  = module.kitchen_sink.eks_cluster_oidc_provider_arn
-  anyscale_eks_cluster_oidc_url  = module.kitchen_sink.eks_cluster_oidc_provider_url
+  anyscale_eks_cluster_oidc_arn  = module.eks_cluster_standard.eks_cluster_oidc_provider_arn
+  anyscale_eks_cluster_oidc_url  = module.eks_cluster_standard.eks_cluster_oidc_provider_url
 
   tags = local.full_tags
 }
@@ -160,6 +160,33 @@ resource "aws_kms_alias" "anyscale_kms_eks_cluster_key" {
   target_key_id = aws_kms_key.anyscale_kms_eks_cluster_key.key_id
 }
 
+module "kitchen_sink" {
+  source = "../.."
+
+  module_enabled = true
+
+  anyscale_eks_name          = "anyscale-tftest-kitchensink-eks"
+  anyscale_subnet_ids        = module.eks_vpc.private_subnet_ids
+  anyscale_subnet_count      = local.anyscale_subnet_count
+  anyscale_security_group_id = module.eks_securitygroup.security_group_id
+  eks_role_arn               = module.eks_iam_roles.iam_anyscale_eks_cluster_role_arn
+
+  kubernetes_version               = "1.30"
+  enabled_cluster_log_types        = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
+  eks_endpoint_private_access      = false
+  eks_endpoint_public_access       = true
+  eks_endpoint_public_access_cidrs = var.public_access_cidrs
+
+  eks_cluster_encryption_config_kms_key_arn = aws_kms_key.anyscale_kms_eks_cluster_key.arn
+
+  tags = local.full_tags
+
+  depends_on = [module.eks_vpc, module.eks_securitygroup]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# EKS Cluster - Standard Usage
+# ---------------------------------------------------------------------------------------------------------------------
 # Example of providing add-on configuration
 locals {
   coredns_config = jsonencode({
@@ -195,32 +222,30 @@ locals {
     ],
     replicaCount = 2
   })
+
 }
 
-module "kitchen_sink" {
-  source = "../.."
+module "eks_cluster_standard" {
+  source = "../../../aws-anyscale-eks-cluster"
 
   module_enabled = true
 
-  anyscale_eks_name          = "anyscale-tftest-kitchensink-eks"
+  anyscale_eks_name          = "anyscale-tftest-cluster-standard"
   anyscale_subnet_ids        = module.eks_vpc.private_subnet_ids
   anyscale_subnet_count      = local.anyscale_subnet_count
   anyscale_security_group_id = module.eks_securitygroup.security_group_id
   eks_role_arn               = module.eks_iam_roles.iam_anyscale_eks_cluster_role_arn
-
-  kubernetes_version               = "1.30"
-  enabled_cluster_log_types        = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
-  eks_endpoint_private_access      = false
-  eks_endpoint_public_access       = true
-  eks_endpoint_public_access_cidrs = var.public_access_cidrs
-
-  eks_cluster_encryption_config_kms_key_arn = aws_kms_key.anyscale_kms_eks_cluster_key.arn
 
   eks_addons = [
     {
       addon_name           = "coredns"
       addon_version        = "v1.11.1-eksbuild.8"
       configuration_values = local.coredns_config
+    },
+    {
+      addon_name               = "aws-ebs-csi-driver"
+      addon_version            = "v1.33.0-eksbuild.1"
+      service_account_role_arn = module.eks_iam_roles.iam_anyscale_eks_csi_driver_role_arn
     }
   ]
   eks_addons_depends_on = module.eks_node_groups
@@ -236,7 +261,7 @@ module "eks_node_groups" {
   module_enabled = true
 
   eks_node_role_arn = module.eks_iam_roles.iam_anyscale_eks_node_role_arn
-  eks_cluster_name  = module.kitchen_sink.eks_cluster_name
+  eks_cluster_name  = module.eks_cluster_standard.eks_cluster_name
   subnet_ids        = module.eks_vpc.public_subnet_ids
 
   tags = local.full_tags
