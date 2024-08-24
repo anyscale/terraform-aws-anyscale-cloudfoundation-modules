@@ -196,6 +196,7 @@ variable "eks_management_node_group_config" {
         "test"        = true
         "environment" = "test"
       }
+      ami_type      = "AL2_x86_64"
       taints = [
         {
           key    = "node-type"
@@ -215,6 +216,7 @@ variable "eks_management_node_group_config" {
     capacity_type  = string
     labels         = optional(map(string))
     tags           = optional(map(string))
+    ami_type       = optional(string)
     scaling_config = object({
       desired_size = number
       max_size     = number
@@ -244,8 +246,9 @@ variable "eks_management_node_group_config" {
     labels = {
       "node-type" = "management"
     }
-    tags   = {}
-    taints = []
+    tags     = {}
+    ami_type = "AL2_x86_64"
+    taints   = []
     update_config = {
       max_unavailable_percentage = 33
     }
@@ -286,6 +289,8 @@ variable "eks_anyscale_node_groups" {
           "test"        = true
           "environment" = "test"
         }
+        ami_type       = "AL2_x86_64"
+        disk_size      = 500 # Recommended to be at least 500GB. If not provided, will default to 500GB.
         scaling_config = {
           desired_size = 0
           max_size     = 4
@@ -313,6 +318,8 @@ variable "eks_anyscale_node_groups" {
       capacity_type  = string
       labels         = optional(map(string))
       tags           = optional(map(string))
+      ami_type       = optional(string)
+      disk_size      = optional(number)
       scaling_config = object({
         desired_size = number
         max_size     = number
@@ -333,32 +340,38 @@ variable "eks_anyscale_node_groups" {
   )
   default = [
     {
-      name = "anyscale-ondemand-cpu"
+      name = "anyscale-ondemand-cpu-8CPU-32GB"
       instance_types = [
-        "m5.2xlarge",
-        "m5.4xlarge",
-        "m5.8xlarge",
-        "c5.xlarge",
-        "c5.2xlarge",
-        "c5.4xlarge",
-        "c6i.xlarge",
-        "c6i.2xlarge",
-        "c6i.4xlarge",
-        "c6i.8xlarge",
-        "c7i.4xlarge",
-        "c7i.8xlarge",
-        "r6i.4xlarge",
-        "r6i.8xlarge",
-        "r6i.12xlarge"
+        "m6a.2xlarge",
+        "m5a.2xlarge",
+        "m6i.2xlarge",
+        "m5.2xlarge"
       ]
       capacity_type = "ON_DEMAND"
-      labels = {
-        "node-type" = "anyscale"
-      }
-      tags = {}
+      ami_type      = "AL2_x86_64_GPU"
+      tags          = {}
       scaling_config = {
         desired_size = 0
-        max_size     = 100
+        max_size     = 50
+        min_size     = 0
+      }
+      taints = []
+    },
+
+    {
+      name = "anyscale-ondemand-cpu-16CPU-64GB"
+      instance_types = [
+        "m6a.4xlarge",
+        "m5a.4xlarge",
+        "m6i.4xlarge",
+        "m5.4xlarge",
+      ]
+      capacity_type = "ON_DEMAND"
+      ami_type      = "AL2_x86_64_GPU"
+      tags          = {}
+      scaling_config = {
+        desired_size = 0
+        max_size     = 50
         min_size     = 0
       }
       taints = []

@@ -637,63 +637,6 @@ variable "anyscale_eks_cluster_role_permissions_boundary_arn" {
   default     = null
 }
 
-variable "anyscale_eks_cluster_autoscaler_policy_name" {
-  description = <<-EOT
-    (Optional) Name for the Anyscale EKS Cluster Autoscaler IAM policy.
-
-    If left `null`, will default to `anyscale_eks_cluster_autoscaler_policy_prefix`.
-    If provided, overrides the `anyscale_eks_cluster_autoscaler_policy_prefix` variable.
-
-    ex:
-    ```
-    anyscale_eks_cluster_policy_name = "anyscale-eks-cluster-policy"
-    ```
-  EOT
-  type        = string
-  default     = null
-}
-
-variable "anyscale_eks_cluster_autoscaler_policy_prefix" {
-  description = <<-EOT
-    (Optional) Name prefix for the Anyscale EKS Cluster Autoscaler IAM policy.
-
-    If `anyscale_eks_cluster_policy_name` is provided, it will override this variable.
-
-    ex:
-    ```
-    anyscale_eks_cluster_policy_prefix = "anyscale-eks-cluster-autoscaler-"
-    ```
-  EOT
-  type        = string
-  default     = "anyscale-eks-cluster-autoscaler-"
-}
-
-variable "anyscale_eks_cluster_autoscaler_policy_path" {
-  description = <<-EOT
-    (Optional) Path of the Anyscale EKS Cluster Autoscaler IAM policy.
-
-    ex:
-    ```
-    anyscale_eks_cluster_policy_path = "/"
-    ```
-  EOT
-  type        = string
-  default     = "/"
-}
-
-variable "anyscale_eks_cluster_autoscaler_policy_description" {
-  description = <<-EOT
-    (Optional) Anyscale EKS Cluster Autoscaler IAM policy description.
-
-    ex:
-    ```
-    anyscale_eks_cluster_policy_description = "Anyscale EKS Cluster Autoscaler IAM Policy"
-    ```
-  EOT
-  type        = string
-  default     = "Anyscale EKS Cluster Autoscaler IAM Policy"
-}
-
 variable "create_anyscale_eks_node_role" {
   description = <<-EOT
     (Optional) Determines whether to create the Anyscale EKS node role.
@@ -773,6 +716,79 @@ variable "anyscale_eks_node_role_permissions_boundary_arn" {
     ex:
     ```
     anyscale_eks_node_role_permissions_boundary_arn = "arn:aws:iam::123456789012:policy/MyPermissionsBoundary"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+
+variable "anyscale_eks_node_autoscaler_policy_name" {
+  description = <<-EOT
+    (Optional) Name for the Anyscale EKS Cluster Autoscaler IAM policy.
+
+    If left `null`, will default to `anyscale_eks_node_autoscaler_policy_prefix`.
+    If provided, overrides the `anyscale_eks_node_autoscaler_policy_prefix` variable.
+
+    ex:
+    ```
+    anyscale_eks_node_autoscaler_policy_name = "anyscale-eks-node-autoscaler-policy"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_eks_node_autoscaler_policy_prefix" {
+  description = <<-EOT
+    (Optional) Name prefix for the Anyscale EKS Cluster Autoscaler IAM policy.
+
+    If `anyscale_eks_node_autoscaler_policy_name` is provided, it will override this variable.
+
+    ex:
+    ```
+    anyscale_eks_node_autoscaler_policy_prefix = "anyscale-eks-cluster-autoscaler-"
+    ```
+  EOT
+  type        = string
+  default     = "anyscale-eks-cluster-autoscaler-"
+}
+
+variable "anyscale_eks_node_autoscaler_policy_path" {
+  description = <<-EOT
+    (Optional) Path of the Anyscale EKS Node Autoscaler IAM policy.
+
+    ex:
+    ```
+    anyscale_eks_node_autoscaler_policy_path = "/"
+    ```
+  EOT
+  type        = string
+  default     = "/"
+}
+
+variable "anyscale_eks_node_autoscaler_policy_description" {
+  description = <<-EOT
+    (Optional) Anyscale EKS Node Autoscaler IAM policy description.
+
+    ex:
+    ```
+    anyscale_eks_node_autoscaler_policy_description = "Anyscale EKS Node Autoscaler IAM Policy"
+    ```
+  EOT
+  type        = string
+  default     = "Anyscale EKS Node Autoscaler IAM Policy"
+}
+
+variable "anyscale_eks_cluster_name" {
+  description = <<-EOT
+    (Optional) The name of the EKS cluster.
+
+    This will be used to lock down the Autoscaler Role to just the EKS Cluster for Anyscale.
+
+    ex:
+    ```
+    anyscale_eks_cluster_name = "my-eks-cluster"
     ```
   EOT
   type        = string

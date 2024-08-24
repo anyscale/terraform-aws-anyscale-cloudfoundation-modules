@@ -14,6 +14,8 @@ locals {
   module_tags = tomap({
     tf_sub_module = "aws-anyscale-eks-nodegroups"
   })
+
+  default_disk_size = 500
 }
 
 
@@ -24,10 +26,6 @@ resource "aws_eks_node_group" "management" {
   count = local.module_enabled && var.create_eks_management_node_group ? 1 : 0
 
   node_group_name = var.eks_management_node_group_config.name
-
-  lifecycle {
-    ignore_changes = [scaling_config[0].desired_size]
-  }
 
   # From here to end of resource should be identical in both node groups
   cluster_name         = local.ng_base.cluster_name
@@ -40,6 +38,8 @@ resource "aws_eks_node_group" "management" {
   capacity_type  = var.eks_management_node_group_config.capacity_type
   labels         = var.eks_management_node_group_config.labels
   tags           = merge(var.eks_management_node_group_config.tags, local.ng_base.tags)
+
+  ami_type = var.eks_management_node_group_config.ami_type
 
   scaling_config {
     desired_size = var.eks_management_node_group_config.scaling_config.desired_size
@@ -77,6 +77,10 @@ resource "aws_eks_node_group" "management" {
       delete = timeouts.value["delete"]
     }
   }
+
+  lifecycle {
+    ignore_changes = [scaling_config[0].desired_size]
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -98,9 +102,12 @@ resource "aws_eks_node_group" "anyscale_node_groups" {
   force_update_version = local.ng_base.force_update_version
 
   instance_types = each.value.instance_types
+  ami_type       = each.value.ami_type
   capacity_type  = each.value.capacity_type
-  labels         = each.value.labels
-  tags           = merge(each.value.tags, local.ng_base.tags)
+  disk_size      = coalesce(each.value.disk_size, local.default_disk_size)
+
+  labels = each.value.labels
+  tags   = merge(each.value.tags, local.ng_base.tags)
 
   scaling_config {
     desired_size = each.value.scaling_config.desired_size

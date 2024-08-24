@@ -9,9 +9,6 @@ locals {
   eks_cluster_role_name   = try(var.anyscale_eks_cluster_role_name, null)
   eks_cluster_role_prefix = local.eks_cluster_role_name != null ? null : var.anyscale_eks_cluster_role_name_prefix != null ? var.anyscale_eks_cluster_role_name_prefix : "anyscale-eks-cluster-"
 
-  eks_cluster_autoscaler_policy_name   = try(var.anyscale_eks_cluster_autoscaler_policy_name, null)
-  eks_cluster_autoscaler_policy_prefix = local.eks_cluster_autoscaler_policy_name != null ? null : var.anyscale_eks_cluster_autoscaler_policy_prefix != null ? var.anyscale_eks_cluster_autoscaler_policy_prefix : "anyscale-eks-cluster-autoscaler-"
-
 }
 resource "aws_iam_role" "anyscale_eks_cluster_role" {
   count = local.create_eks_cluster_role ? 1 : 0
@@ -25,20 +22,7 @@ resource "aws_iam_role" "anyscale_eks_cluster_role" {
   assume_role_policy   = one(data.aws_iam_policy_document.eks_cluster_assume_role[*].json)
 }
 
-# EKS Service Cluster Policy
-#   Cluster Autoscaler
-#   https://github.com/kubernetes/autoscaler/blob/055e2bfc04ccf1e4dae2ff2ca0f55e0074fb17fa/cluster-autoscaler/cloudprovider/aws/README.md#iam-policy
-resource "aws_iam_policy" "anyscale_iam_custom_autoscaler_policy" {
-  count = local.create_eks_cluster_role ? 1 : 0
 
-  name        = local.eks_cluster_autoscaler_policy_name
-  name_prefix = local.eks_cluster_autoscaler_policy_prefix
-  path        = var.anyscale_eks_cluster_autoscaler_policy_path
-  description = var.anyscale_eks_cluster_autoscaler_policy_description
-  policy      = one(data.aws_iam_policy_document.eks_cluster_autoscaling_policy[*].json)
-
-  tags = var.tags
-}
 
 # EKS Service Cluster Policy Attachments
 resource "aws_iam_role_policy_attachment" "anyscale_eks_cluster_amazoneksclusterpolicy_attach" {
@@ -62,13 +46,6 @@ resource "aws_iam_role_policy_attachment" "anyscale_eks_cluster_amazonekscnipoli
   role       = aws_iam_role.anyscale_eks_cluster_role[0].name
 }
 
-resource "aws_iam_role_policy_attachment" "anyscale_eks_cluster_autoscaler_policy_attach" {
-  count = local.create_eks_cluster_role ? 1 : 0
-
-  role       = aws_iam_role.anyscale_eks_cluster_role[0].name
-  policy_arn = aws_iam_policy.anyscale_iam_custom_autoscaler_policy[0].arn
-}
-
 # ---------------------------
 # EKS Node Role
 #   - This role is used by the EKS nodes to join the EKS cluster
@@ -79,6 +56,10 @@ locals {
   eks_node_role_desc   = var.anyscale_eks_node_role_description != null ? var.anyscale_eks_node_role_description : var.anyscale_cloud_id != null ? "Anyscale EKS Node Role for cloud ${var.anyscale_cloud_id} in region ${local.region_name}" : "Anyscale EKS node role"
   eks_node_role_name   = try(var.anyscale_eks_node_role_name, null)
   eks_node_role_prefix = local.eks_node_role_name != null ? null : var.anyscale_eks_node_role_name_prefix != null ? var.anyscale_eks_node_role_name_prefix : "anyscale-eks-node-"
+
+  eks_node_autoscaler_policy_name   = try(var.anyscale_eks_node_autoscaler_policy_name, null)
+  eks_node_autoscaler_policy_prefix = local.eks_node_autoscaler_policy_name != null ? null : var.anyscale_eks_node_autoscaler_policy_prefix != null ? var.anyscale_eks_node_autoscaler_policy_prefix : "anyscale-eks-cluster-autoscaler-"
+
 }
 resource "aws_iam_role" "eks_node_role" {
   count = local.create_eks_node_role ? 1 : 0
@@ -92,7 +73,29 @@ resource "aws_iam_role" "eks_node_role" {
   assume_role_policy   = one(data.aws_iam_policy_document.eks_node_assume_role[*].json)
 }
 
+#   Autoscaler
+#   https://github.com/kubernetes/autoscaler/blob/055e2bfc04ccf1e4dae2ff2ca0f55e0074fb17fa/cluster-autoscaler/cloudprovider/aws/README.md#iam-policy
+resource "aws_iam_policy" "anyscale_iam_node_autoscaler_policy" {
+  count = local.create_eks_node_role ? 1 : 0
+
+  name        = local.eks_node_autoscaler_policy_name
+  name_prefix = local.eks_node_autoscaler_policy_prefix
+  path        = var.anyscale_eks_node_autoscaler_policy_path
+  description = var.anyscale_eks_node_autoscaler_policy_description
+  policy      = one(data.aws_iam_policy_document.eks_node_autoscaling_policy[*].json)
+
+  tags = var.tags
+}
+
 # EKS Node Policy Attachments
+
+resource "aws_iam_role_policy_attachment" "anyscale_eks_node_autoscaler_policy_attach" {
+  count = local.create_eks_node_role ? 1 : 0
+
+  role       = aws_iam_role.eks_node_role[0].name
+  policy_arn = aws_iam_policy.anyscale_iam_node_autoscaler_policy[0].arn
+}
+
 resource "aws_iam_role_policy_attachment" "anyscale_eks_node_amazoneksworkernodepolicy_attach" {
   count = local.create_eks_node_role ? 1 : 0
 
