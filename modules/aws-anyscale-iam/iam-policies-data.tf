@@ -290,25 +290,6 @@ data "aws_iam_policy_document" "iam_anyscale_cluster_node_assumerole_policy" {
   }
 }
 
-#trivy:ignore:avd-aws-0057:Wildcard required for these actions
-data "aws_iam_policy_document" "iam_anyscale_s3_bucket_access" {
-  dynamic "statement" {
-    for_each = local.create_s3_bucket_access_policy ? [1] : []
-    content {
-      sid    = "S3BucketAccess"
-      effect = "Allow"
-      actions = [
-        "s3:ListBucket",
-        "s3:GetObject",
-        "s3:PutObject"
-      ]
-      resources = [
-        var.anyscale_s3_bucket_arn,
-        "${var.anyscale_s3_bucket_arn}/*"
-      ]
-    }
-  }
-}
 
 data "aws_iam_policy_document" "iam_anyscale_services_v2" {
   #checkov:skip=CKV_AWS_356:Policy requires wildcards in resource permissions'
@@ -584,4 +565,24 @@ data "aws_iam_policy_document" "cluster_node_secretmanager_read_access" {
   count = var.module_enabled && local.create_secrets_policy ? 1 : 0
 
   source_policy_documents = [local.secrets_policy_doc]
+}
+
+
+#---------------------
+# S3 Bucket Access
+#---------------------
+locals {
+  s3_bucket_access_policy_body = templatefile(
+    "${path.module}/s3-bucket-access.tmpl",
+    {
+      anyscale_s3_bucket_arn = coalesce(var.anyscale_s3_bucket_arn, "empty")
+    }
+  )
+}
+
+#trivy:ignore:avd-aws-0057:Wildcard required for these actions
+data "aws_iam_policy_document" "iam_anyscale_s3_bucket_access" {
+  count = local.create_s3_bucket_access_policy ? 1 : 0
+
+  source_policy_documents = [local.s3_bucket_access_policy_body]
 }

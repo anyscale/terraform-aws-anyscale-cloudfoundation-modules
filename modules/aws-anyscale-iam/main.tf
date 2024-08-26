@@ -268,7 +268,7 @@ resource "aws_iam_policy" "anyscale_s3_access_policy" {
   name_prefix = local.anyscale_iam_s3_policy_name_prefix
   path        = var.anyscale_iam_s3_policy_path
   description = var.anyscale_iam_s3_policy_description
-  policy      = data.aws_iam_policy_document.iam_anyscale_s3_bucket_access.json
+  policy      = data.aws_iam_policy_document.iam_anyscale_s3_bucket_access[0].json
 
   tags = merge(
     local.module_tags,
