@@ -76,8 +76,14 @@ module "iam_eks_roles" {
   eks_ebs_csi_role_name          = "anyscale-eks-ebs-csi-role-tftest"
   eks_ebs_csi_role_path          = "/eks/"
   eks_ebs_csi_role_description   = "Anyscale EKS EBS CSI Role Test"
-  anyscale_eks_cluster_oidc_arn  = "arn:aws:iam::123456789012:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE12345678901234567890123456789012"
-  anyscale_eks_cluster_oidc_url  = "https://oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE12345678901234567890123456789012"
+
+  create_eks_efs_csi_driver_role = true
+  eks_efs_csi_role_name          = "anyscale-eks-efs-csi-role-tftest"
+  eks_efs_csi_role_path          = "/eks/"
+  eks_efs_csi_role_description   = "Anyscale EKS EFS CSI Role Test"
+
+  anyscale_eks_cluster_oidc_arn = "arn:aws:iam::123456789012:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE12345678901234567890123456789012"
+  anyscale_eks_cluster_oidc_url = "https://oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE12345678901234567890123456789012"
 
   tags = local.full_tags
 }

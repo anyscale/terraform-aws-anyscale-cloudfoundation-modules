@@ -18,6 +18,13 @@ locals {
       anyscale_eks_cluster_oidc_provider = try(replace(var.anyscale_eks_cluster_oidc_url, "https://", ""), "empty")
     }
   )
+
+  eks_efs_csi_assume_role_policy_body = templatefile("${path.module}/eks-efs-csi-assumerole.tmpl",
+    {
+      anyscale_eks_cluster_oidc_arn      = coalesce(var.anyscale_eks_cluster_oidc_arn, "empty"),
+      anyscale_eks_cluster_oidc_provider = try(replace(var.anyscale_eks_cluster_oidc_url, "https://", ""), "empty")
+    }
+  )
 }
 
 # EKS Cluster Role
@@ -41,7 +48,14 @@ data "aws_iam_policy_document" "eks_node_autoscaling_policy" {
 
 # EKS EBS CSI Driver Policy
 data "aws_iam_policy_document" "eks_ebs_csi_driver_assume_role" {
-  count = local.create_eks_csi_driver_role ? 1 : 0
+  count = local.create_ebs_csi_driver_role ? 1 : 0
 
   source_policy_documents = [local.eks_ebs_csi_assume_role_policy_body]
+}
+
+# EKS EFS CSI Driver Policy
+data "aws_iam_policy_document" "eks_efs_csi_driver_assume_role" {
+  count = local.create_efs_csi_driver_role ? 1 : 0
+
+  source_policy_documents = [local.eks_efs_csi_assume_role_policy_body]
 }

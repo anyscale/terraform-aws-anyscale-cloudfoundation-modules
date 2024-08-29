@@ -174,18 +174,34 @@ output "iam_anyscale_eks_node_role_path" {
   value       = try(aws_iam_role.eks_node_role[0].path, "")
 }
 
-# EKS EBSCSIDriver Role
-output "iam_anyscale_eks_csi_driver_role_arn" {
+# EKS EBS CSI Driver Role
+output "iam_anyscale_eks_ebs_csi_driver_role_arn" {
   description = "ARN of Anyscale EKS EBS CSI Driver IAM role"
-  value       = try(aws_iam_role.anyscale_eks_csi_driver_role[0].arn, "")
+  value       = try(aws_iam_role.anyscale_eks_ebs_csi_driver_role[0].arn, "")
 }
 
-output "iam_anyscale_eks_csi_driver_role_name" {
+output "iam_anyscale_eks_ebs_csi_driver_role_name" {
   description = "Name of Anyscale EKS EBS CSI Driver IAM role"
-  value       = try(aws_iam_role.anyscale_eks_csi_driver_role[0].name, "")
+  value       = try(aws_iam_role.anyscale_eks_ebs_csi_driver_role[0].name, "")
 }
 
-output "iam_anyscale_eks_csi_driver_role_path" {
+output "iam_anyscale_eks_ebs_csi_driver_role_path" {
   description = "Path of Anyscale EKS EBS CSI Driver IAM role"
-  value       = try(aws_iam_role.anyscale_eks_csi_driver_role[0].path, "")
+  value       = try(aws_iam_role.anyscale_eks_ebs_csi_driver_role[0].path, "")
+}
+
+# EKS EFS CSI Driver Role
+output "iam_anyscale_eks_efs_csi_driver_role_arn" {
+  description = "ARN of Anyscale EKS EFS CSI Driver IAM role"
+  value       = try(aws_iam_role.anyscale_eks_efs_csi_driver_role[0].arn, "")
+}
+
+output "iam_anyscale_eks_efs_csi_driver_role_name" {
+  description = "Name of Anyscale EKS EFS CSI Driver IAM role"
+  value       = try(aws_iam_role.anyscale_eks_efs_csi_driver_role[0].name, "")
+}
+
+output "iam_anyscale_eks_efs_csi_driver_role_path" {
+  description = "Path of Anyscale EKS EFS CSI Driver IAM role"
+  value       = try(aws_iam_role.anyscale_eks_efs_csi_driver_role[0].path, "")
 }

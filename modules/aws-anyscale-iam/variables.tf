@@ -912,3 +912,91 @@ variable "anyscale_eks_cluster_oidc_url" {
   type        = string
   default     = null
 }
+
+#-------------------
+# Anyscale EKS EFS CSI Driver Role
+#-------------------
+variable "create_eks_efs_csi_driver_role" {
+  description = <<-EOT
+    (Optional) Determines whether to create the EKS EFS CSI driver role.
+
+    ex:
+    ```
+    create_eks_efs_csi_driver_role = true
+    ```
+  EOT
+  type        = bool
+  default     = false
+}
+
+variable "eks_efs_csi_role_name" {
+  description = <<-EOT
+    (Optional, forces creation of new resource) The name of the Anyscale IAM EFS CSI role.
+
+    If left `null`, will default to `eks_efs_csi_role_name_prefix`.
+    If provided, overrides the `eks_efs_csi_role_name_prefix` variable.
+
+    ex:
+    ```
+    eks_efs_csi_role_name = "anyscale-efs-ebs-csi"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "eks_efs_csi_role_name_prefix" {
+  description = <<-EOT
+    (Optional, forces creation of new resource) The prefix of the Anyscale IAM EFS CSI role.
+
+    If `eks_efs_csi_role_name` is provided, it will override this variable.
+
+    ex:
+    ```
+    eks_efs_csi_role_name_prefix = "anyscale-eks-efs-csi-role-"
+    ```
+  EOT
+  type        = string
+  default     = "anyscale-eks-efs-csi-role-"
+}
+
+variable "eks_efs_csi_role_path" {
+  description = <<-EOT
+    (Optional) The path to the IAM role.
+
+    ex:
+    ```
+    eks_efs_csi_role_path = "/"
+    ```
+  EOT
+  type        = string
+  default     = "/"
+}
+
+variable "eks_efs_csi_role_description" {
+  description = <<-EOT
+    (Optional) IAM Role description.
+
+    If left `null`, will default to `Anyscale EKS EFS CSI Role`.
+
+    ex:
+    ```
+    eks_efs_csi_role_description = "Anyscale EKS EFS CSI Role"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "eks_efs_csi_role_permissions_boundary_arn" {
+  description = <<-EOT
+    (Optional) Permissions boundary ARN to use for IAM role.
+
+    ex:
+    ```
+    eks_efs_csi_role_permissions_boundary_arn = "arn:aws:iam::123456789012:policy/MyPermissionsBoundary"
+    ```
+  EOT
+  type        = string
+  default     = null
+}

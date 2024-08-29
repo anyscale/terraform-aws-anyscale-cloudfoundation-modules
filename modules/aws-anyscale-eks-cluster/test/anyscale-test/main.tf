@@ -245,7 +245,12 @@ module "eks_cluster_standard" {
     {
       addon_name               = "aws-ebs-csi-driver"
       addon_version            = "v1.33.0-eksbuild.1"
-      service_account_role_arn = module.eks_iam_roles.iam_anyscale_eks_csi_driver_role_arn
+      service_account_role_arn = module.eks_iam_roles.iam_anyscale_eks_ebs_csi_driver_role_arn
+    },
+    {
+      addon_name               = "aws-efs-csi-driver"
+      addon_version            = "v2.0.7-eksbuild.1"
+      service_account_role_arn = module.eks_iam_roles.iam_anyscale_eks_efs_csi_driver_role_arn
     }
   ]
   eks_addons_depends_on = module.eks_node_groups
