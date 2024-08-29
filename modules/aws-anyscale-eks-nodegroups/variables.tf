@@ -292,7 +292,7 @@ variable "eks_anyscale_node_groups" {
         ami_type       = "AL2_x86_64"
         disk_size      = 500 # Recommended to be at least 500GB. If not provided, will default to 500GB.
         scaling_config = {
-          desired_size = 0
+          desired_size = 1 # Recommend setting this to 1 to prime the autoscaler cache with the instance types and GPU availability
           max_size     = 4
           min_size     = 0
         }
@@ -351,7 +351,7 @@ variable "eks_anyscale_node_groups" {
       ami_type      = "AL2_x86_64_GPU"
       tags          = {}
       scaling_config = {
-        desired_size = 0
+        desired_size = 1
         max_size     = 50
         min_size     = 0
       }
@@ -370,7 +370,7 @@ variable "eks_anyscale_node_groups" {
       ami_type      = "AL2_x86_64_GPU"
       tags          = {}
       scaling_config = {
-        desired_size = 0
+        desired_size = 1
         max_size     = 50
         min_size     = 0
       }
