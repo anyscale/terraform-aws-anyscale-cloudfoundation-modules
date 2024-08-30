@@ -1,6 +1,7 @@
 {
   "Version" : "2012-10-17",
   "Statement" : [
+%{ if anyscale_efs_arn != "none" }
     {
       "Sid": "S3BucketAccess",
       "Effect" : "Allow",
@@ -10,6 +11,7 @@
       ],
       "Resource":  ["${anyscale_efs_arn}"]
     },
+%{ endif }
     {
       "Sid" : "AutoscalerRead",
       "Effect" : "Allow",

@@ -8,11 +8,9 @@ locals {
   eks_cluster_assume_role_policy_body = templatefile("${path.module}/eks-cluster_assumerole.tfpl", {})
 
   eks_node_assume_role_policy_body = templatefile("${path.module}/eks-node_assumerole.tfpl", {})
-  eks_node_policy_body = var.efs_file_system_arn != null ? templatefile("${path.module}/eks-node_with_efs.tfpl", {
-    anyscale_efs_arn          = coalesce(var.efs_file_system_arn, "empty"),
-    anyscale_eks_cluster_name = coalesce(var.anyscale_eks_cluster_name, "empty")
-    }) : templatefile("${path.module}/eks-node_no_efs.tfpl", {
-    anyscale_eks_cluster_name = coalesce(var.anyscale_eks_cluster_name, "empty")
+  eks_node_policy_body = templatefile("${path.module}/eks-node.tfpl", {
+    anyscale_efs_arn          = coalesce(var.efs_file_system_arn, "none"),
+    anyscale_eks_cluster_name = coalesce(var.anyscale_eks_cluster_name, "none")
   })
 
   eks_ebs_csi_assume_role_policy_body = templatefile("${path.module}/eks-ebs-csi-assumerole.tfpl",
