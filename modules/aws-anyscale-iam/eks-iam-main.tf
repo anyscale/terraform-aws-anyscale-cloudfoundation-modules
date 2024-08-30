@@ -73,7 +73,7 @@ resource "aws_iam_role" "eks_node_role" {
 #   Includes the Autoscaler Policy
 #   https://github.com/kubernetes/autoscaler/blob/055e2bfc04ccf1e4dae2ff2ca0f55e0074fb17fa/cluster-autoscaler/cloudprovider/aws/README.md#iam-policy
 resource "aws_iam_policy" "anyscale_iam_node_policy" {
-  count = local.create_eks_node_role && local.create_efs_csi_driver_role ? 1 : 0
+  count = local.create_eks_node_role ? 1 : 0
 
   name        = var.anyscale_eks_node_policy.name
   name_prefix = var.anyscale_eks_node_policy.prefix
