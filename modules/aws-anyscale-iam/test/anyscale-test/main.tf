@@ -85,6 +85,9 @@ module "iam_eks_roles" {
   anyscale_eks_cluster_oidc_arn = "arn:aws:iam::123456789012:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE12345678901234567890123456789012"
   anyscale_eks_cluster_oidc_url = "https://oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE12345678901234567890123456789012"
 
+  efs_file_system_arn       = "arn:aws:elasticfilesystem:us-west-2:123456789012:file-system/fs-tftest"
+  anyscale_eks_cluster_name = "anyscale-eks-cluster-tftest"
+
   tags = local.full_tags
 }
 

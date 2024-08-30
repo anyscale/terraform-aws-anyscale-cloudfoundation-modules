@@ -2,6 +2,16 @@
   "Version" : "2012-10-17",
   "Statement" : [
     {
+      "Sid": "S3BucketAccess",
+      "Effect" : "Allow",
+      "Action" : [
+        "elasticfilesystem:ClientMount",
+        "elasticfilesystem:ClientWrite"
+      ],
+      "Resource":  ["${anyscale_efs_arn}"]
+    },
+    {
+      "Sid" : "AutoscalerRead",
       "Effect" : "Allow",
       "Action" : [
         "autoscaling:DescribeAutoScalingGroups",
@@ -18,6 +28,7 @@
       "Resource" : "*"
     },
     {
+      "Sid" : "AutoscalerUpdate",
       "Effect" : "Allow",
       "Action" : [
         "autoscaling:SetDesiredCapacity",

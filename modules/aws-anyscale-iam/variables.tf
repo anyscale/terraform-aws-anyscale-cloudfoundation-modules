@@ -723,61 +723,34 @@ variable "anyscale_eks_node_role_permissions_boundary_arn" {
 }
 
 
-variable "anyscale_eks_node_autoscaler_policy_name" {
+variable "anyscale_eks_node_policy" {
   description = <<-EOT
-    (Optional) Name for the Anyscale EKS Cluster Autoscaler IAM policy.
+    (Optional) EKS Node Policy Name, Prefix, Path, and Description.
 
-    If left `null`, will default to `anyscale_eks_node_autoscaler_policy_prefix`.
-    If provided, overrides the `anyscale_eks_node_autoscaler_policy_prefix` variable.
+    If provided, will create a custom policy for the EKS Node Role.
 
     ex:
     ```
-    anyscale_eks_node_autoscaler_policy_name = "anyscale-eks-node-autoscaler-policy"
+    anyscale_eks_node_policy = {
+      name        = "anyscale-eks-node-policy"
+      prefix      = "anyscale-eks-node-policy-"
+      path        = "/"
+      description = "Anyscale EKS Node Policy"
+    }
     ```
   EOT
-  type        = string
-  default     = null
-}
-
-variable "anyscale_eks_node_autoscaler_policy_prefix" {
-  description = <<-EOT
-    (Optional) Name prefix for the Anyscale EKS Cluster Autoscaler IAM policy.
-
-    If `anyscale_eks_node_autoscaler_policy_name` is provided, it will override this variable.
-
-    ex:
-    ```
-    anyscale_eks_node_autoscaler_policy_prefix = "anyscale-eks-cluster-autoscaler-"
-    ```
-  EOT
-  type        = string
-  default     = "anyscale-eks-cluster-autoscaler-"
-}
-
-variable "anyscale_eks_node_autoscaler_policy_path" {
-  description = <<-EOT
-    (Optional) Path of the Anyscale EKS Node Autoscaler IAM policy.
-
-    ex:
-    ```
-    anyscale_eks_node_autoscaler_policy_path = "/"
-    ```
-  EOT
-  type        = string
-  default     = "/"
-}
-
-variable "anyscale_eks_node_autoscaler_policy_description" {
-  description = <<-EOT
-    (Optional) Anyscale EKS Node Autoscaler IAM policy description.
-
-    ex:
-    ```
-    anyscale_eks_node_autoscaler_policy_description = "Anyscale EKS Node Autoscaler IAM Policy"
-    ```
-  EOT
-  type        = string
-  default     = "Anyscale EKS Node Autoscaler IAM Policy"
+  type = object({
+    name        = optional(string)
+    prefix      = optional(string)
+    path        = optional(string)
+    description = optional(string)
+  })
+  default = {
+    name        = null
+    prefix      = "anyscale-eks-node-policy-"
+    path        = "/"
+    description = "Anyscale EKS Node Policy"
+  }
 }
 
 variable "anyscale_eks_cluster_name" {
@@ -995,6 +968,21 @@ variable "eks_efs_csi_role_permissions_boundary_arn" {
     ex:
     ```
     eks_efs_csi_role_permissions_boundary_arn = "arn:aws:iam::123456789012:policy/MyPermissionsBoundary"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "efs_file_system_arn" {
+  description = <<-EOT
+    (Optional) The EFS File System ARN that the IAM Roles need access to.
+
+    Required if `create_eks_efs_csi_driver_role` is set to `true`.
+
+    ex:
+    ```
+    efs_file_system_arn = "arn:aws:efs:us-east-1:123456789012:file-system/fs-12345678"
     ```
   EOT
   type        = string
