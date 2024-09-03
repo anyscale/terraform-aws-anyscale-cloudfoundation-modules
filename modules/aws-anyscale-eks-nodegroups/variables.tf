@@ -275,6 +275,23 @@ variable "eks_anyscale_node_groups" {
   description = <<-EOT
     (Optional) A list of Anyscale EKS Node Group configurations.
 
+    A list of built in taints supported by Anyscale:
+    {
+      key    = "node.anyscale.com/capacity-type"
+      value  = "ANY"
+      effect = "NO_SCHEDULE"
+    },
+    {
+      key    = "node.anyscale.com/capacity-type"
+      value  = "SPOT"
+      effect = "NO_EXECUTE"
+    },
+    {
+      key    = "node.anyscale.com/accelerator-type"
+      value  = "GPU"
+      effect = "PREFER_NO_SCHEDULE"
+    }
+
     ex:
     ```
     eks_anyscale_node_groups = [
@@ -339,24 +356,6 @@ variable "eks_anyscale_node_groups" {
     })
   )
   default = [
-    {
-      name = "anyscale-ondemand-cpu-8CPU-32GB"
-      instance_types = [
-        "m6a.2xlarge",
-        "m5a.2xlarge",
-        "m6i.2xlarge",
-        "m5.2xlarge"
-      ]
-      capacity_type = "ON_DEMAND"
-      ami_type      = "AL2_x86_64_GPU"
-      tags          = {}
-      scaling_config = {
-        desired_size = 1
-        max_size     = 50
-        min_size     = 0
-      }
-      taints = []
-    },
 
     {
       name = "anyscale-ondemand-cpu-16CPU-64GB"
@@ -374,7 +373,13 @@ variable "eks_anyscale_node_groups" {
         max_size     = 50
         min_size     = 0
       }
-      taints = []
+      taints = [
+        {
+          key    = "node.anyscale.com/capacity-type"
+          value  = "ANY"
+          effect = "NO_SCHEDULE"
+        }
+      ]
     }
   ]
 }
