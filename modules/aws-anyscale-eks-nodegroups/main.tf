@@ -46,7 +46,7 @@ resource "aws_launch_template" "anyscale_node_groups" {
   }
 
   network_interfaces {
-    security_groups = concat([var.anyscale_security_group_id], [var.kubernetes_security_group_id], var.additional_security_group_ids)
+    security_groups = compact(distinct(concat([var.anyscale_security_group_id, var.kubernetes_security_group_id], var.additional_security_group_ids)))
   }
 
   metadata_options {

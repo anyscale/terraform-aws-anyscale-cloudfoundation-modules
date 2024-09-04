@@ -257,9 +257,6 @@ module "kitchen_sink" {
 module "test_no_resources" {
   source = "../.."
 
-  anyscale_security_group_id   = module.eks_securitygroup.security_group_id
-  kubernetes_security_group_id = module.eks_cluster.cluster_managed_security_group_id
-
   eks_node_role_arn = module.eks_iam_roles.iam_anyscale_eks_node_role_arn
   eks_cluster_name  = module.eks_cluster.eks_cluster_name
   subnet_ids        = module.eks_vpc.public_subnet_ids

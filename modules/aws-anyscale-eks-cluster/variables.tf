@@ -34,7 +34,7 @@ variable "module_enabled" {
   description = <<-EOT
     (Optional) Determines if this module should create resources.
 
-    If set to true, `eks_role_arn`, `anyscale_subnet_ids`, and `anyscale_security_group_id` must be provided.
+    If set to true, `eks_role_arn`, and `anyscale_subnet_ids` must be provided.
     ex:
     ```
     module_enabled = true

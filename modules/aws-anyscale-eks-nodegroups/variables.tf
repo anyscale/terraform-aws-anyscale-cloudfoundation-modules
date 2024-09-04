@@ -38,30 +38,6 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-variable "anyscale_security_group_id" {
-  description = <<-EOT
-    (Required) The ID of the security group to use for the EKS nodes.
-
-    ex:
-    ```
-    anyscale_security_group_id = "sg-1234567890abcdef0"
-    ```
-  EOT
-  type        = string
-}
-
-variable "kubernetes_security_group_id" {
-  description = <<-EOT
-    (Required) The ID of the security group to use for the EKS nodes.
-
-    ex:
-    ```
-    kubernetes_security_group_id = "sg-1234567890abcdef0"
-    ```
-  EOT
-  type        = string
-}
-
 # ------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These variables have defaults, but may be overridden.
@@ -186,6 +162,34 @@ variable "node_group_timeouts" {
 # ------------------
 # EKS Launch Template Configuration
 # ------------------
+variable "anyscale_security_group_id" {
+  description = <<-EOT
+    (Optional) The ID of the Anyscale Security Group to use for the EKS nodes.
+
+    This Security Group allows full communication between EKS nodes as well as to the EFS instance.
+
+    ex:
+    ```
+    anyscale_security_group_id = "sg-1234567890abcdef0"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "kubernetes_security_group_id" {
+  description = <<-EOT
+    (Optional) The ID of the EKS Managed security group to use for the EKS nodes.
+
+    ex:
+    ```
+    kubernetes_security_group_id = "sg-1234567890abcdef0"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
 variable "additional_security_group_ids" {
   description = <<-EOT
     (Optional) A list of additional security group IDs to attach to the EKS nodes.
