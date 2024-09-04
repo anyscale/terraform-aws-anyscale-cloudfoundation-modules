@@ -39,3 +39,11 @@ output "eks_kubeconfig" {
     cluster_ca_certificate = try(aws_eks_cluster.anyscale_dataplane[0].certificate_authority[0].data, "")
   }
 }
+
+output "cluster_managed_security_group_id" {
+  description = <<-EOT
+    Security Group ID that was created by EKS for the cluster.
+    EKS creates a Security Group and applies it to the ENI that are attached to EKS Control Plane master nodes and to any managed workloads.
+    EOT
+  value       = one(aws_eks_cluster.anyscale_dataplane[*].vpc_config[0].cluster_security_group_id)
+}

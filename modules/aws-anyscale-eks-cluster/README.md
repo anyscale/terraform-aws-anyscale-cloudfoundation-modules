@@ -65,6 +65,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_cluster_managed_security_group_id"></a> [cluster\_managed\_security\_group\_id](#output\_cluster\_managed\_security\_group\_id) | Security Group ID that was created by EKS for the cluster.<br>EKS creates a Security Group and applies it to the ENI that are attached to EKS Control Plane master nodes and to any managed workloads. |
 | <a name="output_eks_cluster_arn"></a> [eks\_cluster\_arn](#output\_eks\_cluster\_arn) | ARN of the Anyscale EKS cluster |
 | <a name="output_eks_cluster_ca_data"></a> [eks\_cluster\_ca\_data](#output\_eks\_cluster\_ca\_data) | Certificate Authority Data of the Anyscale EKS cluster |
 | <a name="output_eks_cluster_endpoint"></a> [eks\_cluster\_endpoint](#output\_eks\_cluster\_endpoint) | Endpoint of the Anyscale EKS cluster |

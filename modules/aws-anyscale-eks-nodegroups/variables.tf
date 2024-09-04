@@ -38,6 +38,30 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
+variable "anyscale_security_group_id" {
+  description = <<-EOT
+    (Required) The ID of the security group to use for the EKS nodes.
+
+    ex:
+    ```
+    anyscale_security_group_id = "sg-1234567890abcdef0"
+    ```
+  EOT
+  type        = string
+}
+
+variable "kubernetes_security_group_id" {
+  description = <<-EOT
+    (Required) The ID of the security group to use for the EKS nodes.
+
+    ex:
+    ```
+    kubernetes_security_group_id = "sg-1234567890abcdef0"
+    ```
+  EOT
+  type        = string
+}
+
 # ------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These variables have defaults, but may be overridden.
@@ -160,6 +184,81 @@ variable "node_group_timeouts" {
 }
 
 # ------------------
+# EKS Launch Template Configuration
+# ------------------
+variable "additional_security_group_ids" {
+  description = <<-EOT
+    (Optional) A list of additional security group IDs to attach to the EKS nodes.
+
+    ex:
+    ```
+    additional_security_group_ids = ["sg-1234567890abcdef0", "sg-1234567890abcdef1"]
+    ```
+  EOT
+  type        = list(string)
+  default     = []
+}
+
+variable "node_group_disk_size" {
+  description = <<-EOT
+    (Optional) The size of the disk in GiB for all EKS nodes.
+
+    ex:
+    ```
+    node_group_disk_size = 100
+    ```
+  EOT
+  type        = number
+  default     = null
+}
+
+variable "launch_template_name" {
+  description = <<-EOT
+    (Optional) The name of the launch template to use for the EKS nodes.
+
+    If provided, it will override `launch_template_name_prefix`.
+
+    ex:
+    ```
+    launch_template_name = "eks-launch-template"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "launch_template_name_prefix" {
+  description = <<-EOT
+    (Optional) The prefix to use for the launch template name.
+
+    If `launch_template_name` is provided, it will override this parameter.
+
+    ex:
+    ```
+    launch_template_name_prefix = "eks-launch-template"
+    ```
+  EOT
+  type        = string
+  default     = "anyscale-eks-launch-template-"
+}
+
+variable "launch_template_tags" {
+  description = <<-EOT
+    (Optional) A map of tags to add to the launch template.
+
+    ex:
+    ```
+    launch_template_tags = {
+      test        = true
+      environment = "test"
+    }
+    ```
+  EOT
+  type        = map(string)
+  default     = {}
+}
+
+# ------------------
 # EKS Management Node Group Configuration
 # ------------------
 variable "create_eks_management_node_group" {
@@ -174,7 +273,7 @@ variable "create_eks_management_node_group" {
     ```
   EOT
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "eks_management_node_group_config" {
@@ -307,7 +406,6 @@ variable "eks_anyscale_node_groups" {
           "environment" = "test"
         }
         ami_type       = "AL2_x86_64"
-        disk_size      = 500 # Recommended to be at least 500GB. If not provided, will default to 500GB.
         scaling_config = {
           desired_size = 1 # Recommend setting this to 1 to prime the autoscaler cache with the instance types and GPU availability
           max_size     = 4
@@ -336,7 +434,6 @@ variable "eks_anyscale_node_groups" {
       labels         = optional(map(string))
       tags           = optional(map(string))
       ami_type       = optional(string)
-      disk_size      = optional(number)
       scaling_config = object({
         desired_size = number
         max_size     = number
