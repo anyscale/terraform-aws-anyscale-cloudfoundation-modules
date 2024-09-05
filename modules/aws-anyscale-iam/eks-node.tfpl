@@ -3,7 +3,7 @@
   "Statement" : [
 %{ if anyscale_efs_arn != "none" }
     {
-      "Sid": "S3BucketAccess",
+      "Sid": "EFSAccess",
       "Effect" : "Allow",
       "Action" : [
         "elasticfilesystem:ClientMount",
