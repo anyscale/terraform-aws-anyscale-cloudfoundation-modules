@@ -302,9 +302,9 @@ variable "eks_management_node_group_config" {
       ami_type      = "AL2_x86_64"
       taints = [
         {
-          key    = "node-type"
-          value  = "management"
-          effect = "NO_SCHEDULE"
+          key    = "node.anyscale.com/capacity-type",
+          value  = "ANY",
+          effect = "NO_SCHEDULE",
         }
       ]
       update_config = {
