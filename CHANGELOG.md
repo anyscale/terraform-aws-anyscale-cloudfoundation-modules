@@ -1,3 +1,14 @@
+## 0.22.1 (Released)
+FEATURES:
+- Add initial support for Anyscale on EKS.
+
+BUG FIXES:
+- Update EKS Node Group autoscaling template vesion assignment so that Terraform doesn't detect changes on every apply.
+
+BREAKING CHANGES:
+
+NOTES:
+
 ## 0.22.0 (Released)
 FEATURES:
 - Add initial support for Anyscale on EKS.

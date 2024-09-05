@@ -91,7 +91,7 @@ resource "aws_eks_node_group" "anyscale_node_groups" {
 
   launch_template {
     id      = aws_launch_template.anyscale_node_groups[0].id
-    version = "$Latest"
+    version = aws_launch_template.anyscale_node_groups[0].latest_version
   }
 
   scaling_config {
