@@ -14,25 +14,11 @@
 variable "aws_region" {
   description = "The AWS region in which all resources will be created."
   type        = string
+  default     = "us-east-2"
 }
 
-variable "anyscale_deploy_env" {
-  description = "(Optional) Anyscale deploy environment. Used in resource names and tags."
-  type        = string
-  validation {
-    condition = (
-      var.anyscale_deploy_env == "production" || var.anyscale_deploy_env == "development" || var.anyscale_deploy_env == "test"
-    )
-    error_message = "The anyscale_deploy_env only allows `production`, `test`, or `development`"
-  }
-}
-
-# ------------------------------------------------------------------------------
-# OPTIONAL PARAMETERS
-# These variables have defaults, but may be overridden.
-# ------------------------------------------------------------------------------
 variable "anyscale_cloud_id" {
-  description = "(Optional) Anyscale Cloud ID"
+  description = "(Optional) Anyscale Cloud ID. Default is `null`."
   type        = string
   default     = null
   validation {
@@ -46,6 +32,22 @@ variable "anyscale_cloud_id" {
   }
 }
 
+# ------------------------------------------------------------------------------
+# OPTIONAL PARAMETERS
+# These variables have defaults, but may be overridden.
+# ------------------------------------------------------------------------------
+variable "anyscale_deploy_env" {
+  description = "(Optional) Anyscale deploy environment. Used in resource names and tags."
+  type        = string
+  default     = "production"
+  validation {
+    condition = (
+      var.anyscale_deploy_env == "production" || var.anyscale_deploy_env == "development" || var.anyscale_deploy_env == "test"
+    )
+    error_message = "The anyscale_deploy_env only allows `production`, `test`, or `development`"
+  }
+}
+
 variable "tags" {
   description = "(Optional) A map of tags to all resources that accept tags."
   type        = map(string)
@@ -55,12 +57,7 @@ variable "tags" {
   }
 }
 
-variable "anyscale_cluster_node_byod_secret_arns" {
-  description = "(Optional) A list of ARNs of secrets to attach to the cluster node role."
+variable "public_access_cidrs" {
+  description = "(Optional) A list of CIDRs that are allowed to access the EKS cluster - used for the KitchenSink test."
   type        = list(string)
-}
-
-variable "anyscale_cluster_node_byod_secret_kms_arn" {
-  description = "(Optional) The ARN of the KMS key used to encrypt the secrets."
-  type        = string
 }

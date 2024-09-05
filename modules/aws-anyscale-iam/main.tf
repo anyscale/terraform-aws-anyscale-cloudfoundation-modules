@@ -268,7 +268,7 @@ resource "aws_iam_policy" "anyscale_s3_access_policy" {
   name_prefix = local.anyscale_iam_s3_policy_name_prefix
   path        = var.anyscale_iam_s3_policy_path
   description = var.anyscale_iam_s3_policy_description
-  policy      = data.aws_iam_policy_document.iam_anyscale_s3_bucket_access.json
+  policy      = data.aws_iam_policy_document.iam_anyscale_s3_bucket_access[0].json
 
   tags = merge(
     local.module_tags,
@@ -289,12 +289,3 @@ resource "aws_iam_role_policy_attachment" "anyscale_access_role_s3_policy_attach
   role       = aws_iam_role.anyscale_access_role[0].name
   policy_arn = aws_iam_policy.anyscale_s3_access_policy[0].arn
 }
-
-# ---------------------------
-# Service Linked Role
-#   - Elastic Load Balancing
-# ---------------------------
-# resource "aws_iam_service_linked_role" "elastic_load_balancing" {
-#   count            = local.create_alb_linked_role ? 1 : 0
-#   aws_service_name = "elasticloadbalancing.amazonaws.com"
-# }

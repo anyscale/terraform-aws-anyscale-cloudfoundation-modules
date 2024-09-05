@@ -1,0 +1,19 @@
+{
+  "Version" : "2012-10-17",
+  "Statement" : [
+    {
+      "Sid": "S3BucketAccess",
+      "Effect" : "Allow",
+      "Action" : [
+        "s3:ListBucket",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "${anyscale_s3_bucket_arn}",
+        "${anyscale_s3_bucket_arn}/*"
+      ]
+    }
+  ]
+}

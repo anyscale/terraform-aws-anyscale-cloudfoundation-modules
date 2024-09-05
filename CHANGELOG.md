@@ -1,3 +1,23 @@
+## 0.22.0 (Released)
+FEATURES:
+- Add initial support for Anyscale on EKS.
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
+## 0.21.1 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+- Documentation update for KMS example
+
 ## 0.21.0 (Released)
 FEATURES:
 - Add IAM policy update for Anyscale Services change to add HTTP headers for versions.
