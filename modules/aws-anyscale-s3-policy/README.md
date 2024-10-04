@@ -5,7 +5,7 @@
 # aws-anyscale-vpc
 This sub-module creates the default S3 resources needed for Anyscale to work in a customers environment. It should be used from the [root module](../../README.md).
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -34,16 +34,16 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_anyscale_bucket_name"></a> [anyscale\_bucket\_name](#input\_anyscale\_bucket\_name) | (Required) The S3 bucket name to apply the policy to. | `string` | n/a | yes |
-| <a name="input_anyscale_iam_access_role_arn"></a> [anyscale\_iam\_access\_role\_arn](#input\_anyscale\_iam\_access\_role\_arn) | (Required) The Anyscale IAM SteadyState role arn. | `string` | n/a | yes |
-| <a name="input_anyscale_iam_cluster_node_role_arn"></a> [anyscale\_iam\_cluster\_node\_role\_arn](#input\_anyscale\_iam\_cluster\_node\_role\_arn) | (Required) The Anyscale IAM cluster node role arn. | `string` | n/a | yes |
-| <a name="input_custom_s3_policy"></a> [custom\_s3\_policy](#input\_custom\_s3\_policy) | (Optional) A valid bucket policy in JSON. Default is `null`. | `string` | `null` | no |
-| <a name="input_module_enabled"></a> [module\_enabled](#input\_module\_enabled) | (Optional) Whether to create the resources inside this module. Default is `true`. | `bool` | `true` | no |
+| <a name="input_anyscale_bucket_name"></a> [anyscale\_bucket\_name](#input\_anyscale\_bucket\_name) | (Required) The S3 bucket name to apply the policy to.<br/><br/>ex:<pre>anyscale_bucket_name = "my-anyscale-bucket"</pre> | `string` | n/a | yes |
+| <a name="input_anyscale_controlplane_role_arn"></a> [anyscale\_controlplane\_role\_arn](#input\_anyscale\_controlplane\_role\_arn) | (Required) The Anyscale IAM SteadyState role arn.<br/><br/>ex:<pre>anyscale_controlplane_role_arn = "arn:aws:iam::123456789012:role/AnyscaleSteadyStateRole"</pre> | `string` | n/a | yes |
+| <a name="input_anyscale_dataplane_role_arn"></a> [anyscale\_dataplane\_role\_arn](#input\_anyscale\_dataplane\_role\_arn) | (Required) The Anyscale IAM cluster node role arn.<br/><br/>ex:<pre>anyscale_dataplane_role_arn = "arn:aws:iam::123456789012:role/AnyscaleClusterNodeRole"</pre> | `string` | n/a | yes |
+| <a name="input_custom_s3_policy"></a> [custom\_s3\_policy](#input\_custom\_s3\_policy) | (Optional) JSON Encoded policy statements to merge with the default S3 bucket policy<br/><br/>ex:<pre>custom_s3_policy = jsonencode({<br/>  "Statement": [<br/>    {<br/>      "Effect": "Allow",<br/>      "Action": "s3:GetObject",<br/>      "Resource": "arn:aws:s3:::my-anyscale-bucket/*",<br/>      "Principal": {<br/>        "AWS": "arn:aws:iam::123456789012:role/OtherIAMRole"<br/>      }<br/>    }<br/>  ]<br/>})</pre> | `any` | `null` | no |
+| <a name="input_module_enabled"></a> [module\_enabled](#input\_module\_enabled) | (Optional) Whether to create the resources inside this module.<br/><br/>ex:<pre>module_enabled = true</pre> | `bool` | `true` | no |
 
 ## Outputs
 
 No outputs.
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
 
 <!-- References -->
 [Terraform]: https://www.terraform.io

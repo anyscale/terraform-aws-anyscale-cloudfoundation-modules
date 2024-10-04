@@ -1,20 +1,18 @@
 # --------------
 # Defaults Test
 # --------------
-output "s3_bucket_id_defaults" {
-  description = "The ID of the anyscale resource."
-  value       = module.s3_bucket_defaults.s3_bucket_id
-}
-
-output "s3_bucket_custom_policy_id" {
+output "all_defaults_s3_bucket" {
   description = "The ID of the anyscasle resource."
-  value       = module.s3_bucket_custom_policy.s3_bucket_id
+  value       = module.s3_bucket_all_defaults.s3_bucket_id
 }
 
 # ------------------
 # Kitchen Sink Test
 # ------------------
-
+output "kitchen_sink_s3_bucket" {
+  description = "The ID of the anyscasle resource."
+  value       = module.s3_bucket_kitchen_sink.s3_bucket_id
+}
 
 # -----------------
 # No resource test

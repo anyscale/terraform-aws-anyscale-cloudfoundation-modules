@@ -130,6 +130,7 @@ variable "anyscale_cluster_node_byod_secret_arns" {
   type        = list(string)
   default     = []
 }
+
 variable "anyscale_cluster_node_byod_secret_kms_arn" {
   description = <<-EOT
     (Optional) The KMS key ARN that the Secrets Manager secrets are encrypted with.

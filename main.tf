@@ -150,9 +150,9 @@ module "aws_anyscale_iam" {
 module "aws_anyscale_s3_policy" {
   source = "./modules/aws-anyscale-s3-policy"
 
-  anyscale_bucket_name               = module.aws_anyscale_s3.s3_bucket_id
-  anyscale_iam_access_role_arn       = module.aws_anyscale_iam.iam_anyscale_access_role_arn
-  anyscale_iam_cluster_node_role_arn = module.aws_anyscale_iam.iam_cluster_node_role_arn
+  anyscale_bucket_name           = module.aws_anyscale_s3.s3_bucket_id
+  anyscale_controlplane_role_arn = module.aws_anyscale_iam.iam_anyscale_access_role_arn
+  anyscale_dataplane_role_arn    = module.aws_anyscale_iam.iam_cluster_node_role_arn
 
   custom_s3_policy = var.anyscale_custom_s3_policy
 
