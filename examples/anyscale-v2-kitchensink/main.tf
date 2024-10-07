@@ -17,6 +17,21 @@ locals {
   )
 }
 
+data "aws_iam_policy_document" "custom_s3_policy" {
+  statement {
+    sid     = "TestCustomS3Policy2"
+    actions = ["s3:GetObject"]
+    effect  = "Deny"
+    resources = [
+      "arn:aws:s3:::anyscale-kitchensink-s3/neverdeleteme.txt"
+    ]
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+  }
+}
+
 module "aws_anyscale_v2_kitchen_sink" {
   source        = "../../" #this should be changed if executing this example outside of this repository
   tags          = local.full_tags
@@ -86,6 +101,8 @@ module "aws_anyscale_v2_kitchen_sink" {
       ]
     }
   ]
+
+  anyscale_custom_s3_policy = data.aws_iam_policy_document.custom_s3_policy.json
 
   # --------------------------
   # Security Group Related
