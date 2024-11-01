@@ -966,6 +966,7 @@ variable "anyscale_cluster_node_byod_secret_kms_arn" {
       "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",
     ]
     anyscale_cluster_node_secret_kms_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+    # checkov:skip=CKV_SECRET_6
     ```
   EOT
   type        = string
@@ -990,6 +991,35 @@ variable "anyscale_cluster_node_byod_custom_secrets_policy" {
         "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",
       ]
     }
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_cluster_node_custom_assume_role_policy" {
+  description = <<-EOT
+    (Optional) Anyscale IAM cluster node role custom assume role policy.
+
+    This overrides the default assume role policy. It must include the `sts:AssumeRole` action and at a minimum,
+    needs to include the `ec2.amazonaws.com` service principal. Must be in JSON format.
+
+    ex:
+    ```
+    anyscale_cluster_node_custom_assume_role_policy = {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "sts:AssumeRole"
+          ],
+          "Principal": {
+            "Service": "ec2.amazonaws.com"
+          }
+        }
+      ]
+    }
+    ```
   EOT
   type        = string
   default     = null

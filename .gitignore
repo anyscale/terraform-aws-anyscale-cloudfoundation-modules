@@ -36,6 +36,23 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+# macOS specific files
 .DS_Store
 
+# Example script
 example-anyscale-cloud-register.sh
+
+# VSCode settings directory
+.vscode
+
+# Python virtual environment directories
+venv/
+.env/
+__pycache__/
+*.pyc
+
+# Python egg files
+*.egg
+*.egg-info/
+dist/
+build/

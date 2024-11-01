@@ -113,6 +113,8 @@ module "aws_anyscale_iam" {
   anyscale_cluster_node_role_name_prefix = local.iam_cluster_node_role_name_prefix
   anyscale_cluster_node_role_description = var.anyscale_cluster_node_role_description
 
+  anyscale_cluster_node_custom_assume_role_policy = var.anyscale_cluster_node_custom_assume_role_policy
+
   create_cluster_node_cloudwatch_policy               = var.create_cluster_node_cloudwatch_policy
   anyscale_cluster_node_cloudwatch_policy_name        = local.cluster_node_cloudwatch_policy_name
   anyscale_cluster_node_cloudwatch_policy_prefix      = local.cluster_node_cloudwatch_policy_prfx
