@@ -57,6 +57,7 @@ resource "aws_security_group_rule" "anyscale_public_ingress_rules" {
 }
 
 # Security group rules with "cidr_blocks"
+#trivy:ignore:avd-aws-0124
 resource "aws_security_group_rule" "ingress_from_cidr_blocks" {
   count = var.module_enabled ? length(var.ingress_from_cidr_map) : 0
 

@@ -15,7 +15,7 @@ locals {
 # Create the assumable role and the cluster node role/instance profile for Anyscale with no optional parameters
 # ---------------------------------------------------------------------------------------------------------------------
 module "all_defaults" {
-  source = "../.."
+  source = "../"
 
   module_enabled         = true
   anyscale_s3_bucket_arn = "arn:aws:s3:::anyscale-demo"
@@ -26,7 +26,7 @@ module "all_defaults" {
 # Create the cluster node and instance profile for Anyscale with no optional parameters. No access role.
 # ---------------------------------------------------------------------------------------------------------------------
 module "iam_cluster_node_instance_profile" {
-  source = "../.."
+  source = "../"
 
   module_enabled                       = true
   anyscale_s3_bucket_arn               = "arn:aws:s3:::anyscale-demo"
@@ -39,7 +39,7 @@ module "iam_cluster_node_instance_profile" {
 # Create the cluster node and instance profile for Anyscale with no optional parameters. No access role.
 # ---------------------------------------------------------------------------------------------------------------------
 module "iam_secretsmanager_instance_profile" {
-  source = "../.."
+  source = "../"
 
   module_enabled                            = true
   anyscale_s3_bucket_arn                    = "arn:aws:s3:::anyscale-demo"
@@ -55,7 +55,7 @@ module "iam_secretsmanager_instance_profile" {
 # Create the EKS Roles. No other roles.
 # ---------------------------------------------------------------------------------------------------------------------
 module "iam_eks_roles" {
-  source = "../.."
+  source = "../"
 
   module_enabled                       = true
   create_anyscale_access_role          = false
@@ -95,7 +95,7 @@ module "iam_eks_roles" {
 # Use all params and build both roles.
 # ---------------------------------------------------------------------------------------------------------------------
 module "kitchen_sink" {
-  source = "../.."
+  source = "../"
 
   module_enabled = true
 
@@ -138,6 +138,9 @@ module "kitchen_sink" {
   anyscale_cluster_node_custom_policy_description = "Anyscale Cluster Node CUSTOM TESTPOLICY Description"
   anyscale_cluster_node_custom_policy             = data.aws_iam_policy_document.anyscale_cluster_node_custom_policy.json
 
+  # The following allows self-assumption, but needs to be run as a second step.
+  anyscale_cluster_node_custom_assume_role_policy = data.aws_iam_policy_document.anyscale_cluster_node_custom_assume_role_policy.json
+
   anyscale_cluster_node_managed_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonGlacierReadOnlyAccess"
   ]
@@ -165,13 +168,44 @@ data "aws_iam_policy_document" "anyscale_cluster_node_custom_policy" {
     actions   = ["s3:ListAllMyBuckets"]
     resources = ["*"]
   }
+
+  statement {
+    sid       = "assumerole"
+    effect    = "Allow"
+    actions   = ["sts:AssumeRole"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/testclusternodepath/anyscale-cluster-node-kitchensink-tftest*"]
+  }
+
+  statement {
+    sid       = "getRole"
+    effect    = "Allow"
+    actions   = ["iam:GetRole"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/testclusternodepath/anyscale-cluster-node-kitchensink-tftest"]
+  }
+}
+
+data "aws_iam_policy_document" "anyscale_cluster_node_custom_assume_role_policy" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+    # Self reference
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/testclusternodepath/anyscale-cluster-node-kitchensink-tftest"]
+    }
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Do not create any resources
 # ---------------------------------------------------------------------------------------------------------------------
 module "test_no_resources" {
-  source = "../.."
+  source = "../"
 
   module_enabled = false
 }

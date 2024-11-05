@@ -116,7 +116,7 @@ resource "aws_iam_role_policy_attachment" "anyscale_eks_node_amazonec2containerr
 }
 
 resource "aws_iam_role_policy_attachment" "anyscale_eks_node_s3access" {
-  count = local.create_eks_node_role ? 1 : 0
+  count = local.create_eks_node_role && local.create_s3_bucket_access_policy ? 1 : 0
 
   policy_arn = aws_iam_policy.anyscale_s3_access_policy[0].arn
   role       = aws_iam_role.eks_node_role[0].name

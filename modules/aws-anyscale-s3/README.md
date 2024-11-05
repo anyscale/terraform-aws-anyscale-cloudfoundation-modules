@@ -5,7 +5,7 @@
 # aws-anyscale-s3
 This sub-module creates the default S3 resources needed for Anyscale to work in a customers environment. It should be used from the [root module](../../README.md).
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -42,13 +42,13 @@ No modules.
 | <a name="input_anyscale_bucket_name"></a> [anyscale\_bucket\_name](#input\_anyscale\_bucket\_name) | (Optional - forces new resource) The name of the bucket. Conflicts with anyscale\_bucket\_prefix. Default is `null`. | `string` | `null` | no |
 | <a name="input_anyscale_bucket_prefix"></a> [anyscale\_bucket\_prefix](#input\_anyscale\_bucket\_prefix) | (Optional - forces new resource) Creates a unique bucket name beginning with the specified prefix. Conflicts with anyscale\_bucket\_name. Default is `anyscale-`. | `string` | `"anyscale-"` | no |
 | <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID. Default is `null`. | `string` | `null` | no |
-| <a name="input_cors_rule"></a> [cors\_rule](#input\_cors\_rule) | (Optional)<br>Object containing a rule of Cross-Origin Resource Sharing.<br>The default allows GET, POST, PUT, HEAD, and DELETE<br>access for the purpose of viewing logs and other functionality<br>from within the Anyscale Web UI (*.anyscale.com).<br><br>ex:<pre>cors_rule = {<br>  allowed_headers = ["*"]<br>  allowed_methods = [GET", "POST", "PUT", "HEAD", "DELETE"]<br>  allowed_origins = ["https://*.anyscale.com"]<br>}</pre> | `any` | <pre>{<br>  "allowed_headers": [<br>    "*"<br>  ],<br>  "allowed_methods": [<br>    "GET",<br>    "POST",<br>    "PUT",<br>    "HEAD",<br>    "DELETE"<br>  ],<br>  "allowed_origins": [<br>    "https://*.anyscale.com"<br>  ],<br>  "expose_headers": []<br>}</pre> | no |
-| <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | (Optional) Set to true to delete all objects from the bucket so that the bucket can be destroyed without error.<br>These objects are not recoverable.<br>Default is `false`. With this default, you need to empty the bucket if there are objects before `terraform destroy` can be completed. | `bool` | `false` | no |
+| <a name="input_cors_rule"></a> [cors\_rule](#input\_cors\_rule) | (Optional)<br/>Object containing a rule of Cross-Origin Resource Sharing.<br/>The default allows GET, POST, PUT, HEAD, and DELETE<br/>access for the purpose of viewing logs and other functionality<br/>from within the Anyscale Web UI (*.anyscale.com).<br/><br/>ex:<pre>cors_rule = {<br/>  allowed_headers = ["*"]<br/>  allowed_methods = [GET", "POST", "PUT", "HEAD", "DELETE"]<br/>  allowed_origins = ["https://*.anyscale.com"]<br/>}</pre> | `any` | <pre>{<br/>  "allowed_headers": [<br/>    "*"<br/>  ],<br/>  "allowed_methods": [<br/>    "GET",<br/>    "POST",<br/>    "PUT",<br/>    "HEAD",<br/>    "DELETE"<br/>  ],<br/>  "allowed_origins": [<br/>    "https://*.anyscale.com"<br/>  ],<br/>  "expose_headers": []<br/>}</pre> | no |
+| <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | (Optional) Set to true to delete all objects from the bucket so that the bucket can be destroyed without error.<br/>These objects are not recoverable.<br/>Default is `false`. With this default, you need to empty the bucket if there are objects before `terraform destroy` can be completed. | `bool` | `false` | no |
 | <a name="input_lifecycle_rule"></a> [lifecycle\_rule](#input\_lifecycle\_rule) | (Optional) List of maps containing configuration of object lifecycle management. Default is an empty list. | `any` | `[]` | no |
 | <a name="input_logging"></a> [logging](#input\_logging) | (Optional) Map containing access bucket logging configuration. Default is an empty map. | `map(string)` | `{}` | no |
 | <a name="input_module_enabled"></a> [module\_enabled](#input\_module\_enabled) | (Optional) Whether to create the resources inside this module. Default is `true`. | `bool` | `true` | no |
 | <a name="input_object_versioning"></a> [object\_versioning](#input\_object\_versioning) | (Optional) Boolean specifying object versioning configuration. Default is `false`. | `bool` | `false` | no |
-| <a name="input_server_side_encryption"></a> [server\_side\_encryption](#input\_server\_side\_encryption) | (Optional)<br>Map containing server-side encryption configuration.<br><br>ex using KMS:<pre>server_side_encryption = {<br>  kms_master_key_id = "key_id"<br>  sse_algorithm     = "aws:kms"<br>}</pre>ex using AES256 (default):<pre>server_side_encryption = {<br>  sse_algorithm = "AES256"<br>}</pre> | `map(string)` | <pre>{<br>  "sse_algorithm": "AES256"<br>}</pre> | no |
+| <a name="input_server_side_encryption"></a> [server\_side\_encryption](#input\_server\_side\_encryption) | (Optional)<br/>Map containing server-side encryption configuration.<br/><br/>ex using KMS:<pre>server_side_encryption = {<br/>  kms_master_key_id = "key_id"<br/>  sse_algorithm     = "aws:kms"<br/>}</pre>ex using AES256 (default):<pre>server_side_encryption = {<br/>  sse_algorithm = "AES256"<br/>}</pre> | `map(string)` | <pre>{<br/>  "sse_algorithm": "AES256"<br/>}</pre> | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags to all resources that accept tags. | `map(string)` | `{}` | no |
 
 ## Outputs
@@ -58,7 +58,7 @@ No modules.
 | <a name="output_s3_bucket_arn"></a> [s3\_bucket\_arn](#output\_s3\_bucket\_arn) | The ARN of the bucket. Will be of format arn:aws:s3:::bucketname. |
 | <a name="output_s3_bucket_id"></a> [s3\_bucket\_id](#output\_s3\_bucket\_id) | The name of the bucket. |
 | <a name="output_s3_bucket_region"></a> [s3\_bucket\_region](#output\_s3\_bucket\_region) | The AWS region this bucket resides in. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
 
 <!-- References -->
 [Terraform]: https://www.terraform.io

@@ -147,6 +147,8 @@ locals {
 
   anyscale_cluster_node_secrets_policy_name   = try(var.anyscale_cluster_node_byod_secrets_policy_name, null)
   anyscale_cluster_node_secrets_policy_prefix = local.anyscale_cluster_node_secrets_policy_name != null ? null : var.anyscale_cluster_node_byod_secrets_policy_prefix != null ? var.anyscale_cluster_node_byod_secrets_policy_prefix : "anyscale-cluster-secrets-"
+
+  anyscale_cluster_node_assume_role_policy = var.anyscale_cluster_node_custom_assume_role_policy == null ? data.aws_iam_policy_document.iam_anyscale_cluster_node_assumerole_policy.json : var.anyscale_cluster_node_custom_assume_role_policy
 }
 resource "aws_iam_role" "anyscale_cluster_node_role" {
   count = var.module_enabled && var.create_cluster_node_instance_profile ? 1 : 0
@@ -157,7 +159,7 @@ resource "aws_iam_role" "anyscale_cluster_node_role" {
   description = var.anyscale_cluster_node_role_description
 
   permissions_boundary = var.role_permissions_boundary_arn
-  assume_role_policy   = data.aws_iam_policy_document.iam_anyscale_cluster_node_assumerole_policy.json
+  assume_role_policy   = local.anyscale_cluster_node_assume_role_policy
 
   tags = merge(
     local.module_tags,

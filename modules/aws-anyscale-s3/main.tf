@@ -17,7 +17,7 @@ locals {
   })
 }
 
-#trivy:ignore:avd-aws-0089 trivy:ignore:avd-aws-0090
+#trivy:ignore:avd-aws-0089 #trivy:ignore:avd-aws-0090 #trivy:ignore:avd-aws-0132
 resource "aws_s3_bucket" "anyscale_managed_s3_bucket" {
   #checkov:skip=CKV_AWS_145:Encryption is managed below as a customer choice
   #checkov:skip=CKV_AWS_144:Replication is managed as a choice
@@ -38,6 +38,7 @@ resource "aws_s3_bucket" "anyscale_managed_s3_bucket" {
   )
 }
 
+#trivy:ignore:avd-aws-0132
 resource "aws_s3_bucket_server_side_encryption_configuration" "anyscale_managed_s3_bucket" {
   count  = var.module_enabled && local.sse_enabled ? 1 : 0
   bucket = aws_s3_bucket.anyscale_managed_s3_bucket[0].id

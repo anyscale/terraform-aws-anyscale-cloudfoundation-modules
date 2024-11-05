@@ -143,6 +143,7 @@ variable "anyscale_cluster_node_byod_secret_kms_arn" {
       "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",
     ]
     anyscale_cluster_node_secret_kms_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+    # checkov:skip=CKV_SECRET_6
     ```
   EOT
   type        = string

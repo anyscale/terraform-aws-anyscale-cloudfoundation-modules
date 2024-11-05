@@ -261,74 +261,200 @@ variable "anyscale_access_managed_policy_arns" {
 }
 
 # ------------------
-# Cluster Node Role
+# Cluster Node Role (Data Plane)
 #  & Instance Profile
 # ------------------
 variable "create_cluster_node_instance_profile" {
-  description = "(Optional) Determines whether to create an instance profile role. Default is `true`."
+  description = <<-EOT
+    (Optional) Determines whether to create an instance profile role.
+
+    ex:
+    ```
+    create_cluster_node_instance_profile = true
+    ```
+  EOT
   type        = bool
   default     = true
 }
 
 variable "anyscale_cluster_node_role_name" {
-  description = "(Optional, forces creation of new resource) The name of the Anyscale IAM cluster node role. Default is `null`."
+  description = <<-EOT
+    (Optional, forces creation of new resource) The name of the Anyscale IAM cluster node role.
+
+    ex:
+    ```
+    anyscale_cluster_node_role_name = "anyscale-cluster-node"
+    ```
+  EOT
   type        = string
   default     = null
 }
 
 variable "anyscale_cluster_node_role_name_prefix" {
-  description = "(Optional, forces creation of new resource) The prefix of the Anyscale Cluster Node IAM role. Default is `anyscale-cluster-node-`."
+  description = <<-EOT
+    (Optional, forces creation of new resource) The prefix of the Anyscale Cluster Node IAM role.
+
+    If `anyscale_cluster_node_role_name` is provided, it will override this variable.
+
+    ex:
+    ```
+    anyscale_cluster_node_role_name_prefix = "anyscale-cluster-node-"
+    ```
+  EOT
   type        = string
   default     = "anyscale-cluster-node-"
 }
 
 variable "anyscale_cluster_node_role_path" {
-  description = "(Optional) The path to the Cluster Node IAM role. Default is `/`."
+  description = <<-EOT
+    (Optional) The path to the Cluster Node IAM role.
+
+    ex:
+    ```
+    anyscale_cluster_node_role_path = "/anyscale/"
+    ```
+  EOT
   type        = string
   default     = "/"
 }
 
 variable "anyscale_cluster_node_role_description" {
-  description = "(Optional) IAM Role description. Default is `null`."
+  description = <<-EOT
+    (Optional) IAM Role description.
+
+    If left `null`, will default to `Anyscale Cluster Node IAM Role`.
+
+    ex:
+    ```
+    anyscale_cluster_node_role_description = "Anyscale Cluster Node IAM Role"
+    ```
+  EOT
   type        = string
   default     = null
 }
 
 # Cluster Node Custom Policy
 variable "anyscale_cluster_node_custom_policy_name" {
-  description = "(Optional) Name for the Anyscale cluster node custom IAM policy. Default is `null`."
-  type        = string
-  default     = null
+  description = <<-EOT
+    (Optional) Name for the Anyscale cluster node custom IAM policy.
+
+    If left `null`, will default to `anyscale_cluster_node_custom_policy_prefix`.
+
+    ex:
+    ```
+    anyscale_cluster_node_custom_policy_name = "anyscale-cluster-node-custom-policy"
+    ```
+  EOT
+
+  type    = string
+  default = null
 }
 
 variable "anyscale_cluster_node_custom_policy_prefix" {
-  description = "(Optional) Name prefix for the Anyscale cluster node custom IAM policy. Default is `anyscale-iam-role-custom-`."
+  description = <<-EOT
+    (Optional) Name prefix for the Anyscale cluster node custom IAM policy.
+
+    If `anyscale_cluster_node_custom_policy_name` is provided, it will override this variable.
+
+    ex:
+    ```
+    anyscale_cluster_node_custom_policy_prefix = "anyscale-cluster-node-custom-"
+    ```
+  EOT
   type        = string
   default     = "anyscale-cluster-node-custom-"
 }
 
 variable "anyscale_cluster_node_custom_policy_path" {
-  description = "(Optional) Path of the Anyscale cluster node custom IAM policy. Default is `/`."
+  description = <<-EOT
+    (Optional) Path of the Anyscale cluster node custom IAM policy.
+
+    ex:
+    ```
+    anyscale_cluster_node_custom_policy_path = "/"
+    ```
+  EOT
   type        = string
   default     = "/"
 }
 
 variable "anyscale_cluster_node_custom_policy_description" {
-  description = "(Optional) Anyscale IAM cluster node custom policy description. Default is `Anyscale Cluster Node IAM Policy`."
+  description = <<-EOT
+    (Optional) Anyscale IAM cluster node custom policy description.
+
+    ex:
+    ```
+    anyscale_cluster_node_custom_policy_description = "Anyscale Cluster Node Custom Policy"
+    ```
+  EOT
   type        = string
   default     = "Anyscale Cluster Node IAM Policy"
 }
 
 variable "anyscale_cluster_node_custom_policy" {
-  description = "(Optional) Anyscale cluster node custom IAM policy. Default is `null`."
+  description = <<-EOT
+    (Optional) Anyscale cluster node custom IAM policy.
+
+    ex:
+    ```
+    anyscale_cluster_node_custom_policy = {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "ec2:DescribeInstances"
+          ],
+          "Resource": "*"
+        }
+      ]
+    }
+    ```
+  EOT
   type        = string
   default     = null
 }
 
 variable "anyscale_cluster_node_managed_policy_arns" {
-  description = "(Optional) List of IAM custom or managed policy ARNs to attach to the role. Default is an empty list."
+  description = <<-EOT
+    (Optional) List of IAM custom or managed policy ARNs to attach to the role.
+
+    ex:
+    ```
+    anyscale_cluster_node_managed_policy_arns = ["arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"]
+    ```
+  EOT
   type        = list(string)
   default     = []
+}
+
+variable "anyscale_cluster_node_custom_assume_role_policy" {
+  description = <<-EOT
+    (Optional) Anyscale IAM cluster node role custom assume role policy.
+
+    This overrides the default assume role policy. It must include the `sts:AssumeRole` action and at a minimum,
+    needs to include the `ec2.amazonaws.com` service principal. Must be in JSON format.
+
+    ex:
+    ```
+    anyscale_cluster_node_custom_assume_role_policy = {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "sts:AssumeRole"
+          ],
+          "Principal": {
+            "Service": "ec2.amazonaws.com"
+          }
+        }
+      ]
+    }
+    ```
+  EOT
+  type        = string
+  default     = null
 }
 
 variable "create_cluster_node_cloudwatch_policy" {
@@ -343,23 +469,58 @@ variable "create_cluster_node_cloudwatch_policy" {
   type        = bool
   default     = false
 }
+
 variable "anyscale_cluster_node_cloudwatch_policy_name" {
-  description = "(Optional) Name for the Anyscale cluster node CloudWatch IAM policy. Default is `null`."
+  description = <<-EOT
+    (Optional) Name for the Anyscale cluster node CloudWatch IAM policy.
+
+    If left `null`, will default to `anyscale_cluster_node_cloudwatch_policy_prefix`.
+
+    ex:
+    ```
+    anyscale_cluster_node_cloudwatch_policy_name = "anyscale-cluster-cloudwatch-policy"
+    ```
+  EOT
   type        = string
   default     = null
 }
+
 variable "anyscale_cluster_node_cloudwatch_policy_prefix" {
-  description = "(Optional) Name prefix for the Anyscale cluster node CloudWatch IAM policy. Default is `anyscale-cluster-cloudwatch-`."
+  description = <<-EOT
+    (Optional) Name prefix for the Anyscale cluster node CloudWatch IAM policy.
+
+    If `anyscale_cluster_node_cloudwatch_policy_name` is provided, it will override this variable.
+
+    ex:
+    ```
+    anyscale_cluster_node_cloudwatch_policy_prefix = "anyscale-cluster-cloudwatch-"
+    ```
+  EOT
   type        = string
   default     = "anyscale-cluster-cloudwatch-"
 }
+
 variable "anyscale_cluster_node_cloudwatch_policy_path" {
-  description = "(Optional) Path of the Anyscale cluster node CloudWatch IAM policy. Default is `/`."
+  description = <<-EOT
+    (Optional) Path of the Anyscale cluster node CloudWatch IAM policy.
+
+    ex:
+    ```
+    anyscale_cluster_node_cloudwatch_policy_path = "/anyscale/"
+    ```
+  EOT
   type        = string
   default     = "/"
 }
 variable "anyscale_cluster_node_cloudwatch_policy_description" {
-  description = "(Optional) Anyscale IAM cluster node CloudWatch policy description. Default is `Anyscale Cluster Node CloudWatch Policy`."
+  description = <<-EOT
+    (Optional) Anyscale IAM cluster node CloudWatch policy description.
+
+    ex:
+    ```
+    anyscale_cluster_node_cloudwatch_policy_description = "Anyscale Cluster Node CloudWatch Policy"
+    ```
+  EOT
   type        = string
   default     = "Anyscale Cluster Node CloudWatch Policy"
 }
