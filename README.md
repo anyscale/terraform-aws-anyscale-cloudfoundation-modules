@@ -11,9 +11,9 @@
 
 ## AWS Cloud Resources
 
-For deploying Anyscale on AWS, the minimum required resources are detailed in the [Anyscale AWS Deployment Guide](https://docs.anyscale.com/user-guide/onboard/clouds/deploy-on-aws). This can be used to build the resources to support Customer Defined Networking Clouds (diagrammed below) as well as a Direct Networking clouds.
+For deploying Anyscale on AWS, the minimum required resources are detailed in the [Anyscale AWS Deployment Guide](https://docs.anyscale.com/administration/cloud-deployment/deploy-aws-cloud). This can be used to build the resources to support Customer Defined Networking Clouds (diagrammed below) as well as a Direct Networking clouds.
 
-<img src="https://docs.anyscale.com/assets/images/aws-customer-defined-82bbc708788049d8b94ea61e383ce313.png" alt="Customer Defined Networking" width="800"/>
+<img src="https://docs.anyscale.com/assets/images/aws-customer-defined-2ec2f924ecfe532b9ac8c30376c32aa4.png" alt="Customer Defined Networking" width="800"/>
 
 To streamline long-term management and to enable customization, we've modularized the resources into the following Terraform sub-modules:
 * aws-anyscale-vpc - Creates a basic (opinionated) VPC for Anyscale.
@@ -23,10 +23,12 @@ To streamline long-term management and to enable customization, we've modularize
 * aws-anyscale-iam - Builds IAM roles and policies for secure cross-account access from the Anyscale control plane and EC2 instances.
 * aws-anyscale-efs - Deploys EFS storage solutions supporting Anyscale Clusters.
 * aws-anyscale-memorydb - (Optional) Sets up MemoryDB for Anyscale Services Redis Cache.
+* aws-anyscale-eks-cluster - (Optional) Opinionated deployment of an EKS cluster for the [Anyscale Operator](https://docs.anyscale.com/administration/cloud-deployment/kubernetes)
+* aws-anyscale-eks-nodegroups - (Optional) Used with above for example deployment of the Anyscale Operator
 
 ### Customization
 
-These modules are designed with best practices in mind, ensuring a secure, efficient, and scalable Anyscale deployment on AWS.Each module is standalone, allowing you the flexibility to disable any you don't need. This is handy if you're looking to incorporate custom solutions for specific resources.
+These modules are designed with best practices in mind, ensuring a secure, efficient, and scalable Anyscale deployment on AWS. Each module is standalone, allowing you the flexibility to disable any you don't need. This is handy if you're looking to incorporate custom solutions for specific resources.
 
 If you choose to disable a module, the responsibility to create and manage that resource shifts to you. This flexibility is ideal if you have existing network setups (e.g., VPCs), or need tailored configurations for S3, IAM, EFS, or other services. The Anyscale Terraform Modules are particularly useful for integrating Anyscale components with pre-existing infrastructure, ensuring a smooth blend between what you already have and what you need.
 
@@ -34,10 +36,12 @@ If you choose to disable a module, the responsibility to create and manage that 
 ### Examples
 The examples folder has a couple common use cases that have been tested. These include:
 * Anyscale v2
-  * [Build everything - use a common name for all resources](./examples/anyscale-v2-commonname/)
-  * [Pass in an existing VPC and Subnets - build everything else](./examples/anyscale-v2-existing-vpc/)
-  * [Pass in an existing VPC and Subnets - build everything else including VPC Endpoints](./examples/anyscale-v2-createendpoints/)
-  * [Build everything - only provide Anyscale cluster access to private subnets that are behind a NAT GW](./examples/anyscale-v2-privatesubnets/)
+  * [anyscale-v2-commonname](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-commonname) - Build everything - use a common name for all resources.
+  * [anyscale-v2-existing-vpc](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-existing-vpc) - Pass in an existing VPC and Subnets - build everything else.
+  * [anyscale-v2-privatesubnets](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-privatesubnets) - Build everything - only provide Anyscale cluster access to private subnets that are behind a NAT GW.
+  * [anyscale-v2-existing-s3](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-existing-s3) - Use an existing S3 bucket. Build everything else.
+  * [anyscale-v2-kms](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-kms) - Use KMS for encryption.
+  * [anyscale-v2-kitchensink](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-kitchensink) - Use as many configuration options as possible to build the resources for an Anyscale Cloud.
 
 Additional examples can be requested via an [issues] ticket.
 
@@ -47,13 +51,13 @@ Additional examples can be requested via an [issues] ticket.
 By default, we do not create the IAM policies for enabling [Cloudwatch logging](https://docs.anyscale.com/integrations/monitoring). This can be enabled by setting the variable `create_cluster_node_cloudwatch_policy` to `true`.
 
 ex:
-```
+```hcl
 create_cluster_node_cloudwatch_policy = true
 ```
 
 To scope down permissions for this even further, make sure to provide the Anyscale Cloud ID and the Anyscale Org ID parameters. Full ex:
 
-```
+```hcl
 create_cluster_node_cloudwatch_policy = true
 anyscale_cloud_id   = "cld_1234567890abcdefg"
 anyscale_org_id     = "org_1234567890abcdefg"
@@ -64,8 +68,44 @@ The `aws-anyscale-memorydb` sub-module is used to create a Redis cache that can 
 
 To enable this sub-module, pass the following in to the root module:
 
-```
+```hcl
 create_memorydb_resources = true
+```
+
+## Usage
+
+The following is the bare-minimum requirements for executing the module. More detailed examples can be found above.
+
+```hcl
+module "aws_anyscale_v2" {
+  source = "anyscale/anyscale-cloudfoundation-modules/aws"
+
+  anyscale_cloud_id   = "cld_abcdefghijklmnop1234567890"
+
+  # VPC Related
+  anyscale_vpc_cidr_block     = "172.24.0.0/16"
+  anyscale_vpc_public_subnets = ["172.24.101.0/24", "172.24.102.0/24", "172.24.103.0/24"]
+
+  # Security Group - Ingress CIDR Range (Your Public/Private IP Addresses used to access Anyscale)
+  security_group_ingress_allow_access_from_cidr_range = "10.100.0.0/22"
+}
+```
+
+Example Anyscale Cloud registration command for AWS:
+```bash
+anyscale cloud register --provider aws \
+--name anyscale-cloud \
+--region us-west-2 \
+--vpc-id vpc-abcdefghijklmnopq \
+--subnet-ids subnet-abcdefghijklmnop1,subnetabcdefghijklmnop2,subnet-abcdefghijklmnop5 \
+--security-group-ids sg-abcdefghijklmnopq \
+--s3-bucket-id anyscale-tf-abcdefgh1234 \
+--anyscale-iam-role-id arn:aws:iam::123456789012:role/anyscale-tf-abcdefgh1234-crossacct-iam-role \
+--instance-iam-role-id arn:aws:iam::123456789012:role/anyscale-tf-abcdefgh1234-cluster-node-role \
+--efs-id fs-abcdefghijklmnopq \
+--memorydb-cluster-id anyscale-tf-abcdefgh1234 \
+--private-network \
+--functional-verify workspace,service
 ```
 
 ## Reporting Issues
@@ -111,7 +151,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_security_group_ingress_allow_access_from_cidr_range"></a> [security\_group\_ingress\_allow\_access\_from\_cidr\_range](#input\_security\_group\_ingress\_allow\_access\_from\_cidr\_range) | (Required) Comma delimited string of IPv4 CIDR range to allow access to anyscale resources.<br/>This should be the list of CIDR ranges that have access to the clusters. Public or private IPs are supported.<br/>This is added to the security group and allows port 443 (https) and 22 (ssh) access.<br/><br/>While not recommended, you can set this to `0.0.0.0/0` to allow access from anywhere.<br/>ex:<pre>security_group_ingress_allow_access_from_cidr_range = "10.0.1.0/24,24.1.24.24/32"</pre> | `string` | n/a | yes |
+| <a name="input_security_group_ingress_allow_access_from_cidr_range"></a> [security\_group\_ingress\_allow\_access\_from\_cidr\_range](#input\_security\_group\_ingress\_allow\_access\_from\_cidr\_range) | (Required) Comma delimited string of IPv4 CIDR range to allow access to anyscale resources.<br/>This should be the list of CIDR ranges that have access to the clusters. Public or private IPs are supported.<br/>This is added to the security group and allows port 443 (https) and 22 (ssh) access.<br/><br/>While not recommended, you can set this to `0.0.0.0/0` to allow access from anywhere.<br/><br/>ex:<pre>security_group_ingress_allow_access_from_cidr_range = "10.0.1.0/24,24.1.24.24/32"</pre> | `string` | n/a | yes |
 | <a name="input_anyscale_access_role_description"></a> [anyscale\_access\_role\_description](#input\_anyscale\_access\_role\_description) | (Optional) The IAM role description for the Anysclae IAM access role.<br/><br/>This role is used for cross account access from the Anyscale Controlplane to an AWS account and allows access to manage AWS resources.<br/><br/>ex:<pre>anyscale_access_role_description = "Anyscale cross account access role"</pre> | `string` | `"Anyscale access role"` | no |
 | <a name="input_anyscale_access_role_trusted_role_arns"></a> [anyscale\_access\_role\_trusted\_role\_arns](#input\_anyscale\_access\_role\_trusted\_role\_arns) | (Optional) Access Role Trusted Role ARNs.<br/><br/>A list of ARNs of IAM roles that are allowed to assume the Anyscale IAM access role.<br/>Default is an empty list and the default in the `aws-anyscale-iam` sub-module is used.<br/>This variable should not be used unless directed by Anyscale. | `list(string)` | `[]` | no |
 | <a name="input_anyscale_access_servicesv2_policy_description"></a> [anyscale\_access\_servicesv2\_policy\_description](#input\_anyscale\_access\_servicesv2\_policy\_description) | (Optional) Anyscale servicesv2 IAM policy description.<br/><br/>ex:<pre>anyscale_access_servicesv2_policy_description = "Anyscale Services v2 IAM Policy which is used by the Anyscale IAM Access Role"</pre> | `string` | `"Anyscale Services v2 IAM Policy which is used by the Anyscale IAM Access Role"` | no |

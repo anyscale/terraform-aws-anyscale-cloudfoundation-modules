@@ -1,3 +1,13 @@
+## 0.22.2 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+- General README and Variable cleanup
+
 ## 0.22.1 (Released)
 FEATURES:
 - Add initial support for Anyscale on EKS.

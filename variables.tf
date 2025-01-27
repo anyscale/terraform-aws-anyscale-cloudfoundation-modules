@@ -10,6 +10,7 @@ variable "security_group_ingress_allow_access_from_cidr_range" {
     This is added to the security group and allows port 443 (https) and 22 (ssh) access.
 
     While not recommended, you can set this to `0.0.0.0/0` to allow access from anywhere.
+
     ex:
     ```
     security_group_ingress_allow_access_from_cidr_range = "10.0.1.0/24,24.1.24.24/32"
@@ -23,7 +24,7 @@ variable "security_group_ingress_allow_access_from_cidr_range" {
 # These variables have defaults, but may be overridden.
 # ------------------------------------------------------------------------------
 variable "anyscale_deploy_env" {
-  description = <<-EOF
+  description = <<-EOT
     (Optional) Anyscale deployment environment.
     Used in resource names and tags.
 
@@ -31,7 +32,7 @@ variable "anyscale_deploy_env" {
     ```
     anyscale_deploy_env = "production"
     ```
-  EOF
+  EOT
   type        = string
   validation {
     condition = (
@@ -43,7 +44,7 @@ variable "anyscale_deploy_env" {
 }
 
 variable "anyscale_cloud_id" {
-  description = <<-EOF
+  description = <<-EOT
     (Optional) Anyscale Cloud ID.
 
     This is used to lock down the cross account access role by Cloud ID. Because the Cloud ID is unique to each
@@ -54,7 +55,7 @@ variable "anyscale_cloud_id" {
     ```
     anyscale_cloud_id = "cld_abcdefghijklmnop1234567890"
     ```
-  EOF
+  EOT
   type        = string
   default     = null
   validation {
@@ -401,60 +402,6 @@ variable "anyscale_gateway_vpc_endpoints" {
     }
   }
 }
-
-# variable "create_memorydb_subnets" {
-#   description = <<-EOT
-#     (Optional) Create MemoryDB subnets.
-
-#     If set to true, this will create MemoryDB subnets in the VPC. In this case, if the `create_memorydb_resources` is set to true, private subnets for MemoryDB will be created and used.
-#     If set to false, this will not create MemoryDB subnets in the VPC. In this case, if the `create_memorydb_resources` is set to true, the private subnets will be used to create MemoryDB subnets.
-
-#     Also requires `create_memorydb_resources` to be set to true.
-
-#     ex:
-#     ```
-#     create_memorydb_subnets = true
-#     ```
-#   EOT
-#   type        = bool
-#   default     = false
-# }
-
-# variable "anyscale_vpc_memorydb_subnets" {
-#   description = <<-EOT
-#     (Optional) A list of MemoryDB subnets inside the VPC.
-
-#     MemoryDB subnets will be created with these CIDR blocks. Also requires `create_memorydb_subnets` and `create_memorydb_resources` to both be set to true.
-
-#     ex:
-#     ```
-#     anyscale_vpc_memorydb_subnets = [
-#       "10.0.130.0/24",
-#       "10.0.131.0/24",
-#     ]
-#     ```
-#   EOT
-#   type        = list(string)
-#   default     = []
-# }
-
-# variable "anyscale_vpc_memorydb_subnet_tags" {
-#   description = <<-EOT
-#     (Optional) A map of tags for MemoryDB subnets.
-
-#     Duplicate tags found in the `tags` or `anyscale_vpc_tags` variables will get duplicated on the resource.
-
-#     ex:
-#     ```
-#     anyscale_vpc_memorydb_subnet_tags = {
-#       "purpose" : "networking",
-#       "criticality" : "critical"
-#     }
-#     ```
-#   EOT
-#   type        = map(string)
-#   default     = {}
-# }
 
 #--------------------------------------------
 # IAM Variables
@@ -1599,6 +1546,7 @@ variable "anyscale_memorydb_cluster_name" {
   type        = string
   default     = null
 }
+
 variable "anyscale_memorydb_cluster_name_prefix" {
   description = <<-EOT
     (Optional) The prefix of the MemoryDB cluster.
