@@ -12,7 +12,7 @@ variable "security_group_ingress_allow_access_from_cidr_range" {
     While not recommended, you can set this to `0.0.0.0/0` to allow access from anywhere.
 
     ex:
-    ```hcl
+    ```
     security_group_ingress_allow_access_from_cidr_range = "10.0.1.0/24,24.1.24.24/32"
     ```
   EOT
@@ -29,7 +29,7 @@ variable "anyscale_deploy_env" {
     Used in resource names and tags.
 
     ex:
-    ```hcl
+    ```
     anyscale_deploy_env = "production"
     ```
   EOT
@@ -52,7 +52,7 @@ variable "anyscale_cloud_id" {
     Cloud is created, so this is an optional variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_cloud_id = "cld_abcdefghijklmnop1234567890"
     ```
   EOT
@@ -77,7 +77,7 @@ variable "anyscale_org_id" {
     customer, this ensures that only the customer can access their own resources.
 
     ex:
-    ```hcl
+    ```
     anyscale_org_id = "org_abcdefghijklmn1234567890"
     ```
   EOT
@@ -102,7 +102,7 @@ variable "tags" {
     Resource dependent tags will be appended to this list.
 
     ex:
-    ```hcl
+    ```
     tags = {
       application = "Anyscale",
       environment = "prod"
@@ -127,7 +127,7 @@ variable "common_prefix" {
     Max length is 30 characters.
 
     ex:
-    ```hcl
+    ```
     common_prefix = "anyscale-"
     ```
   EOT
@@ -149,7 +149,7 @@ variable "use_common_name" {
     If set to true, this will also use a random suffix to avoid name collisions.
 
     ex:
-    ```hcl
+    ```
     use_common_name = true
     ```
   EOT
@@ -167,7 +167,7 @@ variable "random_name_suffix_length" {
     Must be >= 2 and <= 30.
 
     ex:
-    ```hcl
+    ```
     random_name_suffix_length = 6
     ```
   EOT
@@ -190,7 +190,7 @@ variable "existing_vpc_id" {
     Subnet IDs are also required if this is provided.
 
     ex:
-    ```hcl
+    ```
     existing_vpc_id = "vpc-1234567890"
     ```
   EOT
@@ -206,7 +206,7 @@ variable "existing_vpc_subnet_ids" {
     The variable `existing_vpc_id` also needs to be provided.
 
     ex:
-    ```hcl
+    ```
     existing_vpc_subnet_ids = ["subnet-1234567890", "subnet-0987654321"]
     ```
   EOT
@@ -237,7 +237,7 @@ variable "existing_vpc_public_route_table_ids" {
     If provided, these route tables will be used to create VPC Endpoint(s).
 
     ex:
-    ```hcl
+    ```
     existing_vpc_public_route_table_ids = ["rtb-1234567890", "rtb-0987654321"]
     ```
   EOT
@@ -253,7 +253,7 @@ variable "anyscale_vpc_name" {
     Defaults to `vpc_<anyscale_cloud_id>` in a local variable if not provided.
 
     ex:
-    ```hcl
+    ```
     anyscale_vpc_name = "anyscale-vpc"
     ```
   EOT
@@ -267,7 +267,7 @@ variable "anyscale_vpc_cidr_block" {
     The CIDR block can be explicitly set or it can be derived from IPAM using `ipv4_netmask_length` & `ipv4_ipam_pool_id`.
 
     ex:
-    ```hcl
+    ```
     anyscale_vpc_cidr_block = "10.0.0.0/16"
     ```
   EOT
@@ -282,7 +282,7 @@ variable "anyscale_vpc_public_subnets" {
     If this variable is provided, public subnets will be created with these CIDR blocks.
 
     ex:
-    ```hcl
+    ```
     anyscale_vpc_public_subnets = [
       "10.0.21.0/24",
       "10.0.22.0/24",
@@ -301,7 +301,7 @@ variable "anyscale_vpc_public_subnet_tags" {
     Duplicate tags found in the `tags` or `anyscale_vpc_tags` variables will get duplicated on the resource.
 
     ex:
-    ```hcl
+    ```
     anyscale_vpc_public_subnet_tags = {
       "purpose" : "networking",
       "criticality" : "critical"
@@ -319,7 +319,7 @@ variable "anyscale_vpc_private_subnets" {
     If this variable is provided, private subnets will be created with these CIDR blocks.
 
     ex:
-    ```hcl
+    ```
     anyscale_vpc_private_subnets = [
       "10.0.121.0/24",
       "10.0.122.0/24",
@@ -338,7 +338,7 @@ variable "anyscale_vpc_private_subnet_tags" {
     Duplicate tags found in the `tags` or `anyscale_vpc_tags` variables will get duplicated on the resource.
 
     ex:
-    ```hcl
+    ```
     anyscale_vpc_private_subnet_tags = {
       "purpose" : "networking",
       "criticality" : "critical"
@@ -356,7 +356,7 @@ variable "anyscale_vpc_tags" {
     Duplicate tags found in the "tags" variable will get duplicated on the resource.
 
     ex:
-    ```hcl
+    ```
     anyscale_vpc_tags = {
       "purpose" : "networking",
       "criticality" : "critical"
@@ -382,7 +382,7 @@ variable "anyscale_gateway_vpc_endpoints" {
     Set to an empty map `{}` to skip creating VPC Endpoints.
 
     ex:
-    ```hcl
+    ```
     anyscale_gateway_vpc_endpoints = {
       "s3" = {
         name   = "s3"
@@ -415,7 +415,7 @@ variable "anyscale_iam_access_role_name" {
     If provided, overrides the `anyscale_iam_access_role_name_prefix` variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_iam_access_role_name = "anyscale-iam-crossacct-role"
     ```
   EOT
@@ -433,7 +433,7 @@ variable "anyscale_iam_access_role_name_prefix" {
     Default is `null` but is set to `anyscale-iam-role-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_iam_access_role_name_prefix = "anyscale-crossacct-role-"
     ```
   EOT
@@ -448,7 +448,7 @@ variable "anyscale_access_role_description" {
     This role is used for cross account access from the Anyscale Controlplane to an AWS account and allows access to manage AWS resources.
 
     ex:
-    ```hcl
+    ```
     anyscale_access_role_description = "Anyscale cross account access role"
     ```
   EOT
@@ -476,7 +476,7 @@ variable "anyscale_access_steadystate_policy_name" {
     If provided, overrides the `anyscale_access_steadystate_policy_prefix` variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_access_steadystate_policy_name = "anyscale-steadystate-policy"
     ```
   EOT
@@ -493,7 +493,7 @@ variable "anyscale_access_steadystate_policy_prefix" {
     Default is `null` but is set to `anyscale-steady_state-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_access_steadystate_policy_prefix = "anyscale-steadystate-policy-"
     ```
   EOT
@@ -506,7 +506,7 @@ variable "anyscale_access_steadystate_policy_description" {
     (Optional) Anyscale steady state IAM policy description.
 
     ex:
-    ```hcl
+    ```
     anyscale_access_steadystate_policy_description = "Anyscale Steady State IAM Policy which is used by the Anyscale IAM Access Role"
     ```
   EOT
@@ -522,7 +522,7 @@ variable "anyscale_access_servicesv2_policy_name" {
     If provided, overrides the `anyscale_access_servicesv2_policy_prefix` variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_access_servicesv2_policy_name = "anyscale-servicesv2-policy"
     ```
   EOT
@@ -539,7 +539,7 @@ variable "anyscale_access_servicesv2_policy_prefix" {
     Default is `null` but is set to `anyscale-servicesv2-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_access_servicesv2_policy_prefix = "anyscale-servicesv2-policy-"
     ```
   EOT
@@ -552,7 +552,7 @@ variable "anyscale_access_servicesv2_policy_description" {
     (Optional) Anyscale servicesv2 IAM policy description.
 
     ex:
-    ```hcl
+    ```
     anyscale_access_servicesv2_policy_description = "Anyscale Services v2 IAM Policy which is used by the Anyscale IAM Access Role"
     ```
   EOT
@@ -569,7 +569,7 @@ variable "anyscale_accessrole_custom_policy_name" {
     If provided, overrides the `anyscale_accessrole_custom_policy_name_prefix` variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_accessrole_custom_policy_name = "anyscale-custom-policy"
     ```
   EOT
@@ -585,7 +585,7 @@ variable "anyscale_accessrole_custom_policy_name_prefix" {
     Default is `null` but is set to `anyscale-crossacct-custom-policy-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_accessrole_custom_policy_name_prefix = "anyscale-custom-policy-"
     ```
   EOT
@@ -598,7 +598,7 @@ variable "anyscale_accessrole_custom_policy_description" {
     (Optional) Anyscale IAM custom policy description.
 
     ex:
-    ```hcl
+    ```
     anyscale_accessrole_custom_policy_description = "Anyscale custom IAM policy"
     ```
   EOT
@@ -618,7 +618,7 @@ variable "anyscale_accessrole_custom_policy" {
     Must be a valid IAM policy.
 
     ex:
-    ```hcl
+    ```
     anyscale_accessrole_custom_policy = {
       "Version": "2012-10-17",
       "Statement": [
@@ -644,7 +644,7 @@ variable "anyscale_iam_cluster_node_role_name" {
     If provided, overrides the `anyscale_iam_cluster_node_role_name_prefix` variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_iam_cluster_node_role_name = "anyscale-cluster-node-role"
     ```
   EOT
@@ -660,7 +660,7 @@ variable "anyscale_iam_cluster_node_role_name_prefix" {
     Default is `null` but is set to `anyscale-cluster-node-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_iam_cluster_node_role_name_prefix = "anyscale-cluster-node-role-"
     ```
   EOT
@@ -675,7 +675,7 @@ variable "anyscale_cluster_node_role_description" {
     This role is used by compute resources to access resources within an AWS account.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_role_description = "Anyscale cluster node role"
     ```
   EOT
@@ -691,7 +691,7 @@ variable "anyscale_cluster_node_custom_policy_name" {
     If provided, overrides the `anyscale_cluster_node_custom_policy_name_prefix` variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_custom_policy_name = "anyscale-clusternode-custom-policy"
     ```
   EOT
@@ -708,7 +708,7 @@ variable "anyscale_cluster_node_custom_policy_prefix" {
     Default is `null` but is set to `anyscale-clusternode-custom-policy-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_custom_policy_prefix = "anyscale-clusternode-custom-policy-"
     ```
   EOT
@@ -721,7 +721,7 @@ variable "anyscale_cluster_node_custom_policy_description" {
     (Optional) Anyscale IAM cluster node custom policy description.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_custom_policy_description = "Anyscale cluster node custom IAM policy"
     ```
   EOT
@@ -740,7 +740,7 @@ variable "anyscale_cluster_node_custom_policy" {
     Must be a valid IAM policy.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_custom_policy = {
       "Version": "2012-10-17",
       "Statement": [
@@ -765,7 +765,7 @@ variable "anyscale_cluster_node_managed_policy_arns" {
     This allows custom or managed policies to be attached to the Anyscale Cluster Role which can be used to grant additional permissions.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_managed_policy_arns = [
       "arn:aws:iam::aws:policy/AmazonSQSReadOnlyAccess",
       "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
@@ -782,7 +782,7 @@ variable "create_cluster_node_cloudwatch_policy" {
     Determines whether to create the CloudWatch IAM policy for the cluster node role.
 
     ex:
-    ```hcl
+    ```
     create_cluster_node_cloudwatch_policy = true
     ```
   EOT
@@ -796,7 +796,7 @@ variable "anyscale_cluster_node_cloudwatch_policy_description" {
     Anyscale IAM cluster node CloudWatch policy description.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_cloudwatch_policy_description = "Anyscale cluster node CloudWatch IAM policy"
     ```
   EOT
@@ -812,7 +812,7 @@ variable "anyscale_cluster_node_cloudwatch_policy_name" {
     If provided, overrides the `anyscale_cluster_node_cloudwatch_policy_name_prefix` variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_cloudwatch_policy_name = "anyscale-cluster-node-cloudwatch-policy"
     ```
   EOT
@@ -829,7 +829,7 @@ variable "anyscale_cluster_node_cloudwatch_policy_prefix" {
     Default is `null` but is set to `anyscale-cluster-node-cloudwatch-policy-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_cloudwatch_policy_prefix = "anyscale-cluster-node-cloudwatch-policy-"
     ```
   EOT
@@ -846,7 +846,7 @@ variable "anyscale_cluster_node_byod_secrets_policy_name" {
     If provided, overrides the `anyscale_cluster_node_secrets_policy_prefix` variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_secrets_policy_name = "anyscale-cluster-node-secrets-policy"
     #checkov:skip=CKV_SECRET_6:Secret Policy is not a secret'
     ```
@@ -863,7 +863,7 @@ variable "anyscale_cluster_node_byod_secrets_policy_prefix" {
     Default is `null` but is set to `anyscale-cluster-node-secrets-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_secrets_policy_prefix = "anyscale-cluster-node-secrets-"
     #checkov:skip=CKV_SECRET_6:Secret Name Prefix is not a secret'
     ```
@@ -877,7 +877,7 @@ variable "anyscale_cluster_node_byod_secrets_policy_description" {
     (Optional) Anyscale IAM cluster node Secrets policy description.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_secrets_policy_description = "Anyscale Cluster Node Secrets Policy"
     ```
   EOT
@@ -890,7 +890,7 @@ variable "anyscale_cluster_node_byod_secret_arns" {
     The Secrets Manager secret ARNs that the cluster node role needs access to for BYOD clusters.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_secret_arns = [
       "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",
       "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",
@@ -907,7 +907,7 @@ variable "anyscale_cluster_node_byod_secret_kms_arn" {
     This is only used if `anyscale_cluster_node_byod_secret_arns` is also provided.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_secret_arns = [
       "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",
       "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",
@@ -925,7 +925,7 @@ variable "anyscale_cluster_node_byod_custom_secrets_policy" {
   If provided, this will be used instead of generating a policy automatically.
 
   ex:
-  ```hcl
+  ```
   anyscale_cluster_node_byod_custom_secrets_policy = {
       "Version": "2012-10-17",
       "Statement": [
@@ -951,7 +951,7 @@ variable "anyscale_cluster_node_custom_assume_role_policy" {
     needs to include the `ec2.amazonaws.com` service principal. Must be in JSON format.
 
     ex:
-    ```hcl
+    ```
     anyscale_cluster_node_custom_assume_role_policy = {
       "Version": "2012-10-17",
       "Statement": [
@@ -981,7 +981,7 @@ variable "anyscale_iam_s3_policy_name" {
     If provided, overrides the `anyscale_iam_s3_policy_name_prefix` variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_iam_s3_policy_name = "anyscale-iam-s3-policy"
     ```
   EOT
@@ -997,7 +997,7 @@ variable "anyscale_iam_s3_policy_name_prefix" {
     Default is `null` but is set to `anyscale-iam-s3-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_iam_s3_policy_name_prefix = "anyscale-iam-s3-"
     ```
   EOT
@@ -1009,7 +1009,7 @@ variable "anyscale_iam_s3_policy_description" {
     (Optional) Anyscale S3 access IAM policy description.
 
     ex:
-    ```hcl
+    ```
     anyscale_iam_s3_policy_description = "Anyscale S3 Access IAM Policy"
     ```
   EOT
@@ -1024,7 +1024,7 @@ variable "anyscale_iam_tags" {
     Duplicate tags found in the "tags" variable will get duplicated on the resources.
 
     ex:
-    ```hcl
+    ```
     anyscale_iam_tags = {
       "purpose" : "iam",
       "criticality" : "critical"
@@ -1046,7 +1046,7 @@ variable "security_group_name" {
     If provided, overrides `security_group_name_prefix`.
 
     ex:
-    ```hcl
+    ```
     security_group_name = "anyscale-security-group"
     ```
   EOT
@@ -1063,7 +1063,7 @@ variable "security_group_name_prefix" {
     Default is `null` but is set to `anyscale-security-group-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     security_group_name_prefix = "anyscale-security-group-"
     ```
   EOT
@@ -1077,7 +1077,7 @@ variable "security_group_create_anyscale_public_ingress" {
     (Optional) Determines if public ingress rules should be created.
 
     ex:
-    ```hcl
+    ```
     security_group_create_anyscale_public_ingress = true
     ```
   EOT
@@ -1093,7 +1093,7 @@ variable "security_group_ingress_with_existing_security_groups_map" {
     ports in the `rule` section.
 
     ex:
-    ```hcl
+    ```
     security_group_ingress_with_existing_security_groups_map = [
       {
         rule              = "https-443-tcp"
@@ -1137,7 +1137,7 @@ variable "security_group_override_ingress_from_cidr_map" {
     to be allowed from a IPv4 CIDR block that allows access for the users who are using Anyscale.
 
     ex:
-    ```hcl
+    ```
     security_group_override_ingress_from_cidr_map = [
       {
         rule        = "https-443-tcp"
@@ -1160,7 +1160,7 @@ variable "anyscale_securitygroup_tags" {
     Duplicate tags found in the "tags" variable will get duplicated on the resource.
 
     ex:
-    ```hcl
+    ```
     anyscale_securitygroup_tags = {
       "purpose" : "security",
       "criticality" : "critical"
@@ -1182,7 +1182,7 @@ variable "anyscale_efs_name" {
     Will default to `efs_anyscale` if this var `null` and anyscale_cloud_id is also `null`.
 
     ex:
-    ```hcl
+    ```
     anyscale_efs_name = "anyscale-efs"
     ```
   EOT
@@ -1198,7 +1198,7 @@ variable "efs_creation_token" {
     Default is `null` which forces Terraform to generate it.
 
     ex:
-    ```hcl
+    ```
     efs_creation_token = "anyscale-efs-token-1234567890"
     ```
   EOT
@@ -1216,7 +1216,7 @@ variable "efs_lifecycle_transition_to_ia" {
     Default is `AFTER_60_DAYS` which will transition to IA after 60 days.
 
     ex:
-    ```hcl
+    ```
     efs_lifecycle_transition_to_ia = ["AFTER_60_DAYS"]
     ```
   EOT
@@ -1239,7 +1239,7 @@ variable "efs_lifecycle_transition_to_primary_storage_class" {
     Must either be an empty list or `AFTER_1_ACCESS`.
 
     ex:
-    ```hcl
+    ```
     efs_lifecycle_transition_to_primary_storage_class = ["AFTER_1_ACCESS"]
     ```
   EOT
@@ -1259,7 +1259,7 @@ variable "efs_kms_key_id" {
     If not provided, the default AWS managed key will be used.
 
     ex:
-    ```hcl
+    ```
     efs_kms_key_id = "1234abcd-12ab-34cd-56ef-1234567890ab"
     ```
   EOT
@@ -1274,7 +1274,7 @@ variable "anyscale_efs_tags" {
     Duplicate tags found in the "tags" variable will get duplicated on the resource.
 
     ex:
-    ```hcl
+    ```
     anyscale_efs_tags = {
       "purpose" : "storage",
       "criticality" : "critical"
@@ -1299,7 +1299,7 @@ variable "existing_s3_bucket_arn" {
       - Encryption configuration
 
     ex:
-    ```hcl
+    ```
     existing_s3_bucket_arn = "arn:aws:s3:::anyscale-s3-bucket"
     ```
   EOT
@@ -1334,7 +1334,7 @@ variable "anyscale_s3_bucket_prefix" {
     Default is `null` but is set to `anyscale-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_s3_bucket_prefix = "anyscale-s3-bucket-"
     ```
   EOT
@@ -1350,7 +1350,7 @@ variable "anyscale_s3_server_side_encryption" {
     If you are using KMS, you must proivde the KMS Key ID.
 
     ex using KMS:
-    ```hcl
+    ```
     anyscale_s3_server_side_encryption = {
       kms_master_key_id = "1234abcd-12ab-34cd-56ef-1234567890ab"
       sse_algorithm     = "aws:kms"
@@ -1358,7 +1358,7 @@ variable "anyscale_s3_server_side_encryption" {
     ```
 
     ex using AES256:
-    ```hcl
+    ```
     anyscale_s3_server_side_encryption = {
       sse_algorithm = "AES256"
     }
@@ -1380,7 +1380,7 @@ variable "anyscale_s3_force_destroy" {
     Note: With the default of `false`, you need to empty the bucket if there are objects before `terraform destroy` can be completed succesfully.
 
     ex:
-    ```hcl
+    ```
     anyscale_s3_force_destroy = true
     ```
   EOT
@@ -1416,7 +1416,7 @@ variable "anyscale_custom_s3_policy" {
     And for more additional examples, please look at the s3-policy sub-module examples folder.
 
     ex:
-    ```hcl
+    ```
     data "aws_iam_policy_document" "bucket_policy" {
     statement {
         principals {
@@ -1446,7 +1446,7 @@ variable "anyscale_s3_tags" {
     Duplicate tags found in the "tags" variable will get duplicated on the resource.
 
     ex:
-    ```hcl
+    ```
     anyscale_iam_tags = {
       "purpose" : "storage",
       "criticality" : "critical"
@@ -1464,7 +1464,7 @@ variable "anyscale_s3_lifecycle_rule" {
     List of maps containing configuration of object lifecycle management.
 
     ex:
-    ```hcl
+    ```
     anyscale_s3_lifecycle_rule = [
       {
         id      = "log"
@@ -1504,7 +1504,7 @@ variable "create_memorydb_resources" {
     (Optional) Determines whether to create the MemoryDB resources.
 
     ex:
-    ```hcl
+    ```
     create_memorydb_resources = true
     ```
   EOT
@@ -1519,7 +1519,7 @@ variable "anyscale_memorydb_tags" {
     Duplicate tags found in the "tags" variable will get duplicated on the resource.
 
     ex:
-    ```hcl
+    ```
     anyscale_memorydb_tags = {
       "purpose" : "memorydb",
       "criticality" : "critical"
@@ -1539,7 +1539,7 @@ variable "anyscale_memorydb_cluster_name" {
     If provided, overrides the `anyscale_memorydb_cluster_name` variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_memorydb_cluster_name = "anyscale-memorydb-cluster"
     ```
   EOT
@@ -1556,7 +1556,7 @@ variable "anyscale_memorydb_cluster_name_prefix" {
     Default is `null` but is set to `anyscale-memorydb-cluster-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_memorydb_cluster_name_prefix = "anyscale-memorydb-cluster-"
     ```
   EOT
@@ -1569,7 +1569,7 @@ variable "anyscale_memorydb_cluster_description" {
     (Optional) The description of the MemoryDB cluster.
 
     ex:
-    ```hcl
+    ```
     anyscale_memorydb_cluster_description = "Anyscale MemoryDB cluster"
     ```
   EOT
@@ -1585,7 +1585,7 @@ variable "anyscale_memorydb_parameter_group_name" {
     If provided, overrides the `anyscale_memorydb_parameter_group_name_prefix` variable.
 
     ex:
-    ```hcl
+    ```
     memorydb_parameter_group_name = "anyscale-memorydb-parameter-group"
     ```
   EOT
@@ -1602,7 +1602,7 @@ variable "anyscale_memorydb_parameter_group_name_prefix" {
     Default is `null` but is set to `anyscale-memorydb-parameter-group-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_memorydb_parameter_group_name_prefix = "anyscale-memorydb-parameter-group-"
     ```
   EOT
@@ -1615,7 +1615,7 @@ variable "anyscale_memorydb_parameter_group_description" {
     (Optional) The description of the MemoryDB parameter group.
 
     ex:
-    ```hcl
+    ```
     anyscale_memorydb_parameter_group_description = "Anyscale MemoryDB Parameter Group"
     ```
   EOT
@@ -1631,7 +1631,7 @@ variable "anyscale_memorydb_subnet_group_name" {
     If provided, overrides the `memorydb_subnet_group_name_prefix` variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_memorydb_subnet_group_name = "anyscale-memorydb-subnet-group"
     ```
   EOT
@@ -1648,7 +1648,7 @@ variable "anyscale_memorydb_subnet_group_name_prefix" {
     Default is `null` but is set to `memorydb-subnet-group-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_memorydb_subnet_group_name_prefix = "anyscale-memorydb-subnet-group-"
     ```
   EOT
@@ -1661,7 +1661,7 @@ variable "anyscale_memorydb_subnet_group_description" {
     (Optional) The description of the MemoryDB subnet group.
 
     ex:
-    ```hcl
+    ```
     anyscale_memorydb_subnet_group_description = "Anyscale MemoryDB Subnet Group"
     ```
   EOT
@@ -1677,7 +1677,7 @@ variable "anyscale_memorydb_acl_name" {
     If provided, overrides the `anyscale_memorydb_acl_name_prefix` variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_memorydb_acl_name = "anyscale-memorydb-acl"
     ```
   EOT
@@ -1694,7 +1694,7 @@ variable "anyscale_memorydb_acl_name_prefix" {
     Default is `null` but is set to `memorydb-acl-` in a local variable.
 
     ex:
-    ```hcl
+    ```
     anyscale_memorydb_acl_name_prefix = "anyscale-memorydb-acl-"
     ```
   EOT
