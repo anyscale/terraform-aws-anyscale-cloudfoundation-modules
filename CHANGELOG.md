@@ -1,3 +1,14 @@
+## 0.23.0 (Released)
+FEATURES:
+- Updates to least priveledged IAM policy for the Control Plane Role
+  - When passing in a Cloud ID, additional IAM conditions can be applied for EBS Volumes and IAM Instance Profile associations based on the Cloud ID tag.
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
 ## 0.22.2 (Released)
 FEATURES:
 

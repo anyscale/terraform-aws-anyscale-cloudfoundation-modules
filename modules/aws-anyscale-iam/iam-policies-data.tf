@@ -120,7 +120,14 @@ data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
         "ec2:RunInstances",
         "ec2:StartInstances",
         "ec2:StopInstances",
-        "ec2:TerminateInstances"
+        "ec2:TerminateInstances",
+        # EBS Volumes
+        "ec2:AttachVolume",
+        "ec2:CreateVolume",
+        # IAMInstanceProfiles
+        "ec2:AssociateIamInstanceProfile",
+        "ec2:DisassociateIamInstanceProfile",
+        "ec2:ReplaceIamInstanceProfileAssociation",
       ]
       resources = ["*"]
     }
@@ -171,6 +178,66 @@ data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
     }
   }
 
+  dynamic "statement" {
+    for_each = local.cloud_id_provided ? [1] : []
+    content {
+      sid    = "RestrictedEbsAttachmentAccess"
+      effect = "Allow"
+      actions = [
+        "ec2:AttachVolume",
+      ]
+      resources = [
+        "arn:aws:ec2:*:${local.account_id}:instance/*"
+      ]
+      condition {
+        test     = "StringEquals"
+        variable = "aws:ResourceTag/anyscale-cloud-id"
+        values   = [var.anyscale_cloud_id]
+      }
+    }
+  }
+
+  dynamic "statement" {
+    for_each = local.cloud_id_provided ? [1] : []
+    content {
+      sid    = "RestrictedEbsCreateAccess"
+      effect = "Allow"
+      actions = [
+        # IAMInstanceProfiles
+        "ec2:CreateVolume",
+      ]
+      resources = [
+        "arn:aws:ec2:*:${local.account_id}:volume/*"
+      ]
+      condition {
+        test     = "StringEquals"
+        variable = "aws:ResourceTag/anyscale-cloud-id"
+        values   = [var.anyscale_cloud_id]
+      }
+    }
+  }
+
+  dynamic "statement" {
+    for_each = local.cloud_id_provided ? [1] : []
+    content {
+      sid    = "RestrictedIamInstanceProfileAccess"
+      effect = "Allow"
+      actions = [
+        # IAMInstanceProfiles
+        "ec2:AssociateIamInstanceProfile",
+        "ec2:DisassociateIamInstanceProfile",
+        "ec2:ReplaceIamInstanceProfileAssociation",
+      ]
+      resources = [
+        "arn:aws:ec2:*:${local.account_id}:instance/*"
+      ]
+      condition {
+        test     = "StringEquals"
+        variable = "aws:ResourceTag/anyscale-cloud-id"
+        values   = [var.anyscale_cloud_id]
+      }
+    }
+  }
 
   dynamic "statement" {
     for_each = local.cloud_id_provided ? [1] : []
@@ -247,13 +314,7 @@ data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
     effect = "Allow"
     actions = [
       # Volume management
-      "ec2:AttachVolume",
-      "ec2:CreateVolume",
       "ec2:DescribeVolumes",
-      # IAMInstanceProfiles
-      "ec2:AssociateIamInstanceProfile",
-      "ec2:DisassociateIamInstanceProfile",
-      "ec2:ReplaceIamInstanceProfileAssociation",
       # Placement groups
       "ec2:CreatePlacementGroup",
       # Address Management
