@@ -6,7 +6,8 @@
 #     - S3 Bucket
 #     - VPC with publicly routed subnets (no private subnets)
 #     - VPC Security Groups
-#     - EFS
+
+#     - EFS is not enabled
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
   full_tags = merge(tomap({
@@ -61,4 +62,6 @@ EOF
   # Security Group Related
   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges
 
+  # EFS Related
+  create_efs_resources = false
 }

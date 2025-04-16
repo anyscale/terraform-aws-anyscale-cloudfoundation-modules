@@ -1175,6 +1175,22 @@ variable "anyscale_securitygroup_tags" {
 #--------------------------------------------
 # EFS Variables
 #--------------------------------------------
+variable "create_efs_resources" {
+  description = <<-EOT
+    (Optional) Create EFS resources.
+
+    If set to `true`, EFS resources will be created. NFS is optional and is used for shared cluster
+    storage.
+
+    ex:
+    ```
+    create_efs_resources = true
+    ```
+  EOT
+  type        = bool
+  default     = true
+}
+
 variable "anyscale_efs_name" {
   description = <<-EOT
     (Optional) Elastic file system name.

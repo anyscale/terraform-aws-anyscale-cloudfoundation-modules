@@ -244,8 +244,9 @@ locals {
   efs_mount_targets_subnet_count = max(local.existing_subnet_count, local.anyscale_private_subnet_count, local.anyscale_public_subnet_count)
 }
 module "aws_anyscale_efs" {
-  source = "./modules/aws-anyscale-efs"
-  tags   = local.efs_tags
+  source         = "./modules/aws-anyscale-efs"
+  tags           = local.efs_tags
+  module_enabled = var.create_efs_resources
 
   # File system
   anyscale_efs_name  = local.efs_name
