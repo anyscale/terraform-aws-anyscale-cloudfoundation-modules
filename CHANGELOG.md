@@ -1,3 +1,13 @@
+## 0.23.1 (Released)
+FEATURES:
+
+BUG FIXES:
+- This updates the main base module to only send one subnet per AZ to the EFS sub-module. The EFS sub-module would throw an error when using an existing VPC with multiple subnets in the same AZ.
+
+BREAKING CHANGES:
+
+NOTES:
+
 ## 0.23.0 (Released)
 FEATURES:
 - Updates to least priveledged IAM policy for the Control Plane Role

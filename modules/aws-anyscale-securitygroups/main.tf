@@ -169,8 +169,9 @@ resource "aws_security_group_rule" "ingress_with_existing_security_groups" {
 # Security Group Egress Rules
 # -----------------------------
 # Security group rule - ALL egress
-#trivy:ignore:avd-aws-0104:Allow all egress traffic is a valid use case. Ignoring this alert.
+#trivy:ignore:avd-aws-0104:Egress is required to the internet for the Anyscale Control Plane and other services.
 resource "aws_security_group_rule" "egress_all_allowed" {
+  #checkov:skip=CKV_AWS_382:Egress is required to the internet for the Anyscale Control Plane and other services.
   count = local.allow_all_egress ? 1 : 0
 
   security_group_id = local.security_group_id

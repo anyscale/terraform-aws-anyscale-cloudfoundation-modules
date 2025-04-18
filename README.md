@@ -127,6 +127,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 
 | Name | Version |
 |------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.41.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.6.0 |
 
 ## Modules
@@ -146,6 +147,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | Name | Type |
 |------|------|
 | [random_id.common_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
+| [aws_subnet.existing_subnets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
 
 ## Inputs
 

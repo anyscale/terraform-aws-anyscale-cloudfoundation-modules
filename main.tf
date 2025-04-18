@@ -169,7 +169,6 @@ locals {
   vpc_name             = coalesce(var.anyscale_vpc_name, local.common_name, local.vpc_name_from_prefix, "vpc-anyscale")
   vpc_tags             = merge(local.full_tags, var.anyscale_vpc_tags)
 
-  existing_subnet_count         = length(var.existing_vpc_subnet_ids)
   anyscale_private_subnet_count = length(var.anyscale_vpc_private_subnets)
   anyscale_public_subnet_count  = length(var.anyscale_vpc_public_subnets)
 
@@ -240,8 +239,22 @@ module "aws_anyscale_securitygroup_self" {
 # ------------------------------
 # EFS Module
 # ------------------------------
+data "aws_subnet" "existing_subnets" {
+  for_each = toset(var.existing_vpc_subnet_ids)
+  id       = each.value
+}
 locals {
-  efs_mount_targets_subnet_count = max(local.existing_subnet_count, local.anyscale_private_subnet_count, local.anyscale_public_subnet_count)
+  existing_subnet_per_az_grouped = {
+    for sid, sub in data.aws_subnet.existing_subnets :
+    sub.availability_zone => sid...
+  }
+  existing_subnet_per_az = {
+    for az, sids in local.existing_subnet_per_az_grouped :
+    az => sids[0]
+  }
+  existing_subnet_unique_ids     = values(local.existing_subnet_per_az)
+  existing_subnet_unique_count   = length(local.existing_subnet_unique_ids)
+  efs_mount_targets_subnet_count = local.existing_subnet_unique_count > 0 ? local.existing_subnet_unique_count : max(local.anyscale_private_subnet_count, local.anyscale_public_subnet_count)
 }
 module "aws_anyscale_efs" {
   source = "./modules/aws-anyscale-efs"
@@ -256,7 +269,7 @@ module "aws_anyscale_efs" {
 
   # Mount targets / security group
   mount_targets_subnet_count    = local.efs_mount_targets_subnet_count
-  mount_targets_subnets         = coalescelist(var.existing_vpc_subnet_ids, module.aws_anyscale_vpc.private_subnet_ids, module.aws_anyscale_vpc.public_subnet_ids)
+  mount_targets_subnets         = coalescelist(local.existing_subnet_unique_ids, module.aws_anyscale_vpc.private_subnet_ids, module.aws_anyscale_vpc.public_subnet_ids)
   associated_security_group_ids = [module.aws_anyscale_securitygroup_self.security_group_id]
 
   # Encryption
