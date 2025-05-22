@@ -457,7 +457,8 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
       "elasticloadbalancing:DescribeTargetGroups",
       "elasticloadbalancing:DescribeTargetGroupAttributes",
       "elasticloadbalancing:DescribeTargetHealth",
-      "elasticloadbalancing:DescribeListenerCertificates"
+      "elasticloadbalancing:DescribeListenerCertificates",
+      "elasticloadbalancing:DescribeTags"
     ]
     resources = ["*"]
   }
