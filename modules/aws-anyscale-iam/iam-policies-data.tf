@@ -550,12 +550,11 @@ data "aws_iam_policy_document" "iam_anyscale_services_v2" {
       "arn:aws:elasticloadbalancing:*:${local.account_id}:listener/app/Anyscale*",
       "arn:aws:elasticloadbalancing:*:${local.account_id}:listener-rule/app/Anyscale*",
       "arn:aws:elasticloadbalancing:*:${local.account_id}:targetgroup/AnyscaleTarget*"
+      "arn:aws:elasticloadbalancing:*:${local.account_id}:loadbalancer/app/anyscale*",
+      "arn:aws:elasticloadbalancing:*:${local.account_id}:listener/app/anyscale*",
+      "arn:aws:elasticloadbalancing:*:${local.account_id}:listener-rule/app/anyscale*",
+      "arn:aws:elasticloadbalancing:*:${local.account_id}:targetgroup/anyscale*"
     ]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:CalledViaFirst"
-      values   = ["cloudformation.amazonaws.com"]
-    }
   }
 }
 
