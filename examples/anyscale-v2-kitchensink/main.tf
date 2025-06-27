@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "custom_s3_policy" {
     actions = ["s3:GetObject"]
     effect  = "Deny"
     resources = [
-      "arn:aws:s3:::anyscale-kitchensink-s3/neverdeleteme.txt"
+      "arn:aws:s3:::${var.s3_bucket_name}/neverdeleteme.txt"
     ]
     principals {
       type        = "AWS"
@@ -69,7 +69,7 @@ module "aws_anyscale_v2_kitchen_sink" {
   # --------------------------
   # S3 Related
   # --------------------------
-  anyscale_s3_bucket_name = "anyscale-kitchensink-s3"
+  anyscale_s3_bucket_name = var.s3_bucket_name
   anyscale_s3_tags = {
     "s3_tag_test" : "kitchen_sink",
   }
@@ -126,6 +126,8 @@ module "aws_anyscale_v2_kitchen_sink" {
       cidr_blocks = "172.24.101.0/24,172.24.102.0/24,172.24.103.0/24"
     }
   ]
+
+  anyscale_machine_pool_ingress_cidr_ranges = ["172.24.201.0/24", "172.24.202.0/24"]
 
   # --------------------------
   # IAM Related

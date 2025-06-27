@@ -1071,18 +1071,19 @@ variable "security_group_name_prefix" {
   default     = null
 }
 
-variable "security_group_create_anyscale_public_ingress" {
-  type        = bool
-  description = <<-EOT
-    (Optional) Determines if public ingress rules should be created.
+# This was for Anyscale v1 stack which is no longer supported.
+# variable "security_group_create_anyscale_public_ingress" {
+#   type        = bool
+#   description = <<-EOT
+#     (Optional) Determines if public ingress rules should be created.
 
-    ex:
-    ```
-    security_group_create_anyscale_public_ingress = true
-    ```
-  EOT
-  default     = false
-}
+#     ex:
+#     ```
+#     security_group_create_anyscale_public_ingress = true
+#     ```
+#   EOT
+#   default     = false
+# }
 
 variable "security_group_ingress_with_existing_security_groups_map" {
   type        = list(map(string))
@@ -1109,25 +1110,6 @@ variable "security_group_ingress_with_existing_security_groups_map" {
   default     = []
 }
 
-# ex:
-# ingress_from_cidr_map = [
-#   {
-#     rule        = "https-443-tcp"
-#     cidr_blocks = "10.100.10.10/32"
-#   },
-#   { rule = "nfs-tcp" },
-#   {
-#     rule        = "ssh-tcp"
-#     cidr_blocks = "10.100.10.10/32"
-#   },
-#   {
-#     from_port   = 10
-#     to_port     = 20
-#     protocol    = 6
-#     description = "Service name is TEST"
-#     cidr_blocks = "10.100.10.10/32"
-#   }
-# ]
 variable "security_group_override_ingress_from_cidr_map" {
   type        = list(map(string))
   description = <<-EOT
@@ -1146,6 +1128,13 @@ variable "security_group_override_ingress_from_cidr_map" {
       { rule = "nfs-tcp" },
       {
         rule        = "ssh-tcp"
+        cidr_blocks = "10.100.10.10/32"
+      },
+      {
+        from_port   = 10
+        to_port     = 20
+        protocol    = 6
+        description = "Service name is TEST"
         cidr_blocks = "10.100.10.10/32"
       }
     ]
@@ -1170,6 +1159,63 @@ variable "anyscale_securitygroup_tags" {
   EOT
   type        = map(string)
   default     = {}
+}
+
+# Machine Pool Security Group Variables
+variable "anyscale_machine_pool_security_group_name" {
+  description = <<-EOT
+    (Optional) Name for the machine pool security group.
+
+    If left `null`, will default to `anyscale_machine_pool_security_group_name_prefix` or `general_prefix`.
+    If provided, overrides the `anyscale_machine_pool_security_group_name_prefix` variable.
+
+    ex:
+    ```
+    anyscale_machine_pool_security_group_name = "anyscale-machine-pool-sg"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_machine_pool_security_group_name_prefix" {
+  description = <<-EOT
+    (Optional) Name prefix for the machine pool security group.
+
+    If `anyscale_machine_pool_security_group_name` is provided, it will override this variable.
+    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    Default is `null` but is set to `anyscale-machine-pool-sg-` in a local variable.
+
+    ex:
+    ```
+    anyscale_machine_pool_security_group_name_prefix = "anyscale-machine-pool-sg-"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "anyscale_machine_pool_ingress_cidr_ranges" {
+  description = <<-EOT
+    (Optional) List of CIDR ranges to allow ingress from machine pools.
+
+    **IMPORTANT**: Due to AWS security group limits (60 rules max) and the number of port ranges (22),
+    this variable is limited to a maximum of 2 CIDR ranges. With 3 or more CIDR ranges, you would exceed
+    the AWS security group rule limit (22 port ranges × 3 CIDR ranges = 66 rules > 60 limit).
+
+    ex:
+    ```
+    anyscale_machine_pool_ingress_cidr_ranges = ["10.100.10.10/32", "10.100.10.11/32"]
+    ```
+  EOT
+  type        = list(string)
+  default     = []
+  validation {
+    condition = (
+      length(var.anyscale_machine_pool_ingress_cidr_ranges) <= 2
+    )
+    error_message = "Var `machine_pool_ingress_cidr_ranges` must be less than or equal to 2."
+  }
 }
 
 #--------------------------------------------
