@@ -234,7 +234,7 @@ module "aws_anyscale_securitygroup_self" {
 
   security_group_name        = local.security_group_name
   security_group_name_prefix = local.security_group_name_prefix
-  # create_anyscale_public_ingress            = var.security_group_create_anyscale_public_ingress
+  # create_anyscale_public_ingress            = var.security_group_create_anyscale_public_ingress # This was for Anyscale Control Plane v1 and is no longer applicable. Commenting out before removal in a future version.
   ingress_from_cidr_map                     = local.ingress_from_cidr_range_override_defined ? var.security_group_override_ingress_from_cidr_map : local.ingress_cidr_block_defined ? local.ingress_from_cidr_map : [{}]
   ingress_with_existing_security_groups_map = local.ingress_existing_sg_defined ? var.security_group_ingress_with_existing_security_groups_map : []
 
