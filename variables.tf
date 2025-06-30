@@ -1085,6 +1085,23 @@ variable "security_group_name_prefix" {
 #   default     = false
 # }
 
+variable "security_group_enable_ssh_access" {
+  type        = bool
+  description = <<-EOT
+    (Optional) Determines if SSH access (port 22) should be enabled in the security group.
+
+    When set to true, SSH access will be allowed from the CIDR ranges specified in
+    `security_group_ingress_allow_access_from_cidr_range`. When false, only HTTPS
+    access (port 443) will be allowed.
+
+    ex:
+    ```
+    security_group_enable_ssh_access = false
+    ```
+  EOT
+  default     = false
+}
+
 variable "security_group_ingress_with_existing_security_groups_map" {
   type        = list(map(string))
   description = <<-EOT

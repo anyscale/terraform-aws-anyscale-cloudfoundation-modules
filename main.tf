@@ -207,16 +207,17 @@ module "aws_anyscale_vpc" {
 # ------------------------------
 locals {
   ingress_cidr_block_defined = length(var.security_group_ingress_allow_access_from_cidr_range) > 1 ? true : false
-  ingress_from_cidr_map = [
+  ingress_from_cidr_map = concat([
     {
       rule        = "https-443-tcp"
       cidr_blocks = var.security_group_ingress_allow_access_from_cidr_range
-    },
+    }
+    ], var.security_group_enable_ssh_access ? [
     {
       rule        = "ssh-tcp"
       cidr_blocks = var.security_group_ingress_allow_access_from_cidr_range
     }
-  ]
+  ] : [])
   ingress_from_cidr_range_override_defined = length(var.security_group_override_ingress_from_cidr_map) > 1 ? true : false
 
   ingress_existing_sg_defined = length(var.security_group_ingress_with_existing_security_groups_map) > 1 ? true : false

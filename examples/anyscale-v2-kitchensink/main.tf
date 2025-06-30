@@ -108,10 +108,13 @@ module "aws_anyscale_v2_kitchen_sink" {
   # Security Group Related
   # --------------------------
   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges
+  security_group_enable_ssh_access                    = var.security_group_enable_ssh_access
   anyscale_securitygroup_tags = {
     "sg_tag_test" = "kitchen_sink"
   }
   security_group_name_prefix = "anyscale-kitchensink-sg-"
+  # Note: security_group_override_ingress_from_cidr_map overrides the default behavior
+  # including the security_group_enable_ssh_access setting
   security_group_override_ingress_from_cidr_map = [
     {
       rule        = "https-443-tcp"
