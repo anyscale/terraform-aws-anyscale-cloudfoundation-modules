@@ -23,7 +23,6 @@ locals {
   s3_bucket_prefix                  = coalesce(var.anyscale_s3_bucket_prefix, var.common_prefix, "anyscale-")
   iam_access_role_name_prefix       = coalesce(var.anyscale_iam_access_role_name_prefix, var.common_prefix, "anyscale-iam-role-")
   iam_cluster_node_role_name_prefix = coalesce(var.anyscale_iam_cluster_node_role_name_prefix, var.common_prefix, "anyscale-cluster-node-")
-  security_group_name_prefix        = coalesce(var.security_group_name_prefix, var.common_prefix, "anyscale-security-group-")
   steadystate_policy_prefix         = coalesce(var.anyscale_access_steadystate_policy_prefix, var.common_prefix, "anyscale-steady_state-")
   iam_servicesv2_policy_prefix      = coalesce(var.anyscale_access_servicesv2_policy_prefix, var.common_prefix, "anyscale-servicesv2-")
   cluster_node_custom_policy_prefix = coalesce(var.anyscale_cluster_node_custom_policy_prefix, var.common_prefix, "anyscale-clusternode-custom-policy-")
@@ -44,10 +43,9 @@ resource "random_id" "common_name" {
 }
 
 locals {
-  common_name         = try(random_id.common_name[0].hex, null)
-  s3_bucket_name      = var.anyscale_s3_bucket_name != null ? var.anyscale_s3_bucket_name : local.common_name
-  efs_name            = var.anyscale_efs_name != null ? var.anyscale_efs_name : local.common_name
-  security_group_name = var.security_group_name != null ? var.security_group_name : local.common_name
+  common_name    = try(random_id.common_name[0].hex, null)
+  s3_bucket_name = var.anyscale_s3_bucket_name != null ? var.anyscale_s3_bucket_name : local.common_name
+  efs_name       = var.anyscale_efs_name != null ? var.anyscale_efs_name : local.common_name
 
   # IAM Role Names/Policies are unique since we have multiples of these for a given Anyscale Cloud.
   # For IAM Roles and Policies, we'll add the type of role/policy to the name.
@@ -223,6 +221,11 @@ locals {
   ingress_from_cidr_range_override_defined = length(var.security_group_override_ingress_from_cidr_map) > 1 ? true : false
 
   ingress_existing_sg_defined = length(var.security_group_ingress_with_existing_security_groups_map) > 1 ? true : false
+
+  security_group_name            = var.security_group_name != null ? var.security_group_name : local.common_name
+  security_group_name_prefix     = coalesce(var.security_group_name_prefix, var.common_prefix, "anyscale-security-group-")
+  amp_security_group_name        = var.anyscale_machine_pool_security_group_name != null ? var.anyscale_machine_pool_security_group_name : local.common_name != null ? "${local.common_name}-machine-pool-sg" : null
+  amp_security_group_name_prefix = coalesce(var.anyscale_machine_pool_security_group_name_prefix, var.common_prefix, "anyscale-machine-pool-sg-")
 }
 
 module "aws_anyscale_securitygroup_self" {
@@ -230,11 +233,15 @@ module "aws_anyscale_securitygroup_self" {
   tags   = local.securitygroup_tags
   vpc_id = coalesce(var.existing_vpc_id, module.aws_anyscale_vpc.vpc_id)
 
-  security_group_name                       = local.security_group_name
-  security_group_name_prefix                = local.security_group_name_prefix
-  create_anyscale_public_ingress            = var.security_group_create_anyscale_public_ingress
+  security_group_name        = local.security_group_name
+  security_group_name_prefix = local.security_group_name_prefix
+  # create_anyscale_public_ingress            = var.security_group_create_anyscale_public_ingress # This was for Anyscale Control Plane v1 and is no longer applicable. Commenting out before removal in a future version.
   ingress_from_cidr_map                     = local.ingress_from_cidr_range_override_defined ? var.security_group_override_ingress_from_cidr_map : local.ingress_cidr_block_defined ? local.ingress_from_cidr_map : [{}]
   ingress_with_existing_security_groups_map = local.ingress_existing_sg_defined ? var.security_group_ingress_with_existing_security_groups_map : []
+
+  machine_pool_security_group_name        = local.amp_security_group_name
+  machine_pool_security_group_name_prefix = local.amp_security_group_name_prefix
+  machine_pool_cidr_ranges                = var.anyscale_machine_pool_ingress_cidr_ranges
 }
 
 # ------------------------------

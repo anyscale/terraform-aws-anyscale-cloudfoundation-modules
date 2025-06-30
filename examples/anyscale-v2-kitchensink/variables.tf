@@ -39,6 +39,12 @@ variable "customer_ingress_cidr_ranges" {
   type        = string
 }
 
+variable "s3_bucket_name" {
+  description = <<-EOT
+    (Optional) The name of the S3 bucket to use for the kitchen sink.
+  EOT
+  type        = string
+}
 
 # ------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS

@@ -1,6 +1,7 @@
 locals {
-  sg_name_prefix    = var.security_group_name != null ? null : coalesce(var.security_group_name_prefix, "anyscale-security-group-")
-  security_group_id = try(aws_security_group.anyscale_security_group[0].id, var.existing_security_group_id, "")
+  sg_name_prefix              = var.security_group_name != null ? null : coalesce(var.security_group_name_prefix, "anyscale-security-group-")
+  machine_pool_sg_name_prefix = var.machine_pool_security_group_name != null ? null : coalesce(var.machine_pool_security_group_name_prefix, "anyscale-machine-pool-sg-")
+  security_group_id           = try(aws_security_group.anyscale_security_group[0].id, var.existing_security_group_id, "")
 
   module_tags = tomap({
     tf_sub_module     = "aws-anyscale-securitygroups",
@@ -40,21 +41,20 @@ resource "aws_security_group" "anyscale_security_group" {
 # -----------------------------
 # Default Anyscale Security Group Ingress Rules
 # -----------------------------
-# Security group rules with "cidr_blocks". This one is specific for Anyscale v1 stack
-resource "aws_security_group_rule" "anyscale_public_ingress_rules" {
-  count = var.module_enabled && var.create_anyscale_public_ingress ? length(var.anyscale_ingress_rules_v1) : 0
+# Commenting out - this was for Anyscale v1 stack which is no longer supported.
+# resource "aws_security_group_rule" "anyscale_public_ingress_rules" {
+#   count = var.module_enabled && var.create_anyscale_public_ingress ? length(var.anyscale_ingress_rules_v1) : 0
 
-  security_group_id = local.security_group_id
-  type              = "ingress"
+#   security_group_id = local.security_group_id
+#   type              = "ingress"
 
-  cidr_blocks = var.anyscale_public_ips_cidr
-  description = var.predefined_rules[var.anyscale_ingress_rules_v1[count.index]][3]
+#   cidr_blocks = var.anyscale_public_ips_cidr
+#   description = var.predefined_rules[var.anyscale_ingress_rules_v1[count.index]].description
 
-  from_port = var.predefined_rules[var.anyscale_ingress_rules_v1[count.index]][0]
-  to_port   = var.predefined_rules[var.anyscale_ingress_rules_v1[count.index]][1]
-  protocol  = var.predefined_rules[var.anyscale_ingress_rules_v1[count.index]][2]
-
-}
+#   from_port = var.predefined_rules[var.anyscale_ingress_rules_v1[count.index]].from_port
+#   to_port   = var.predefined_rules[var.anyscale_ingress_rules_v1[count.index]].to_port
+#   protocol  = var.predefined_rules[var.anyscale_ingress_rules_v1[count.index]].protocol
+# }
 
 # Security group rules with "cidr_blocks"
 #trivy:ignore:avd-aws-0124
@@ -82,17 +82,17 @@ resource "aws_security_group_rule" "ingress_from_cidr_blocks" {
   from_port = lookup(
     var.ingress_from_cidr_map[count.index],
     "from_port",
-    try(var.predefined_rules[lookup(var.ingress_from_cidr_map[count.index], "rule", "_")][0], ""),
+    try(var.predefined_rules[lookup(var.ingress_from_cidr_map[count.index], "rule", "_")].from_port, ""),
   )
   to_port = lookup(
     var.ingress_from_cidr_map[count.index],
     "to_port",
-    try(var.predefined_rules[lookup(var.ingress_from_cidr_map[count.index], "rule", "_")][1], ""),
+    try(var.predefined_rules[lookup(var.ingress_from_cidr_map[count.index], "rule", "_")].to_port, ""),
   )
   protocol = lookup(
     var.ingress_from_cidr_map[count.index],
     "protocol",
-    try(var.predefined_rules[lookup(var.ingress_from_cidr_map[count.index], "rule", "_")][2], ""),
+    try(var.predefined_rules[lookup(var.ingress_from_cidr_map[count.index], "rule", "_")].protocol, ""),
   )
 }
 
@@ -114,17 +114,17 @@ resource "aws_security_group_rule" "ingress_with_self" {
   from_port = lookup(
     var.ingress_with_self[count.index],
     "from_port",
-    try(var.predefined_rules[lookup(var.ingress_with_self[count.index], "rule", "_")][0], ""),
+    try(var.predefined_rules[lookup(var.ingress_with_self[count.index], "rule", "_")].from_port, ""),
   )
   to_port = lookup(
     var.ingress_with_self[count.index],
     "to_port",
-    try(var.predefined_rules[lookup(var.ingress_with_self[count.index], "rule", "_")][1], ""),
+    try(var.predefined_rules[lookup(var.ingress_with_self[count.index], "rule", "_")].to_port, ""),
   )
   protocol = lookup(
     var.ingress_with_self[count.index],
     "protocol",
-    try(var.predefined_rules[lookup(var.ingress_with_self[count.index], "rule", "_")][2], ""),
+    try(var.predefined_rules[lookup(var.ingress_with_self[count.index], "rule", "_")].protocol, ""),
   )
 }
 
@@ -151,17 +151,17 @@ resource "aws_security_group_rule" "ingress_with_existing_security_groups" {
   from_port = lookup(
     var.ingress_with_existing_security_groups_map[count.index],
     "from_port",
-    try(var.predefined_rules[lookup(var.ingress_with_existing_security_groups_map[count.index], "rule", "_")][0], ""),
+    try(var.predefined_rules[lookup(var.ingress_with_existing_security_groups_map[count.index], "rule", "_")].from_port, ""),
   )
   to_port = lookup(
     var.ingress_with_existing_security_groups_map[count.index],
     "to_port",
-    try(var.predefined_rules[lookup(var.ingress_with_existing_security_groups_map[count.index], "rule", "_")][1], ""),
+    try(var.predefined_rules[lookup(var.ingress_with_existing_security_groups_map[count.index], "rule", "_")].to_port, ""),
   )
   protocol = lookup(
     var.ingress_with_existing_security_groups_map[count.index],
     "protocol",
-    try(var.predefined_rules[lookup(var.ingress_with_existing_security_groups_map[count.index], "rule", "_")][2], ""),
+    try(var.predefined_rules[lookup(var.ingress_with_existing_security_groups_map[count.index], "rule", "_")].protocol, ""),
   )
 }
 
@@ -208,17 +208,17 @@ resource "aws_security_group_rule" "egress_to_cidr_blocks" {
   from_port = lookup(
     var.egress_to_cidr_map[count.index],
     "from_port",
-    try(var.predefined_rules[lookup(var.egress_to_cidr_map[count.index], "rule", "_")][0], ""),
+    try(var.predefined_rules[lookup(var.egress_to_cidr_map[count.index], "rule", "_")].from_port, ""),
   )
   to_port = lookup(
     var.egress_to_cidr_map[count.index],
     "to_port",
-    try(var.predefined_rules[lookup(var.egress_to_cidr_map[count.index], "rule", "_")][1], ""),
+    try(var.predefined_rules[lookup(var.egress_to_cidr_map[count.index], "rule", "_")].to_port, ""),
   )
   protocol = lookup(
     var.egress_to_cidr_map[count.index],
     "protocol",
-    try(var.predefined_rules[lookup(var.egress_to_cidr_map[count.index], "rule", "_")][2], ""),
+    try(var.predefined_rules[lookup(var.egress_to_cidr_map[count.index], "rule", "_")].protocol, ""),
   )
 }
 
@@ -240,16 +240,89 @@ resource "aws_security_group_rule" "egress_to_self" {
   from_port = lookup(
     var.egress_to_self[count.index],
     "from_port",
-    var.predefined_rules[lookup(var.egress_to_self[count.index], "rule", "_")][0],
+    var.predefined_rules[lookup(var.egress_to_self[count.index], "rule", "_")].from_port,
   )
   to_port = lookup(
     var.egress_to_self[count.index],
     "to_port",
-    var.predefined_rules[lookup(var.egress_to_self[count.index], "rule", "_")][1],
+    var.predefined_rules[lookup(var.egress_to_self[count.index], "rule", "_")].to_port,
   )
   protocol = lookup(
     var.egress_to_self[count.index],
     "protocol",
-    var.predefined_rules[lookup(var.egress_to_self[count.index], "rule", "_")][2],
+    var.predefined_rules[lookup(var.egress_to_self[count.index], "rule", "_")].protocol,
   )
+}
+
+# -----------------------------
+# Machine Pool Security Group
+# -----------------------------
+# Create a separate security group for machine pools
+resource "aws_security_group" "machine_pool" {
+  #checkov:skip=CKV2_AWS_5:This is a Security Group Module and the security groups will not be attached to a resource in this module.
+  count = var.module_enabled && length(var.machine_pool_cidr_ranges) > 0 ? 1 : 0
+
+  name_prefix = var.machine_pool_security_group_name == null ? local.machine_pool_sg_name_prefix : null
+  name        = try(var.machine_pool_security_group_name, null)
+
+  description = var.machine_pool_security_group_description
+  vpc_id      = var.vpc_id
+
+  revoke_rules_on_delete = var.revoke_rules_on_delete
+
+  tags = merge(
+    { "Name" = coalesce(var.machine_pool_security_group_name, "anyscale-machinepool-security-group") },
+    local.module_tags,
+    var.tags
+  )
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# Machine pool ports ingress rules
+resource "aws_security_group_rule" "machine_pool_ports_ingress" {
+  count = var.module_enabled && length(var.machine_pool_cidr_ranges) > 0 ? length(var.machine_pool_port_ranges) * length(var.machine_pool_cidr_ranges) : 0
+
+  security_group_id = aws_security_group.machine_pool[0].id
+  type              = "ingress"
+  cidr_blocks       = [var.machine_pool_cidr_ranges[floor(count.index / length(var.machine_pool_port_ranges))]]
+
+  description = var.machine_pool_port_ranges[count.index % length(var.machine_pool_port_ranges)].description
+  from_port   = var.machine_pool_port_ranges[count.index % length(var.machine_pool_port_ranges)].from_port
+  to_port     = var.machine_pool_port_ranges[count.index % length(var.machine_pool_port_ranges)].to_port
+  protocol    = "tcp"
+}
+
+# Allow all egress from machine pool security group
+#trivy:ignore:AVD-AWS-0104:Egress is required to the internet for the Anyscale Control Plane and other services.
+resource "aws_security_group_rule" "machine_pool_egress_all" {
+  #checkov:skip=CKV_AWS_382:Egress is required to the internet for the Anyscale Control Plane and other services.
+  count = var.module_enabled && length(var.machine_pool_cidr_ranges) > 0 ? 1 : 0
+
+  security_group_id = aws_security_group.machine_pool[0].id
+  type              = "egress"
+  cidr_blocks       = ["0.0.0.0/0"]
+  description       = "Allow all egress from machine pool"
+  from_port         = -1
+  to_port           = -1
+  protocol          = "-1"
+}
+
+# -----------------------------
+# Main Security Group - Machine Pool Reference
+# -----------------------------
+# Allow ingress from machine pool security group to main security group
+resource "aws_security_group_rule" "main_from_machine_pool" {
+  count = var.module_enabled && length(var.machine_pool_cidr_ranges) > 0 ? 1 : 0
+
+  security_group_id        = local.security_group_id
+  type                     = "ingress"
+  source_security_group_id = aws_security_group.machine_pool[0].id
+
+  description = "Allow all traffic from machine pool security group"
+  from_port   = -1
+  to_port     = -1
+  protocol    = "-1"
 }
