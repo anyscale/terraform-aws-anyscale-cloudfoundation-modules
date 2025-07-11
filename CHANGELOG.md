@@ -1,4 +1,47 @@
-## 0.23.0 (Released)
+## 0.27.0 (Released)
+FEATURES:
+- Add the ability to manage a Security Group for [Customer-Managed Machine Pools](https://docs.anyscale.com/administration/cloud-deployment/customer-managed-machine-pools)
+  - Large refactor of the Security Group submodule - this should not trigger any breaking changes, but if upgrading, monitor your TF plan closely.
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
+## 0.26.0 (Released)
+FEATURES:
+- Add additional permissions to control plane IAM role
+  - Add elasticloadbalancing:DescribeTags permission. Anyscale will use this additional permission to more precisely track of the Anyscale Services load balancing resources in a cloud.
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
+## 0.25.1 (Released)
+FEATURES:
+
+BUG FIXES:
+- This updates the main base module to only send one subnet per AZ to the EFS sub-module. The EFS sub-module would throw an error when using an existing VPC with multiple subnets in the same AZ.
+
+BREAKING CHANGES:
+
+NOTES:
+
+## 0.25.0 (Released)
+FEATURES:
+- Updates to least priveledged IAM policy for the Control Plane Role
+  - Add permissions for new dependency tracking functionality on Anyscale Workspaces
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
+## 0.24.0 (Released)
 FEATURES:
 - Updates to least priveledged IAM policy for the Control Plane Role
   - When passing in a Cloud ID, additional IAM conditions can be applied for EBS Volumes and IAM Instance Profile associations based on the Cloud ID tag.

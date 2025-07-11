@@ -17,23 +17,22 @@ output "all_defaults_name" {
 }
 
 # ------------------
-# Public Anyscale Ingress Test
+# Machine Pool Test
 # ------------------
-output "anyscale_public_ingress_arn" {
-  description = "The arn of the kitchen sink anyscale resource."
-  value       = module.anyscale_public_ingress.security_group_arn
+output "anyscale_amp_arn" {
+  description = "The arn of the anyscale resource."
+  value       = module.anyscale_amp.security_group_arn
 }
 
-output "anyscale_public_ingress_id" {
-  description = "The ID of the kitchen sink anyscale resource."
-  value       = module.anyscale_public_ingress.security_group_id
+output "anyscale_amp_id" {
+  description = "The ID of the anyscale resource."
+  value       = module.anyscale_amp.security_group_id
 }
 
-output "anyscale_public_ingress_name" {
-  description = "The region of the kitchen sink anyscale resource."
-  value       = module.anyscale_public_ingress.security_group_name
+output "anyscale_amp_name" {
+  description = "The name of the anyscale resource."
+  value       = module.anyscale_amp.security_group_name
 }
-
 # ------------------
 # Kitchen Sink Test
 # ------------------

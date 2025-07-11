@@ -142,76 +142,18 @@ variable "revoke_rules_on_delete" {
   default     = false
 }
 
-
-variable "create_anyscale_public_ingress" {
-  type        = bool
-  description = <<-EOT
-    (Optional) Determines if public ingress rules should be created.
-
-    ex:
-    ```
-    create_anyscale_public_ingress = true
-    ```
-  EOT
-  default     = false
-}
-
-# variable "create_eks_cluster_security_group" {
+# Deprecated Anyscale v1 Stack
+# variable "create_anyscale_public_ingress" {
 #   type        = bool
 #   description = <<-EOT
-#     (Optional) Determines if Kubernetes cluster security group rules should be created.
+#     (Optional) Determines if public ingress rules should be created.
 
 #     ex:
 #     ```
-#     create_eks_cluster_security_group = true
+#     create_anyscale_public_ingress = true
 #     ```
 #   EOT
 #   default     = false
-# }
-
-# variable "eks_cluster_security_group_name" {
-#   description = <<-EOT
-#     (Optional) The name for the EKS cluster security group.
-
-#     If left `null`, will default to `eks_cluster_security_group_name_prefix`.
-#     If provided, overrides the `eks_cluster_security_group_name_prefix` variable.
-
-#     ex:
-#     ```
-#     eks_cluster_security_group_name = "anyscale-k8s-cluster-security-group"
-#     ```
-#   EOT
-#   type        = string
-#   default     = null
-# }
-
-# variable "eks_cluster_security_group_name_prefix" {
-#   description = <<-EOT
-#     (Optional) The name prefix for the EKS cluster security group.
-
-#     If `eks_cluster_security_group_name` is provided, it will override this variable.
-#     Default is `null` but is set to `anyscale-k8s-cluster-security-group-` in a local variable.
-
-#     ex:
-#     ```
-#     eks_cluster_security_group_name_prefix = "anyscale-k8s-cluster-security-group-"
-#     ```
-#   EOT
-#   type        = string
-#   default     = null
-# }
-
-# variable "eks_cluster_security_gorup_description" {
-#   description = <<-EOT
-#     (Optional) The EKS cluster security group description.
-
-#     ex:
-#     ```
-#     eks_cluster_security_group_description = "Anyscale EKS Cluster Security Group"
-#     ```
-#   EOT
-#   type        = string
-#   default     = "Anyscale EKS Cluster Security Group"
 # }
 
 # ---------------------
@@ -264,32 +206,32 @@ variable "ingress_with_existing_security_groups_map" {
 }
 
 # Anyscale v1 Stack Related
-variable "anyscale_public_ips_cidr" {
-  description = <<-EOT
-    (Deprecated) List of Anyscale Public IPs in CIDR format.
+# variable "anyscale_public_ips_cidr" {
+#   description = <<-EOT
+#     (Deprecated) List of Anyscale Public IPs in CIDR format.
 
-    While optional, this is required for Anyscale v1 stack.
-  EOT
-  type        = list(string)
-  default = [
-    "35.162.67.121/32",
-    "44.226.216.241/32",
-    "44.232.121.23/32",
-    "44.237.42.239/32",
-    "52.33.0.137/32"
-  ]
-}
+#     While optional, this is required for Anyscale v1 stack.
+#   EOT
+#   type        = list(string)
+#   default = [
+#     "35.162.67.121/32",
+#     "44.226.216.241/32",
+#     "44.232.121.23/32",
+#     "44.237.42.239/32",
+#     "52.33.0.137/32"
+#   ]
+# }
 
-variable "anyscale_ingress_rules_v1" {
-  description = <<-EOT
-    (Deprecated) List of ingress rules to create. This is only used for Anyscale v1 stacks.
-  EOT
-  type        = list(string)
-  default = [
-    "https-443-tcp",
-    "ssh-tcp"
-  ]
-}
+# variable "anyscale_ingress_rules_v1" {
+#   description = <<-EOT
+#     (Deprecated) List of ingress rules to create. This is only used for Anyscale v1 stacks.
+#   EOT
+#   type        = list(string)
+#   default = [
+#     "https-443-tcp",
+#     "ssh-tcp"
+#   ]
+# }
 
 # Default CIDR Range to allow access from
 variable "default_ingress_cidr_range" {
@@ -306,25 +248,6 @@ variable "default_ingress_cidr_range" {
   default = []
 }
 
-# ex:
-# ingress_from_cidr_map = [
-#   {
-#     rule        = "https-443-tcp"
-#     cidr_blocks = "10.100.10.10/32"
-#   },
-#   { rule = "nfs-tcp" },
-#   {
-#     rule        = "http-80-tcp"
-#     cidr_blocks = "10.100.10.10/32"
-#   },
-#   {
-#     from_port   = 10
-#     to_port     = 20
-#     protocol    = 6
-#     description = "Service name is TEST"
-#     cidr_blocks = "10.100.10.10/32"
-#   }
-# ]
 variable "ingress_from_cidr_map" {
   description = <<-EOT
     (Optional) List of ingress rules to create with cidr ranges.
@@ -353,6 +276,68 @@ variable "ingress_from_cidr_map" {
   EOT
   type        = list(map(string))
   default     = []
+}
+
+# Machine Pool Security Group
+variable "machine_pool_security_group_name" {
+  description = <<-EOT
+    (Optional) Name for the machine pool security group.
+
+    ex:
+    ```
+    machine_pool_security_group_name = "anyscale-machine-pool-sg"
+    ```
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "machine_pool_security_group_name_prefix" {
+  description = <<-EOT
+    (Optional) Name prefix for the machine pool security group.
+
+    ex:
+    ```
+    machine_pool_security_group_name_prefix = "anyscale-machine-pool-sg-"
+    ```
+  EOT
+  type        = string
+  default     = "anyscale-machine-pool-sg-"
+}
+
+variable "machine_pool_security_group_description" {
+  description = <<-EOT
+    (Optional) Description for the machine pool security group.
+
+    ex:
+    ```
+    machine_pool_security_group_description = "Anyscale Machine Pool Security Group"
+    ```
+  EOT
+  type        = string
+  default     = "Anyscale Machine Pool Security Group"
+}
+
+variable "machine_pool_cidr_ranges" {
+  description = <<-EOT
+    (Optional) List of CIDR ranges to allow ingress from machine pools.
+
+    **IMPORTANT**: Due to AWS security group limits (60 rules max) and the number of port ranges (22),
+    this variable is limited to a maximum of 2 CIDR ranges. With 3 or more CIDR ranges, you would exceed
+    the AWS security group rule limit (22 port ranges × 3 CIDR ranges = 66 rules > 60 limit).
+
+    ex:
+    ```
+    machine_pool_cidr_ranges = ["10.100.10.0/24", "10.100.11.0/24"]
+    ```
+  EOT
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition     = length(var.machine_pool_cidr_ranges) <= 2
+    error_message = "machine_pool_cidr_ranges cannot exceed 2 CIDR ranges due to AWS security group rule limits (60 rules max). Current configuration would create ${length(var.machine_pool_cidr_ranges) * 22} rules, exceeding the limit."
+  }
 }
 
 #  Egress Rules
@@ -431,25 +416,181 @@ variable "allow_all_egress" {
 
 # --------------------
 # Pre-defined rules
-#   These are reuqired
+#   These are required
 # --------------------
+variable "machine_pool_port_ranges" {
+  description = "(Optional) List of port ranges for machine pools. Each range will create a separate security group rule."
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    description = string
+  }))
+  default = [
+    {
+      from_port   = 80
+      to_port     = 80
+      description = "HTTP"
+    },
+    {
+      from_port   = 443
+      to_port     = 443
+      description = "HTTPS"
+    },
+    {
+      from_port   = 1010
+      to_port     = 1012
+      description = "Anyscale Services (1010-1012)"
+    },
+    {
+      from_port   = 2222
+      to_port     = 2222
+      description = "SSH Alternative"
+    },
+    {
+      from_port   = 5555
+      to_port     = 5555
+      description = "Anyscale Service"
+    },
+    {
+      from_port   = 5903
+      to_port     = 5903
+      description = "VNC"
+    },
+    {
+      from_port   = 6379
+      to_port     = 6379
+      description = "Redis"
+    },
+    {
+      from_port   = 6822
+      to_port     = 6824
+      description = "Anyscale Services (6822-6824)"
+    },
+    {
+      from_port   = 6826
+      to_port     = 6826
+      description = "Anyscale Service"
+    },
+    {
+      from_port   = 7878
+      to_port     = 7878
+      description = "Anyscale Service"
+    },
+    {
+      from_port   = 8000
+      to_port     = 8000
+      description = "Health Checks"
+    },
+    {
+      from_port   = 8076
+      to_port     = 8076
+      description = "Anyscale Service"
+    },
+    {
+      from_port   = 8085
+      to_port     = 8085
+      description = "Anyscale Service"
+    },
+    {
+      from_port   = 8201
+      to_port     = 8201
+      description = "Anyscale Service"
+    },
+    {
+      from_port   = 8265
+      to_port     = 8266
+      description = "Anyscale Services (8265-8266)"
+    },
+    {
+      from_port   = 8686
+      to_port     = 8687
+      description = "Anyscale Services (8686-8687)"
+    },
+    {
+      from_port   = 8912
+      to_port     = 8912
+      description = "Anyscale Service"
+    },
+    {
+      from_port   = 8999
+      to_port     = 8999
+      description = "Anyscale Service"
+    },
+    {
+      from_port   = 9090
+      to_port     = 9090
+      description = "Prometheus"
+    },
+    {
+      from_port   = 9092
+      to_port     = 9092
+      description = "Kafka"
+    },
+    {
+      from_port   = 9100
+      to_port     = 9100
+      description = "Node Exporter"
+    },
+    {
+      from_port   = 9478
+      to_port     = 9482
+      description = "Anyscale Services (9478-9482)"
+    }
+  ]
+}
+
 variable "predefined_rules" {
   # tflint-ignore: terraform_standard_module_structure
-  description = <<-EOT
-    (Required) Map of predefined security group rules.
-  EOT
-  type        = map(list(any))
+  description = "(Required) Map of predefined security group rules."
+  type = map(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    description = string
+  }))
 
   default = {
-    all-all = [-1, -1, "-1", "All protocols"]
+    all-all = {
+      from_port   = -1
+      to_port     = -1
+      protocol    = "-1"
+      description = "All protocols"
+    }
     # HTTP
-    http-80-tcp = [80, 80, "tcp", "HTTP"]
+    http-80-tcp = {
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      description = "HTTP"
+    }
     # HTTPS
-    https-443-tcp = [443, 443, "tcp", "HTTPS"]
+    https-443-tcp = {
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      description = "HTTPS"
+    }
     # SSH
-    ssh-tcp = [22, 22, "tcp", "SSH"]
+    ssh-tcp = {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      description = "SSH"
+    }
     # NFS
-    nfs-tcp = [2049, 2049, "tcp", "NFS/EFS"]
+    nfs-tcp = {
+      from_port   = 2049
+      to_port     = 2049
+      protocol    = "tcp"
+      description = "NFS/EFS"
+    }
+    # Health Checks
+    health-checks = {
+      from_port   = 8000
+      to_port     = 8000
+      protocol    = "tcp"
+      description = "Health Checks"
+    }
   }
 }
 

@@ -35,22 +35,30 @@ module "all_defaults" {
 
   vpc_id = module.security_groups_tftest_vpc.vpc_id
 
+  ingress_from_cidr_map = [
+    {
+      rule        = "https-443-tcp"
+      cidr_blocks = var.ingress_cidr_block
+    }
+  ]
+
   tags = local.full_tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Create a Security Group resource with for with public Anyscale ingress
+# Create a Security Group resource with Machine Pool defaults
 #  Specifying name_prefix as well for ease of finding resource in console.
 # ---------------------------------------------------------------------------------------------------------------------
-module "anyscale_public_ingress" {
+module "anyscale_amp" {
   source         = "../.."
   module_enabled = true
 
   vpc_id = module.security_groups_tftest_vpc.vpc_id
 
-  security_group_name_prefix = "anyscale-tftest-public_ingress-"
+  security_group_name_prefix = "anyscale-tftest-amp-"
 
-  create_anyscale_public_ingress = true
+  machine_pool_security_group_name_prefix = "anyscale-tftest-amp-sg-"
+  machine_pool_cidr_ranges                = ["10.100.20.0/24"]
 
   tags = local.full_tags
 }
@@ -92,7 +100,7 @@ module "kitchen_sink" {
   ingress_with_existing_security_groups_map = [
     {
       rule              = "https-443-tcp"
-      security_group_id = module.anyscale_public_ingress.security_group_id
+      security_group_id = module.anyscale_amp.security_group_id
     }
   ]
 
@@ -113,7 +121,9 @@ module "kitchen_sink" {
     },
   ]
 
-  create_anyscale_public_ingress = true
+  machine_pool_security_group_name = "anyscale-tftest-kitchensink-machinepool-sg"
+  # machine_pool_cidr_ranges         = ["10.100.20.0/24", "10.100.21.0/24", "10.100.22.0/24"] # 3 CIDR ranges
+  machine_pool_cidr_ranges = ["10.100.20.0/24", "10.100.21.0/24"] # 2 CIDR ranges
 
   tags = local.full_tags
 }

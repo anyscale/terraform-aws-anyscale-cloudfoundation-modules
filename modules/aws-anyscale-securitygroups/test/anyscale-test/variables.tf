@@ -17,9 +17,14 @@ variable "aws_region" {
   default     = "us-east-2"
 }
 
+# ------------------------------------------------------------------------------
+# OPTIONAL PARAMETERS
+# These variables have defaults, but may be overridden.
+# ------------------------------------------------------------------------------
 variable "anyscale_deploy_env" {
   description = "(Required) Anyscale deploy environment. Used in resource names and tags."
   type        = string
+  default     = "test"
   validation {
     condition = (
       var.anyscale_deploy_env == "production" || var.anyscale_deploy_env == "development" || var.anyscale_deploy_env == "test"
@@ -28,10 +33,6 @@ variable "anyscale_deploy_env" {
   }
 }
 
-# ------------------------------------------------------------------------------
-# OPTIONAL PARAMETERS
-# These variables have defaults, but may be overridden.
-# ------------------------------------------------------------------------------
 variable "anyscale_cloud_id" {
   description = "(Optional) Anyscale Cloud ID"
   type        = string
@@ -54,4 +55,10 @@ variable "tags" {
     "test" : true,
     "environment" : "test"
   }
+}
+
+variable "ingress_cidr_block" {
+  description = "(Optional) The CIDR block to allow access from."
+  type        = string
+  default     = "10.100.10.10/32"
 }

@@ -39,6 +39,13 @@ variable "customer_ingress_cidr_ranges" {
   type        = string
 }
 
+variable "s3_bucket_name" {
+  description = <<-EOT
+    (Optional) The name of the S3 bucket to use for the kitchen sink.
+  EOT
+  type        = string
+}
+
 # ------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These variables have defaults, but may be overridden.
@@ -148,4 +155,20 @@ variable "anyscale_cluster_node_byod_secret_kms_arn" {
   EOT
   type        = string
   default     = null
+}
+
+variable "security_group_enable_ssh_access" {
+  description = <<-EOT
+    (Optional) Determines if SSH access (port 22) should be enabled in the security group.
+
+    When set to true, SSH access will be allowed from the CIDR ranges specified in
+    `customer_ingress_cidr_ranges`. When false, only HTTPS access (port 443) will be allowed.
+
+    ex:
+    ```
+    security_group_enable_ssh_access = false
+    ```
+  EOT
+  type        = bool
+  default     = true
 }
