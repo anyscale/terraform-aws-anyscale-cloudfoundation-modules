@@ -62,6 +62,7 @@ EOF
   # Security Group Related
   security_group_ingress_allow_access_from_cidr_range = var.customer_ingress_cidr_ranges
 
-  # EFS Related
+  # EFS Resource Related
+  #   Disable EFS resources to avoid creating EFS resources.
   create_efs_resources = false
 }
