@@ -1238,6 +1238,22 @@ variable "anyscale_machine_pool_ingress_cidr_ranges" {
 #--------------------------------------------
 # EFS Variables
 #--------------------------------------------
+variable "create_efs_resources" {
+  description = <<-EOT
+    (Optional) Create EFS resources.
+
+    If set to `true`, EFS resources will be created. NFS is optional and is used for shared cluster
+    storage.
+
+    ex:
+    ```
+    create_efs_resources = true
+    ```
+  EOT
+  type        = bool
+  default     = true
+}
+
 variable "anyscale_efs_name" {
   description = <<-EOT
     (Optional) Elastic file system name.
