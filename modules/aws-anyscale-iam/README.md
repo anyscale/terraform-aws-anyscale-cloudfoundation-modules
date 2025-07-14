@@ -199,6 +199,7 @@ No modules.
 | <a name="output_anyscale_steadystate_policy_name"></a> [anyscale\_steadystate\_policy\_name](#output\_anyscale\_steadystate\_policy\_name) | Name of Anyscale Steady State IAM policy |
 | <a name="output_anyscale_steadystate_policy_path"></a> [anyscale\_steadystate\_policy\_path](#output\_anyscale\_steadystate\_policy\_path) | Path of Anyscale Steady State IAM policy |
 | <a name="output_iam_anyscale_access_role_arn"></a> [iam\_anyscale\_access\_role\_arn](#output\_iam\_anyscale\_access\_role\_arn) | ARN of Anyscale access IAM role |
+| <a name="output_iam_anyscale_access_role_external_id"></a> [iam\_anyscale\_access\_role\_external\_id](#output\_iam\_anyscale\_access\_role\_external\_id) | External ID of Anyscale access IAM role |
 | <a name="output_iam_anyscale_access_role_name"></a> [iam\_anyscale\_access\_role\_name](#output\_iam\_anyscale\_access\_role\_name) | Name of Anyscale access IAM role |
 | <a name="output_iam_anyscale_access_role_path"></a> [iam\_anyscale\_access\_role\_path](#output\_iam\_anyscale\_access\_role\_path) | Path of Anyscale access IAM role |
 | <a name="output_iam_anyscale_access_role_unique_id"></a> [iam\_anyscale\_access\_role\_unique\_id](#output\_iam\_anyscale\_access\_role\_unique\_id) | Unique ID of Anyscale access IAM role |

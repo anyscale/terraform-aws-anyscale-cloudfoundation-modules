@@ -85,6 +85,17 @@ module "aws_anyscale_s3" {
 # ------------------------------
 # IAM Module
 # ------------------------------
+locals {
+  external_id_with_org_id = var.anyscale_external_id != null && var.anyscale_org_id != null ? "${var.anyscale_org_id}-${var.anyscale_external_id}" : null
+}
+
+resource "null_resource" "validate_external_id_variables" {
+  count = var.anyscale_external_id != null && var.anyscale_org_id == null ? 1 : 0
+
+  provisioner "local-exec" {
+    command = "echo 'Error: If `anyscale_external_id` is set, `anyscale_org_id` must also be set.' && exit 1"
+  }
+}
 module "aws_anyscale_iam" {
   source = "./modules/aws-anyscale-iam"
   tags   = local.iam_tags
@@ -143,7 +154,7 @@ module "aws_anyscale_iam" {
 
   anyscale_cloud_id    = var.anyscale_cloud_id
   anyscale_org_id      = var.anyscale_org_id
-  anyscale_external_id = var.anyscale_external_id
+  anyscale_external_id = local.external_id_with_org_id
 }
 
 # ------------------------------

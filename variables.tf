@@ -124,24 +124,15 @@ variable "anyscale_external_id" {
     If not provided, the trust policy will be updated to the Anyscale cloud ID during cloud registration
     at which point you should re-run this module to update the trust policy and avoid drift.
 
-    If this is provided, it must start with the Organization ID (e.g. `org_1234567890abcdef-<additional-external-id>`)
+    If this is provided, you must also set `anyscale_org_id` which will be prepended to the external ID.
 
     ex:
     ```
-    anyscale_external_id = "org_1234567890abcdef-external-id-12345"
+    anyscale_external_id = "external-id-12345"
     ```
   EOT
   type        = string
   default     = null
-  validation {
-    condition = (
-      var.anyscale_external_id == null ? true : (
-        length(var.anyscale_external_id) > 4 &&
-        substr(var.anyscale_external_id, 0, 4) == "org_"
-      )
-    )
-    error_message = "The anyscale_external_id value must start with your Anyscale Organization ID (e.g. \"org_1234567890abcdef\")."
-  }
 }
 
 variable "common_prefix" {

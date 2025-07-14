@@ -50,21 +50,15 @@ variable "anyscale_external_id" {
   description = <<-EOF
     (Required) A string that will be used for the IAM trust policy.
     The trust policy for the control plane IAM role will be locked down to the provided external ID.
-    The external ID must start with the Organization ID (e.g. `org_1234567890abcdef`)
+
+    If provided, you must also set `anyscale_org_id` which will be prepended to the external ID.
 
     ex:
     ```
-    anyscale_external_id = "org_1234567890abcdef-external-id-12345"
+    anyscale_external_id = "external-id-12345"
     ```
   EOF
   type        = string
-  validation {
-    condition = (
-      length(var.anyscale_external_id) > 4 &&
-      substr(var.anyscale_external_id, 0, 4) == "org_"
-    )
-    error_message = "The anyscale_external_id value must start with \"org_\"."
-  }
 }
 
 # ------------------------------------------------------------------------------

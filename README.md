@@ -134,6 +134,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.0 |
 
 ## Providers
@@ -141,6 +142,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.7.2 |
 
 ## Modules
@@ -159,6 +161,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 
 | Name | Type |
 |------|------|
+| [null_resource.validate_external_id_variables](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [random_id.common_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
 | [aws_subnet.existing_subnets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
 
@@ -200,7 +203,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | <a name="input_anyscale_deploy_env"></a> [anyscale\_deploy\_env](#input\_anyscale\_deploy\_env) | (Optional) Anyscale deployment environment.<br/>Used in resource names and tags.<br/><br/>ex:<pre>anyscale_deploy_env = "production"</pre> | `string` | `"production"` | no |
 | <a name="input_anyscale_efs_name"></a> [anyscale\_efs\_name](#input\_anyscale\_efs\_name) | (Optional) Elastic file system name.<br/><br/>Will default to `efs_anyscale` if this var `null` and anyscale\_cloud\_id is also `null`.<br/><br/>ex:<pre>anyscale_efs_name = "anyscale-efs"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_efs_tags"></a> [anyscale\_efs\_tags](#input\_anyscale\_efs\_tags) | (Optional) A map of tags for EFS resources.<br/><br/>Duplicate tags found in the "tags" variable will get duplicated on the resource.<br/><br/>ex:<pre>anyscale_efs_tags = {<br/>  "purpose" : "storage",<br/>  "criticality" : "critical"<br/>}</pre>Default is an empty map. | `map(string)` | `{}` | no |
-| <a name="input_anyscale_external_id"></a> [anyscale\_external\_id](#input\_anyscale\_external\_id) | (Optional) A string that will be used for the IAM trust policy.<br/><br/>If this is provided, the trust policy for the control plane IAM role will be locked down to the provided external ID.<br/>If not provided, the trust policy will be updated to the Anyscale cloud ID during cloud registration<br/>at which point you should re-run this module to update the trust policy and avoid drift.<br/><br/>If this is provided, it must start with the Organization ID (e.g. `org_1234567890abcdef-<additional-external-id>`)<br/><br/>ex:<pre>anyscale_external_id = "org_1234567890abcdef-external-id-12345"</pre> | `string` | `null` | no |
+| <a name="input_anyscale_external_id"></a> [anyscale\_external\_id](#input\_anyscale\_external\_id) | (Optional) A string that will be used for the IAM trust policy.<br/><br/>If this is provided, the trust policy for the control plane IAM role will be locked down to the provided external ID.<br/>If not provided, the trust policy will be updated to the Anyscale cloud ID during cloud registration<br/>at which point you should re-run this module to update the trust policy and avoid drift.<br/><br/>If this is provided, you must also set `anyscale_org_id` which will be prepended to the external ID.<br/><br/>ex:<pre>anyscale_external_id = "external-id-12345"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_gateway_vpc_endpoints"></a> [anyscale\_gateway\_vpc\_endpoints](#input\_anyscale\_gateway\_vpc\_endpoints) | (Optional) A map of Gateway VPC Endpoints to provision into the VPC.<br/><br/>This is a map of objects with the following attributes:<br/>- `name`: Short service name (either "s3" or "dynamodb")<br/>- `policy` = A policy (as JSON string) to attach to the endpoint that controls access to the service. May be `null` for full access.<br/><br/>See the submodule variable for additional examples.<br/><br/>It is Anyscale's recommendation to have an S3 VPC Endpoint to minimize S3 costs and maximize S3 performance.<br/><br/>Set to an empty map `{}` to skip creating VPC Endpoints.<br/><br/>ex:<pre>anyscale_gateway_vpc_endpoints = {<br/>  "s3" = {<br/>    name   = "s3"<br/>    policy = null<br/>  }<br/>}</pre> | <pre>map(object({<br/>    name   = string<br/>    policy = string<br/>  }))</pre> | <pre>{<br/>  "s3": {<br/>    "name": "s3",<br/>    "policy": null<br/>  }<br/>}</pre> | no |
 | <a name="input_anyscale_iam_access_role_name"></a> [anyscale\_iam\_access\_role\_name](#input\_anyscale\_iam\_access\_role\_name) | (Optional, forces creation of new resource) The name of the Anyscale IAM access role.<br/><br/>If left `null`, the name will default to `anyscale_iam_access_role_name_prefix` or `general_prefix`.<br/>If provided, overrides the `anyscale_iam_access_role_name_prefix` variable.<br/><br/>ex:<pre>anyscale_iam_access_role_name = "anyscale-iam-crossacct-role"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_iam_access_role_name_prefix"></a> [anyscale\_iam\_access\_role\_name\_prefix](#input\_anyscale\_iam\_access\_role\_name\_prefix) | (Optional, forces creation of new resource) The prefix for the Anyscale IAM access role.<br/><br/>If `anyscale_iam_access_role_name_prefix` is provided, it will override this variable.<br/>The variable `general_prefix` is a fall-back prefix if this is not provided.<br/><br/>Default is `null` but is set to `anyscale-iam-role-` in a local variable.<br/><br/>ex:<pre>anyscale_iam_access_role_name_prefix = "anyscale-crossacct-role-"</pre> | `string` | `null` | no |
@@ -273,6 +276,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | <a name="output_anyscale_iam_instance_profile_role_arn"></a> [anyscale\_iam\_instance\_profile\_role\_arn](#output\_anyscale\_iam\_instance\_profile\_role\_arn) | Anyscale IAM instance profile role arn. |
 | <a name="output_anyscale_iam_role_arn"></a> [anyscale\_iam\_role\_arn](#output\_anyscale\_iam\_role\_arn) | Anyscale IAM access role arn. |
 | <a name="output_anyscale_iam_role_cluster_node_arn"></a> [anyscale\_iam\_role\_cluster\_node\_arn](#output\_anyscale\_iam\_role\_cluster\_node\_arn) | Anyscale IAM cluster node role arn. |
+| <a name="output_anyscale_iam_role_external_id"></a> [anyscale\_iam\_role\_external\_id](#output\_anyscale\_iam\_role\_external\_id) | External ID of Anyscale IAM access role |
 | <a name="output_anyscale_memorydb_cluster_arn"></a> [anyscale\_memorydb\_cluster\_arn](#output\_anyscale\_memorydb\_cluster\_arn) | Anyscale MemoryDB Cluster ARN. If a MemoryDB cluster was not created, return an empty string. |
 | <a name="output_anyscale_memorydb_cluster_endpoint_address"></a> [anyscale\_memorydb\_cluster\_endpoint\_address](#output\_anyscale\_memorydb\_cluster\_endpoint\_address) | Anyscale MemoryDB Cluster Endpoint Address. If a MemoryDB cluster was not created, return an empty string. |
 | <a name="output_anyscale_memorydb_cluster_endpoint_port"></a> [anyscale\_memorydb\_cluster\_endpoint\_port](#output\_anyscale\_memorydb\_cluster\_endpoint\_port) | Anyscale MemoryDB Cluster Endpoint Port. If a MemoryDB cluster was not created, return an empty string. |

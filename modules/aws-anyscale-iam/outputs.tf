@@ -21,6 +21,11 @@ output "iam_anyscale_access_role_unique_id" {
   value       = try(aws_iam_role.anyscale_access_role[0].unique_id, "")
 }
 
+output "iam_anyscale_access_role_external_id" {
+  description = "External ID of Anyscale access IAM role"
+  value       = try(var.anyscale_external_id, "")
+}
+
 # Steady state policy
 output "anyscale_steadystate_policy_arn" {
   description = "ARN of Anyscale Steady State IAM policy"
