@@ -5,10 +5,14 @@ In this guide, we will walk through setting up and using Terraform with the Amaz
 
 The anyscale-v2-commonname example builds the following AWS resources:
 - S3 Bucket - Standard
-- IAM Roles
+- IAM Roles for the control and data planes
 - VPC with publicly routed subnets (no private subnets)
 - VPC Security Groups
-- EFS
+
+It does not create:
+- VPC with private subnets or any firewalls
+- EFS for optional NFS mounted cluster storage
+- MemoryDB for optional Anyscale service head node high availability
 
 ## Prerequisites
 1. An AWS account
@@ -17,7 +21,7 @@ The anyscale-v2-commonname example builds the following AWS resources:
 3. AWS CLI (awscli) installed on your local laptop
    1. You can install the aws cli with `brew` via `brew install awscli`. Other [install options](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) are available.
 4. Git CLI installed on your local laptop.
-5. Anyscale CLI installed on your local laptop needs to be 0.5.104 or newer. You can install/upgrade your cli with: `pip install anyscale --upgrade`
+5. Anyscale CLI installed on your local laptop needs to be 0.26.40 or newer. You can install/upgrade your cli with: `pip install anyscale --upgrade`
 6. Basic understanding of Terraform and Infrastructure as Code
 
 #### Required AWS user permissions
@@ -60,13 +64,17 @@ You can also update the region that resources are created in.
 #### Common Variables to modify
 - `anyscale_vpc_cidr_block` - This is the network size that you'd like to create on AWS.
 - `anyscale_vpc_public_subnets` - These are the public subnets that will be created in the VPC.
+- `customer_ingress_cidr_ranges` - This is the ingress CIDR range for the security group to allow traffic from.
+- `anyscale_external_id` - This variable allows you to specify a custom external ID for locking down the Control Plane IAM role. If used, it must start with your Anyscale organization ID.
 - `anyscale_vpc_private_subnets` - These are private subnets that will be created in the VPC. For a full example using private-only networking, check out the anyscale-v2-privatesubnets example.
 
 ### 6. Create a `terraform.tfvars` file:
 Create a `terraform.tfvars` file in the example directory to store your project-specific variables. Update the variables according to your AWS setup. For example:
 ```
-aws_region        = "<aws_region_you_want_to_use>"
-common_prefix     = "anyscale-tf-"
+aws_region           = "<aws_region_you_want_to_use>"
+common_prefix        = "anyscale-tf-"
+anyscale_external_id = "<anyscale_org_id>-<custom_external_id>"
+
 customer_ingress_cidr_ranges = "0.0.0.0/0"
 ```
 
@@ -109,23 +117,10 @@ anyscale cloud register --provider aws  \
 --instance-iam-role-id arn:aws:iam::123456789012:role/anyscale-tf-12345789abcd-cluster-node-role \
 --security-group-ids anyscale-tf-test-1-cluster@gcp-register-cloud-1.iam.gserviceaccount.com \
 --s3-bucket-id anyscale-tf-test-1-fw  \
+--external-id org_1234567890abcdef-example_id
 ```
 
-### 12. Recommended: Lock down AWS resources with Anyscale Cloud ID.
-You can use the Cloud ID that was generated in the previous step as an additional parameter for the AWS Anyscale Terraform Cloudfoundation Modules.
-This provides an extra layer of security for the cross account role - Anyscale sends the Cloud ID as part of the information sent during the assume-role process.
-Using this additional variable, you can run multiple secure Anyscale Clouds in the same AWS account.
-
-Update the `terraform.tfvars` file and add
-```
-anyscale_cloud_id` = "<your_anyscale_cloud_id>"
-```
-Where the Cloud ID is the ID that is returned by the Anyscale CLI when you registered it in the previous step - the Cloud ID should look like `cld_1234567890abcdefgh1235abcd`.
-
-Then, re-run `terraform apply` - this will update only the cross account role.
-To verify that this applied correctly, you can run: `anyscale cloud verify --id <cloud-id>` which will double check all permissions and configurations.
-
-### 13. Clean up resources (optional):
+### 12. Clean up resources (optional):
 Once you are done, you can destroy the resources created by Terraform:
 ```
 terraform destroy -var-file="terraform.tfvars"
@@ -133,4 +128,4 @@ terraform destroy -var-file="terraform.tfvars"
 Type 'yes' when prompted to confirm the resource destruction.
 
 ## Conclusion
-In this guide, we have covered how to set up and use Terraform with the Amazon Web Services from a local laptop. We used the Anyscale AWS Cloudfoundation module to create resources based on the anyscale-v2-commonname example. Now you can create and manage your infrastructure on AWS using Terraform and the Anyscale module.
+In this guide, we have covered how to set up and use Terraform with Amazon Web Services from a local laptop. We used the Anyscale AWS cloudfoundation module to create resources based on the anyscale-v2-commonname example. Now you can create and manage your infrastructure on AWS using Terraform and the Anyscale module.

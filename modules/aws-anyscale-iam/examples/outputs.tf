@@ -20,27 +20,6 @@ output "secretsmanager_role_arn" {
 }
 
 # -----------------
-# EKS Test
-# -----------------
-output "eks_cluster_role_arn" {
-  description = "The arn of the EKS cluster role"
-  value       = module.iam_eks_roles.iam_anyscale_eks_cluster_role_arn
-}
-output "eks_node_role_arn" {
-  description = "The arn of the EKS node role"
-  value       = module.iam_eks_roles.iam_anyscale_eks_node_role_arn
-}
-output "eks_ebs_csi_driver_role_arn" {
-  description = "The arn of the EKS EBS CSI driver role"
-  value       = module.iam_eks_roles.iam_anyscale_eks_ebs_csi_driver_role_arn
-}
-
-output "eks_efs_csi_driver_role_arn" {
-  description = "The arn of the EKS EFS CSI driver role"
-  value       = module.iam_eks_roles.iam_anyscale_eks_efs_csi_driver_role_arn
-}
-
-# -----------------
 # Kitchen Sink Test
 # -----------------
 output "kitchen_sink_anyscale_role_arn" {

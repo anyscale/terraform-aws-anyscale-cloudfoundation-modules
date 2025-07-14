@@ -17,7 +17,7 @@ This sub-module creates the default IAM resources needed for Anyscale to work in
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.65.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
 
 ## Modules
 
@@ -139,6 +139,7 @@ No modules.
 | <a name="input_anyscale_eks_node_role_name_prefix"></a> [anyscale\_eks\_node\_role\_name\_prefix](#input\_anyscale\_eks\_node\_role\_name\_prefix) | (Optional, forces creation of new resource) The prefix of the Anyscale IAM EKS node role.<br/><br/>If `anyscale_eks_node_role_name` is provided, it will override this variable.<br/><br/>ex:<pre>anyscale_eks_node_role_name_prefix = "anyscale-eks-node-role-"</pre> | `string` | `"anyscale-eks-node-role-"` | no |
 | <a name="input_anyscale_eks_node_role_path"></a> [anyscale\_eks\_node\_role\_path](#input\_anyscale\_eks\_node\_role\_path) | (Optional) The path to the IAM role.<br/><br/>ex:<pre>anyscale_eks_node_role_path = "/"</pre> | `string` | `"/"` | no |
 | <a name="input_anyscale_eks_node_role_permissions_boundary_arn"></a> [anyscale\_eks\_node\_role\_permissions\_boundary\_arn](#input\_anyscale\_eks\_node\_role\_permissions\_boundary\_arn) | (Optional) Permissions boundary ARN to use for IAM role.<br/><br/>ex:<pre>anyscale_eks_node_role_permissions_boundary_arn = "arn:aws:iam::123456789012:policy/MyPermissionsBoundary"</pre> | `string` | `null` | no |
+| <a name="input_anyscale_external_id"></a> [anyscale\_external\_id](#input\_anyscale\_external\_id) | (Optional) External ID to use for the trust policy.<br/><br/>If provided, this will be used instead of the cloud ID.<br/>It must start with the Organization ID (e.g. `org_1234567890abcdef-<additional-external-id>`)<br/><br/>ex:<pre>anyscale_external_id = "org_1234567890abcdef-1234567890abcdef"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_iam_s3_policy_description"></a> [anyscale\_iam\_s3\_policy\_description](#input\_anyscale\_iam\_s3\_policy\_description) | (Optional) Anyscale S3 access IAM policy description. Default is `Anyscale S3 Access IAM Policy`. | `string` | `"Anyscale S3 Access IAM Policy"` | no |
 | <a name="input_anyscale_iam_s3_policy_name"></a> [anyscale\_iam\_s3\_policy\_name](#input\_anyscale\_iam\_s3\_policy\_name) | (Optional) Name for the Anyscale S3 access IAM policy.<br/><br/>If left `null`, will default to `anyscale_iam_s3_policy_prefix`.<br/>If provided, overrides the `anyscale_iam_s3_policy_prefix` variable.<br/><br/>ex:<pre>anyscale_iam_s3_policy_name = "anyscale-iam-s3-policy"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_iam_s3_policy_name_prefix"></a> [anyscale\_iam\_s3\_policy\_name\_prefix](#input\_anyscale\_iam\_s3\_policy\_name\_prefix) | (Optional) Name prefix for the Anyscale S3 access IAM policy. Default is `anyscale-iam-s3-`. | `string` | `"anyscale-iam-s3-"` | no |

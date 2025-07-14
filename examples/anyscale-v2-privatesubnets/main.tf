@@ -10,10 +10,7 @@
 #     - MemoryDB
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
-  full_tags = merge(tomap({
-    anyscale-cloud-id           = var.anyscale_cloud_id,
-    anyscale-deploy-environment = var.anyscale_deploy_env
-    }),
+  full_tags = merge(
     var.tags
   )
 }
@@ -23,8 +20,8 @@ module "aws_anyscale_v2_private_vpc" {
   tags          = local.full_tags
   common_prefix = "private-vpc-"
 
-  anyscale_deploy_env = var.anyscale_deploy_env
-  anyscale_cloud_id   = var.anyscale_cloud_id
+  anyscale_cloud_id    = var.anyscale_cloud_id
+  anyscale_external_id = var.anyscale_external_id
 
   # --------------------------
   # VPC Related
@@ -58,6 +55,7 @@ module "aws_anyscale_v2_private_vpc" {
     "s3_tag_test" : "private_vpc",
     "s3_tagging" : var.s3_tag_value
   }
+  anyscale_s3_force_destroy = var.anyscale_s3_force_destroy
 
   # --------------------------
   # IAM Related

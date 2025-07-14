@@ -22,9 +22,10 @@ module "aws_anyscale_v2_common_name" {
   source = "../.." #this should be changed if executing this example outside of this repository
   tags   = local.full_tags
 
-  anyscale_deploy_env = var.anyscale_deploy_env
-  anyscale_cloud_id   = var.anyscale_cloud_id
-  anyscale_org_id     = var.anyscale_org_id
+  anyscale_deploy_env  = var.anyscale_deploy_env
+  anyscale_cloud_id    = var.anyscale_cloud_id
+  anyscale_org_id      = var.anyscale_org_id
+  anyscale_external_id = var.anyscale_external_id
 
   create_cluster_node_cloudwatch_policy = true
 
@@ -65,4 +66,7 @@ EOF
   # EFS Resource Related
   #   Disable EFS resources to avoid creating EFS resources.
   create_efs_resources = false
+
+  # S3 Resource Related
+  anyscale_s3_force_destroy = var.anyscale_s3_force_destroy
 }

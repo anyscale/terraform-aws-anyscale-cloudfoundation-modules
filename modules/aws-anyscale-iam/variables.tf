@@ -161,6 +161,31 @@ variable "anyscale_trusted_role_sts_externalid" {
   default     = []
 }
 
+variable "anyscale_external_id" {
+  description = <<-EOT
+    (Optional) External ID to use for the trust policy.
+
+    If provided, this will be used instead of the cloud ID.
+    It must start with the Organization ID (e.g. `org_1234567890abcdef-<additional-external-id>`)
+
+    ex:
+    ```
+    anyscale_external_id = "org_1234567890abcdef-1234567890abcdef"
+    ```
+  EOT
+  type        = string
+  default     = null
+  validation {
+    condition = (
+      var.anyscale_external_id == null ? true : (
+        length(var.anyscale_external_id) > 4 &&
+        substr(var.anyscale_external_id, 0, 4) == "org_"
+      )
+    )
+    error_message = "The anyscale_external_id value must start with your Anyscale Organization ID (e.g. \"org_1234567890abcdef\")."
+  }
+}
+
 variable "create_anyscale_access_steadystate_policy" {
   description = "(Optional) Deterimines if the Anyscale IAM steadystate policy is created. Default is `true`."
   type        = bool

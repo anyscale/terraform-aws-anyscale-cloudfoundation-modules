@@ -52,46 +52,6 @@ module "iam_secretsmanager_instance_profile" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Create the EKS Roles. No other roles.
-# ---------------------------------------------------------------------------------------------------------------------
-module "iam_eks_roles" {
-  source = "../"
-
-  module_enabled                       = true
-  create_anyscale_access_role          = false
-  create_cluster_node_instance_profile = false
-  create_iam_s3_policy                 = false
-
-  create_anyscale_eks_cluster_role      = true
-  anyscale_eks_cluster_role_name        = "anyscale-eks-cluster-role-tftest"
-  anyscale_eks_cluster_role_path        = "/eks/"
-  anyscale_eks_cluster_role_description = "Anyscale EKS Cluster Role Test"
-
-  create_anyscale_eks_node_role      = true
-  anyscale_eks_node_role_name        = "anyscale-eks-node-role-tftest"
-  anyscale_eks_node_role_path        = "/eks/"
-  anyscale_eks_node_role_description = "Anyscale EKS Node Role Test"
-
-  create_eks_ebs_csi_driver_role = true
-  eks_ebs_csi_role_name          = "anyscale-eks-ebs-csi-role-tftest"
-  eks_ebs_csi_role_path          = "/eks/"
-  eks_ebs_csi_role_description   = "Anyscale EKS EBS CSI Role Test"
-
-  create_eks_efs_csi_driver_role = true
-  eks_efs_csi_role_name          = "anyscale-eks-efs-csi-role-tftest"
-  eks_efs_csi_role_path          = "/eks/"
-  eks_efs_csi_role_description   = "Anyscale EKS EFS CSI Role Test"
-
-  anyscale_eks_cluster_oidc_arn = "arn:aws:iam::123456789012:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE12345678901234567890123456789012"
-  anyscale_eks_cluster_oidc_url = "https://oidc.eks.us-west-2.amazonaws.com/id/EXAMPLE12345678901234567890123456789012"
-
-  efs_file_system_arn       = "arn:aws:elasticfilesystem:us-west-2:123456789012:file-system/fs-tftest"
-  anyscale_eks_cluster_name = "anyscale-eks-cluster-tftest"
-
-  tags = local.full_tags
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
 # Use all params and build both roles.
 # ---------------------------------------------------------------------------------------------------------------------
 module "kitchen_sink" {
@@ -103,6 +63,8 @@ module "kitchen_sink" {
   anyscale_access_role_name        = "anyscale-access-role-kitchensink-tftest"
   anyscale_access_role_path        = "/testpath/"
   anyscale_access_role_description = "Anyscale TESTROLE Description"
+
+  anyscale_external_id = "org_abcdefTESTROLE-external-id-12345"
 
   create_anyscale_access_steadystate_policy      = true
   anyscale_access_steadystate_policy_name        = "anyscale-steadystate-kitchensink-tftest"

@@ -9,10 +9,7 @@
 #     - MemoryDB
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
-  full_tags = merge(tomap({
-    anyscale-cloud-id = var.anyscale_cloud_id,
-    anyscale-org-id   = var.anyscale_org_id
-    }),
+  full_tags = merge(
     var.tags
   )
 }
@@ -37,7 +34,9 @@ module "aws_anyscale_v2_kitchen_sink" {
   tags          = local.full_tags
   common_prefix = "anyscale-kitchensink-"
 
-  anyscale_cloud_id = var.anyscale_cloud_id
+  anyscale_cloud_id    = var.anyscale_cloud_id
+  anyscale_org_id      = var.anyscale_org_id
+  anyscale_external_id = var.anyscale_external_id
 
   # --------------------------
   # VPC Related
@@ -76,7 +75,7 @@ module "aws_anyscale_v2_kitchen_sink" {
   anyscale_s3_server_side_encryption = {
     sse_algorithm = "AES256"
   }
-  anyscale_s3_force_destroy = true
+  anyscale_s3_force_destroy = var.anyscale_s3_force_destroy
   anyscale_s3_lifecycle_rule = [
     {
       id      = "log"

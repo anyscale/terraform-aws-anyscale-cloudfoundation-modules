@@ -1,3 +1,28 @@
+## 0.29.0 (Released)
+FEATURES:
+- Add support for custom external ID for the Control Plane IAM role.
+  - With the Anyscale CLI v0.26.30 or newer, you can now specify a custom external ID during cloud registration.
+  -  New variable `anyscale_external_id` added to support this functionality.
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
+## 0.28.0 (Released)
+FEATURES:
+- EFS (NFS) is now optional for Anyscale Clouds.
+  - With this update, and the Anyscale CLI v0.26.40 or newer, creating the EFS resource is optional.
+  - Example `anyscale-v2-commonname` is updated to no longer create the EFS resouce.
+  - New variable `create_efs_resources` added to support this new optionality.
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
 ## 0.27.0 (Released)
 FEATURES:
 - Add the ability to manage a Security Group for [Customer-Managed Machine Pools](https://docs.anyscale.com/administration/cloud-deployment/customer-managed-machine-pools)
