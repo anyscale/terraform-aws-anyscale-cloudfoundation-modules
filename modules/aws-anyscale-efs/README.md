@@ -14,19 +14,19 @@ EFS is required for you to use Anyscale Workspaces.
 
 EFS Policies to enforce TLS traffic are not currently supported. This requires additional changes to the way Workspaces mount EFS. NFS does not support TLS out of the box, however Amazon has an efs-mount-helper that does support TLS as well as additional IAM authentication options. For now, the variable: `attach_policy` has been changed to `false` which will by default not create the EFS policy. This is the only supported method for Anyscale Workspace clusters at this time.
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.41.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
 
 ## Modules
 
@@ -58,13 +58,13 @@ No modules.
 | <a name="input_create_backup_policy"></a> [create\_backup\_policy](#input\_create\_backup\_policy) | (Optional) Determines whether a backup policy is created. Default is `true`. | `bool` | `true` | no |
 | <a name="input_create_replication_configuration"></a> [create\_replication\_configuration](#input\_create\_replication\_configuration) | (Optional) Determines whether a replication configuration is created. Default is `false`. | `bool` | `false` | no |
 | <a name="input_efs_creation_token"></a> [efs\_creation\_token](#input\_efs\_creation\_token) | (Optional) A unique token used as reference when creating the Elastic File System to ensure idempotent file system creation. Default is `null` which forces Terraform to generate it. | `string` | `null` | no |
-| <a name="input_efs_encrypted"></a> [efs\_encrypted](#input\_efs\_encrypted) | (Optional)<br>Deterimnes if the Elastic File System disk will be encrypted.<br><br>ex:<pre>efs_encrypted = true</pre> | `bool` | `true` | no |
+| <a name="input_efs_encrypted"></a> [efs\_encrypted](#input\_efs\_encrypted) | (Optional)<br/>Deterimnes if the Elastic File System disk will be encrypted.<br/><br/>ex:<pre>efs_encrypted = true</pre> | `bool` | `true` | no |
 | <a name="input_efs_performance_mode"></a> [efs\_performance\_mode](#input\_efs\_performance\_mode) | (Optional) The file system performance mode. Can be either `generalPurpose` or `maxIO`. Default is `generalPurpose` | `string` | `"generalPurpose"` | no |
 | <a name="input_efs_throughput_mode"></a> [efs\_throughput\_mode](#input\_efs\_throughput\_mode) | (Optional) Throughput mode for the file system. Defaults to `bursting`. Valid values: `bursting`, `provisioned`. When using `provisioned`, also set `provisioned_throughput_in_mibps`. Default is `bursting`. | `string` | `"bursting"` | no |
 | <a name="input_enable_backup_policy"></a> [enable\_backup\_policy](#input\_enable\_backup\_policy) | (Optional) Determines whether a backup policy is `ENABLED` or `DISABLED`. Default is `true`. | `bool` | `true` | no |
-| <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | (Optional)<br>The ARN for the KMS encryption key to be used for encrypting EFS.<br>When specifying `kms_key_arn`, efs\_encrypted needs to be set to `true`.<br><br>ex:<pre>kms_key_arn = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</pre> | `string` | `null` | no |
-| <a name="input_lifecycle_policy_transition_to_ia"></a> [lifecycle\_policy\_transition\_to\_ia](#input\_lifecycle\_policy\_transition\_to\_ia) | (Optional) Indicates how long it takes to transition files to Infrequent Access storage class. No value, or an empty list, means never. Default is to transition to IA after 60 days. | `list(string)` | <pre>[<br>  "AFTER_60_DAYS"<br>]</pre> | no |
-| <a name="input_lifecycle_policy_transition_to_primary_storage_class"></a> [lifecycle\_policy\_transition\_to\_primary\_storage\_class](#input\_lifecycle\_policy\_transition\_to\_primary\_storage\_class) | (Optional) Indicates the policy used to transition a file from Infrequent Access (IA) storage to primary storage. Default is `AFTER_1_ACCESS`. | `list(string)` | <pre>[<br>  "AFTER_1_ACCESS"<br>]</pre> | no |
+| <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | (Optional)<br/>The ARN for the KMS encryption key to be used for encrypting EFS.<br/>When specifying `kms_key_arn`, efs\_encrypted needs to be set to `true`.<br/><br/>ex:<pre>kms_key_arn = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"</pre> | `string` | `null` | no |
+| <a name="input_lifecycle_policy_transition_to_ia"></a> [lifecycle\_policy\_transition\_to\_ia](#input\_lifecycle\_policy\_transition\_to\_ia) | (Optional) Indicates how long it takes to transition files to Infrequent Access storage class. No value, or an empty list, means never. Default is to transition to IA after 60 days. | `list(string)` | <pre>[<br/>  "AFTER_60_DAYS"<br/>]</pre> | no |
+| <a name="input_lifecycle_policy_transition_to_primary_storage_class"></a> [lifecycle\_policy\_transition\_to\_primary\_storage\_class](#input\_lifecycle\_policy\_transition\_to\_primary\_storage\_class) | (Optional) Indicates the policy used to transition a file from Infrequent Access (IA) storage to primary storage. Default is `AFTER_1_ACCESS`. | `list(string)` | <pre>[<br/>  "AFTER_1_ACCESS"<br/>]</pre> | no |
 | <a name="input_module_enabled"></a> [module\_enabled](#input\_module\_enabled) | (Optional) Whether to create the resources inside this module. Default is `true`. | `bool` | `true` | no |
 | <a name="input_mount_target_ips"></a> [mount\_target\_ips](#input\_mount\_target\_ips) | (Optional) List of Target IPs. These should map to the list of mount target subnets. Default is an empty list. | `list(string)` | `[]` | no |
 | <a name="input_mount_targets_subnet_count"></a> [mount\_targets\_subnet\_count](#input\_mount\_targets\_subnet\_count) | (Optional) The mount targets subnet count. This is included as the number of subnets is not always known at the creation time. Default is `0`. | `number` | `0` | no |
@@ -88,12 +88,16 @@ No modules.
 | <a name="output_efs_mount_target_ids"></a> [efs\_mount\_target\_ids](#output\_efs\_mount\_target\_ids) | EFS Mount Target IDs |
 | <a name="output_efs_mount_target_ips"></a> [efs\_mount\_target\_ips](#output\_efs\_mount\_target\_ips) | EFS mount target IPs |
 | <a name="output_efs_mount_target_network_interface_ids"></a> [efs\_mount\_target\_network\_interface\_ids](#output\_efs\_mount\_target\_network\_interface\_ids) | EFS mount target network interface IDs |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
 
 <!-- References -->
+<!-- References -->
 [Terraform]: https://www.terraform.io
-[Issues]: https://github.com/anyscale/sa-sandbox-terraform/issues
-[badge-build]: https://github.com/anyscale/sa-sandbox-terraform/workflows/CI/CD%20Pipeline/badge.svg
-[badge-terraform]: https://img.shields.io/badge/terraform-1.x%20-623CE4.svg?logo=terraform
-[badge-tf-aws]: https://img.shields.io/badge/AWS-5.+-F8991D.svg?logo=terraform
-[build-status]: https://github.com/anyscale/sa-sandbox-terraform/actions
+[Anyscale]: https://www.anyscale.com
+[Issues]: https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/issues
+[badge-release]: https://img.shields.io/github/v/release/anyscale/terraform-aws-anyscale-cloudfoundation-modules.svg?style=for-the-badge&labelColor=0066FF&color=CCE0FF
+[badge-build]: https://img.shields.io/github/actions/workflow/status/anyscale/terraform-aws-anyscale-cloudfoundation-modules/main.yml?style=for-the-badge
+[badge-terraform]: https://img.shields.io/badge/terraform-1.9.x+%20-623CE4.svg?logo=terraform&style=for-the-badge&labelColor=DDDDDD
+[badge-tf-aws]: https://img.shields.io/badge/AWS-5.+-F8991D.svg?logo=terraform&style=for-the-badge&labelColor=DDDDDD
+[badge-anyscale-cli]: https://img.shields.io/badge/anyscale%20cli-0.26.40+-0066FF.svg?style=for-the-badge&labelColor=CCE0FF&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAzIiBoZWlnaHQ9IjIwMyIgdmlld0JveD0iMCAwIDIwMyAyMDMiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xNDMuNzg5IDEwNC42NzVMMTE2LjMyMyAxNTIuMjUySDE3MS42MzVDMTczLjY2NiAxNTIuMjUyIDE3NS41NDUgMTUxLjE3IDE3Ni41NyAxNDkuNDA1TDIwMi4zOTUgMTA0LjY3NUgxNDMuNzg5WiIgZmlsbD0iIzAwNjZGRiIvPgo8cGF0aCBkPSJNMjAyLjM5NSA5OC4zMjUzTDE3Ni41NyA1My41OTQ5QzE3NS41NTUgNTEuODI5NiAxNzMuNjc2IDUwLjc0NzYgMTcxLjYzNSA1MC43NDc2SDExNi4zMjNMMTQzLjc4OSA5OC4zMjUzSDIwMi4zOTVaIiBmaWxsPSIjMDA2NkZGIi8+CjxwYXRoIGQ9Ik02MS4zODk0IDUwLjc0NzZIMTE2LjMyMkw4OC42NjYxIDIuODQ3MjZDODcuNjUwNiAxLjA4MTk2IDg1Ljc3MTQgMCA4My43MzA5IDBIMzIuMDgxNkw2MS4zNzk5IDUwLjc0NzZINjEuMzg5NFoiIGZpbGw9IiMwMDY2RkYiLz4KPHBhdGggZD0iTTI2LjU4NjQgMy4xNjk5NUwwLjc2MTc2NCA0Ny45MDA0Qy0wLjI1Mzc1OCA0OS42NjU3IC0wLjI1Mzc1OCA1MS44Mjk2IDAuNzYxNzY0IDUzLjU5NDlMMjguNDE4MSAxMDEuNDk1TDU1Ljg4NDcgNTMuOTE3NkwyNi41ODY0IDMuMTY5OTVaIiBmaWxsPSIjMDA2NkZGIi8+CjxwYXRoIGQ9Ik01NS44OTQyIDE0OS4wNzNMMjguNDI3NiAxMDEuNDk1TDAuNzYxNzY0IDE0OS40MDVDLTAuMjUzNzU4IDE1MS4xNyAtMC4yNTM3NTggMTUzLjMzNCAwLjc2MTc2NCAxNTUuMUwyNi41ODY0IDE5OS44M0w1NS44ODQ3IDE0OS4wODJMNTUuODk0MiAxNDkuMDczWiIgZmlsbD0iIzAwNjZGRiIvPgo8cGF0aCBkPSJNMzIuMDgxNiAyMDNIODMuNzMwOUM4NS43NjE5IDIwMyA4Ny42NDExIDIwMS45MTggODguNjY2MSAyMDAuMTUzTDExNi4zMjIgMTUyLjI1Mkg2MS4zODk0TDMyLjA5MTEgMjAzSDMyLjA4MTZaIiBmaWxsPSIjMDA2NkZGIi8+Cjwvc3ZnPg==
+[build-status]: https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/actions
