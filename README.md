@@ -16,15 +16,16 @@ For deploying Anyscale on AWS, the minimum required resources are detailed in th
 <img src="https://docs.anyscale.com/assets/images/aws-customer-defined-2ec2f924ecfe532b9ac8c30376c32aa4.png" alt="Customer Defined Networking" width="800"/>
 
 To streamline long-term management and to enable customization, we've modularized the resources into the following Terraform sub-modules:
-* aws-anyscale-vpc - Creates a basic (opinionated) VPC for Anyscale.
-* aws-anyscale-securitygroups - Configures security groups essential for Anyscale clusters and EFS storage.
-* aws-anyscale-s3 - Creates an S3 bucket to store logs and shared resources.
-* aws-anyscale-s3-policy - Impliments an S3 bucket policy, integrating seamlessly with the `aws-anyscale-iam` module for comprehensive access control.
-* aws-anyscale-iam - Builds IAM roles and policies for secure cross-account access from the Anyscale control plane and EC2 instances.
-* aws-anyscale-efs - Deploys EFS storage solutions supporting Anyscale Clusters.
-* aws-anyscale-memorydb - (Optional) Sets up MemoryDB for Anyscale Services Redis Cache.
-* aws-anyscale-eks-cluster - (Optional) Opinionated deployment of an EKS cluster for the [Anyscale Operator](https://docs.anyscale.com/administration/cloud-deployment/kubernetes)
-* aws-anyscale-eks-nodegroups - (Optional) Used with above for example deployment of the Anyscale Operator
+
+| Name | Optional/Required | Description |
+|------|------------------|-------------|
+| aws-anyscale-iam | Required | Builds IAM roles and policies for secure cross-account access from the Anyscale control plane and EC2 instances in the data plane. |
+| aws-anyscale-securitygroups | Required | Configures security groups essential for Anyscale clusters and (optional) EFS storage. |
+| aws-anyscale-s3 | Required | Creates an S3 bucket to store logs and shared resources. |
+| aws-anyscale-s3-policy | Required | Implements an S3 bucket policy, integrating with the `aws-anyscale-iam` module for comprehensive access control. |
+| aws-anyscale-vpc | Optional | Creates a basic (opinionated) VPC for Anyscale. |
+| aws-anyscale-efs | Optional | Deploys EFS storage solutions supporting Anyscale Clusters. |
+| aws-anyscale-memorydb | Optional | Sets up MemoryDB for Anyscale Services Redis Cache. |
 
 ### Customization
 
@@ -35,20 +36,31 @@ If you choose to disable a module, the responsibility to create and manage that 
 
 ### Examples
 The examples folder has a couple common use cases that have been tested. These include:
-* Anyscale v2
-  * [anyscale-v2-commonname](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-commonname) - Build everything - use a common name for all resources.
-  * [anyscale-v2-existing-vpc](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-existing-vpc) - Pass in an existing VPC and Subnets - build everything else.
-  * [anyscale-v2-privatesubnets](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-privatesubnets) - Build everything - only provide Anyscale cluster access to private subnets that are behind a NAT GW.
-  * [anyscale-v2-existing-s3](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-existing-s3) - Use an existing S3 bucket. Build everything else.
-  * [anyscale-v2-kms](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-kms) - Use KMS for encryption.
-  * [anyscale-v2-kitchensink](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-kitchensink) - Use as many configuration options as possible to build the resources for an Anyscale Cloud.
+- [anyscale-v2-commonname](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-commonname) - Build everything - use a common name for all resources.
+- [anyscale-v2-existing-vpc](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-existing-vpc) - Pass in an existing VPC and Subnets - build everything else.
+- [anyscale-v2-privatesubnets](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-privatesubnets) - Build everything - only provide Anyscale cluster access to private subnets that are behind a NAT GW.
+- [anyscale-v2-existing-s3](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-existing-s3) - Use an existing S3 bucket. Build everything else.
+- [anyscale-v2-kms](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-kms) - Use KMS for encryption.
+- [anyscale-v2-kitchensink](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/tree/main/examples/anyscale-v2-kitchensink) - Use as many configuration options as possible to build the resources for an Anyscale Cloud.
 
 Additional examples can be requested via an [issues] ticket.
 
 ### Specific Module Notes
 
-#### IAM sub-module - Cloudwatch Logs Policy
-By default, we do not create the IAM policies for enabling [Cloudwatch logging](https://docs.anyscale.com/integrations/monitoring). This can be enabled by setting the variable `create_cluster_node_cloudwatch_policy` to `true`.
+#### IAM sub-module
+
+##### External ID
+Anyscale clouds can now be registered with an [external ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_third-party.html). This value needs to begin with your Anyscale organization ID. To do this, you can pass in the variable `anyscale_external_id`. Previously, we needed to run the cloud registration command to create a cloud ID, which was then used in the external ID. This meant running the modules a second time. Now, with the updated CLI, you can skip this extra step, streamlining the registration process.
+
+This requires the Anyscale CLI v0.26.30 or newer.
+
+ex:
+```hcl
+anyscale_external_id = 'org_1234567890abcdef-1234567890abcdef'
+```
+
+##### Cloudwatch Logs Policy
+By default, we do not create the IAM policies for enabling [Cloudwatch logging](https://docs.anyscale.com/monitoring/exporting-logs). This can be enabled by setting the variable `create_cluster_node_cloudwatch_policy` to `true`.
 
 ex:
 ```hcl
@@ -104,6 +116,7 @@ anyscale cloud register --provider aws \
 --instance-iam-role-id arn:aws:iam::123456789012:role/anyscale-tf-abcdefgh1234-cluster-node-role \
 --efs-id fs-abcdefghijklmnopq \
 --memorydb-cluster-id anyscale-tf-abcdefgh1234 \
+--external-id org_1234567890abcdef-abcdefgh1234
 --private-network \
 --functional-verify workspace,service
 ```
@@ -121,14 +134,16 @@ We use GitHub [Issues] to track community reported issues and missing features.
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.41.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | 3.6.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.7.2 |
 
 ## Modules
 
@@ -146,6 +161,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 
 | Name | Type |
 |------|------|
+| [null_resource.validate_external_id_variables](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [random_id.common_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
 | [aws_subnet.existing_subnets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
 
@@ -166,7 +182,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | <a name="input_anyscale_accessrole_custom_policy_description"></a> [anyscale\_accessrole\_custom\_policy\_description](#input\_anyscale\_accessrole\_custom\_policy\_description) | (Optional) Anyscale IAM custom policy description.<br/><br/>ex:<pre>anyscale_accessrole_custom_policy_description = "Anyscale custom IAM policy"</pre> | `string` | `"Anyscale custom IAM policy"` | no |
 | <a name="input_anyscale_accessrole_custom_policy_name"></a> [anyscale\_accessrole\_custom\_policy\_name](#input\_anyscale\_accessrole\_custom\_policy\_name) | (Optional) Name for an Anyscale custom IAM policy.<br/><br/>If left `null`, will default to `anyscale_custom_policy_name_prefix` or `general_prefix`.<br/>If provided, overrides the `anyscale_accessrole_custom_policy_name_prefix` variable.<br/><br/>ex:<pre>anyscale_accessrole_custom_policy_name = "anyscale-custom-policy"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_accessrole_custom_policy_name_prefix"></a> [anyscale\_accessrole\_custom\_policy\_name\_prefix](#input\_anyscale\_accessrole\_custom\_policy\_name\_prefix) | (Optional) Name prefix for the Anyscale custom IAM policy.<br/>If `anyscale_accessrole_custom_policy_name` is provided, it will override this variable.<br/>The variable `general_prefix` is a fall-back prefix if this is not provided.<br/>Default is `null` but is set to `anyscale-crossacct-custom-policy-` in a local variable.<br/><br/>ex:<pre>anyscale_accessrole_custom_policy_name_prefix = "anyscale-custom-policy-"</pre> | `string` | `null` | no |
-| <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID.<br/><br/>This is used to lock down the cross account access role by Cloud ID. Because the Cloud ID is unique to each<br/>customer, this ensures that only the customer can access their own resources. The Cloud ID is not known until the<br/>Cloud is created, so this is an optional variable.<br/><br/>ex:<pre>anyscale_cloud_id = "cld_abcdefghijklmnop1234567890"</pre> | `string` | `null` | no |
+| <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID.<br/><br/>This is used to tag resources and lock down the cross account access role by Cloud ID. The Cloud ID is not known until the<br/>Cloud is created, so this is an optional variable. If this is provided, the trust policy for the control plane IAM<br/>role will be locked down to the provided Cloud ID. If not provided, the trust policy will be updated to the Anyscale<br/>cloud ID during cloud registration at which point you should re-run this module to update the trust policy and avoid<br/>drift.<br/><br/>If `anyscale_external_id` is provided, this variable is not required except for tagging resources.<br/><br/>ex:<pre>anyscale_cloud_id = "cld_abcdefghijklmnop1234567890"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_cluster_node_byod_custom_secrets_policy"></a> [anyscale\_cluster\_node\_byod\_custom\_secrets\_policy](#input\_anyscale\_cluster\_node\_byod\_custom\_secrets\_policy) | (Optional) A custom IAM policy to attach to the cluster node role with access to the Secrets Manager secrets.<br/>If provided, this will be used instead of generating a policy automatically.<br/><br/>ex:<pre>anyscale_cluster_node_byod_custom_secrets_policy = {<br/>    "Version": "2012-10-17",<br/>    "Statement": [<br/>      "Sid": "SecretsManagerGetSecretValue",<br/>      "Effect": "Allow",<br/>      "Action": [<br/>      "secretsmanager:GetSecretValue"<br/>    ],<br/>    "Resource": [<br/>      "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",<br/>    ]<br/>  }</pre> | `string` | `null` | no |
 | <a name="input_anyscale_cluster_node_byod_secret_arns"></a> [anyscale\_cluster\_node\_byod\_secret\_arns](#input\_anyscale\_cluster\_node\_byod\_secret\_arns) | (Optional) A list of Secrets Manager ARNs.<br/>The Secrets Manager secret ARNs that the cluster node role needs access to for BYOD clusters.<br/><br/>ex:<pre>anyscale_cluster_node_secret_arns = [<br/>  "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",<br/>  "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",<br/>]</pre> | `list(string)` | `[]` | no |
 | <a name="input_anyscale_cluster_node_byod_secret_kms_arn"></a> [anyscale\_cluster\_node\_byod\_secret\_kms\_arn](#input\_anyscale\_cluster\_node\_byod\_secret\_kms\_arn) | (Optional) The KMS key ARN that the Secrets Manager secrets are encrypted with.<br/>This is only used if `anyscale_cluster_node_byod_secret_arns` is also provided.<br/><br/>ex:<pre>anyscale_cluster_node_secret_arns = [<br/>  "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",<br/>  "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",<br/>]<br/>anyscale_cluster_node_secret_kms_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"<br/># checkov:skip=CKV_SECRET_6</pre> | `string` | `null` | no |
@@ -187,6 +203,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | <a name="input_anyscale_deploy_env"></a> [anyscale\_deploy\_env](#input\_anyscale\_deploy\_env) | (Optional) Anyscale deployment environment.<br/>Used in resource names and tags.<br/><br/>ex:<pre>anyscale_deploy_env = "production"</pre> | `string` | `"production"` | no |
 | <a name="input_anyscale_efs_name"></a> [anyscale\_efs\_name](#input\_anyscale\_efs\_name) | (Optional) Elastic file system name.<br/><br/>Will default to `efs_anyscale` if this var `null` and anyscale\_cloud\_id is also `null`.<br/><br/>ex:<pre>anyscale_efs_name = "anyscale-efs"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_efs_tags"></a> [anyscale\_efs\_tags](#input\_anyscale\_efs\_tags) | (Optional) A map of tags for EFS resources.<br/><br/>Duplicate tags found in the "tags" variable will get duplicated on the resource.<br/><br/>ex:<pre>anyscale_efs_tags = {<br/>  "purpose" : "storage",<br/>  "criticality" : "critical"<br/>}</pre>Default is an empty map. | `map(string)` | `{}` | no |
+| <a name="input_anyscale_external_id"></a> [anyscale\_external\_id](#input\_anyscale\_external\_id) | (Optional) A string that will be used for the IAM trust policy.<br/><br/>If this is provided, the trust policy for the control plane IAM role will be locked down to the provided external ID.<br/>If not provided, the trust policy will be updated to the Anyscale cloud ID during cloud registration<br/>at which point you should re-run this module to update the trust policy and avoid drift.<br/><br/>If this is provided, you must also set `anyscale_org_id` which will be prepended to the external ID.<br/><br/>ex:<pre>anyscale_external_id = "external-id-12345"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_gateway_vpc_endpoints"></a> [anyscale\_gateway\_vpc\_endpoints](#input\_anyscale\_gateway\_vpc\_endpoints) | (Optional) A map of Gateway VPC Endpoints to provision into the VPC.<br/><br/>This is a map of objects with the following attributes:<br/>- `name`: Short service name (either "s3" or "dynamodb")<br/>- `policy` = A policy (as JSON string) to attach to the endpoint that controls access to the service. May be `null` for full access.<br/><br/>See the submodule variable for additional examples.<br/><br/>It is Anyscale's recommendation to have an S3 VPC Endpoint to minimize S3 costs and maximize S3 performance.<br/><br/>Set to an empty map `{}` to skip creating VPC Endpoints.<br/><br/>ex:<pre>anyscale_gateway_vpc_endpoints = {<br/>  "s3" = {<br/>    name   = "s3"<br/>    policy = null<br/>  }<br/>}</pre> | <pre>map(object({<br/>    name   = string<br/>    policy = string<br/>  }))</pre> | <pre>{<br/>  "s3": {<br/>    "name": "s3",<br/>    "policy": null<br/>  }<br/>}</pre> | no |
 | <a name="input_anyscale_iam_access_role_name"></a> [anyscale\_iam\_access\_role\_name](#input\_anyscale\_iam\_access\_role\_name) | (Optional, forces creation of new resource) The name of the Anyscale IAM access role.<br/><br/>If left `null`, the name will default to `anyscale_iam_access_role_name_prefix` or `general_prefix`.<br/>If provided, overrides the `anyscale_iam_access_role_name_prefix` variable.<br/><br/>ex:<pre>anyscale_iam_access_role_name = "anyscale-iam-crossacct-role"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_iam_access_role_name_prefix"></a> [anyscale\_iam\_access\_role\_name\_prefix](#input\_anyscale\_iam\_access\_role\_name\_prefix) | (Optional, forces creation of new resource) The prefix for the Anyscale IAM access role.<br/><br/>If `anyscale_iam_access_role_name_prefix` is provided, it will override this variable.<br/>The variable `general_prefix` is a fall-back prefix if this is not provided.<br/><br/>Default is `null` but is set to `anyscale-iam-role-` in a local variable.<br/><br/>ex:<pre>anyscale_iam_access_role_name_prefix = "anyscale-crossacct-role-"</pre> | `string` | `null` | no |
@@ -211,7 +228,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | <a name="input_anyscale_memorydb_subnet_group_name"></a> [anyscale\_memorydb\_subnet\_group\_name](#input\_anyscale\_memorydb\_subnet\_group\_name) | (Optional) The name of the MemoryDB subnet group.<br/><br/>If left `null`, will default to `anyscale_memorydb_subnet_group_name_prefix` or `general_prefix`.<br/>If provided, overrides the `memorydb_subnet_group_name_prefix` variable.<br/><br/>ex:<pre>anyscale_memorydb_subnet_group_name = "anyscale-memorydb-subnet-group"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_memorydb_subnet_group_name_prefix"></a> [anyscale\_memorydb\_subnet\_group\_name\_prefix](#input\_anyscale\_memorydb\_subnet\_group\_name\_prefix) | (Optional) The prefix of the MemoryDB subnet group.<br/><br/>If `anyscale_memorydb_subnet_group_name` is provided, it will override this variable.<br/>The variable `general_prefix` is a fall-back prefix if this is not provided.<br/>Default is `null` but is set to `memorydb-subnet-group-` in a local variable.<br/><br/>ex:<pre>anyscale_memorydb_subnet_group_name_prefix = "anyscale-memorydb-subnet-group-"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_memorydb_tags"></a> [anyscale\_memorydb\_tags](#input\_anyscale\_memorydb\_tags) | (Optional) A map of tags for MemoryDB resources.<br/><br/>Duplicate tags found in the "tags" variable will get duplicated on the resource.<br/><br/>ex:<pre>anyscale_memorydb_tags = {<br/>  "purpose" : "memorydb",<br/>  "criticality" : "critical"<br/>}</pre>Default is an empty map. | `map(string)` | `{}` | no |
-| <a name="input_anyscale_org_id"></a> [anyscale\_org\_id](#input\_anyscale\_org\_id) | (Optional) Anyscale Organization ID.<br/><br/>This is used to lock down the cross account access role by Organization ID. Because the Organization ID is unique to each<br/>customer, this ensures that only the customer can access their own resources.<br/><br/>ex:<pre>anyscale_org_id = "org_abcdefghijklmn1234567890"</pre> | `string` | `null` | no |
+| <a name="input_anyscale_org_id"></a> [anyscale\_org\_id](#input\_anyscale\_org\_id) | (Optional) Anyscale Organization ID.<br/><br/>This is used to tag resources with the organization ID.<br/><br/>ex:<pre>anyscale_org_id = "org_abcdefghijklmn1234567890"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_s3_bucket_name"></a> [anyscale\_s3\_bucket\_name](#input\_anyscale\_s3\_bucket\_name) | (Optional - forces new resource) S3 Bucket Name.<br/><br/>The name of the bucket used to store Anyscale related logs and other shared resources.<br/>If left `null`, will default to `anyscale_s3_bucket_prefix` or `general_prefix`.<br/>If provided, overrides the `anyscale_s3_bucket_prefix` variable.<br/><br/>ex:<pre>anyscale_s3_bucket_name = "anyscale-s3-bucket"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_s3_bucket_prefix"></a> [anyscale\_s3\_bucket\_prefix](#input\_anyscale\_s3\_bucket\_prefix) | (Optional - forces new resource) S3 Bucket name prefix.<br/><br/>Creates a unique bucket name beginning with the specified prefix.<br/>If `anyscale_s3_bucket_name` is provided, it will override this variable.<br/>The variable `general_prefix` is a fall-back prefix if this is not provided.<br/>Default is `null` but is set to `anyscale-` in a local variable.<br/><br/>ex:<pre>anyscale_s3_bucket_prefix = "anyscale-s3-bucket-"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_s3_force_destroy"></a> [anyscale\_s3\_force\_destroy](#input\_anyscale\_s3\_force\_destroy) | (Optional) S3 Bucket Force Destroy.<br/><br/>Deterimines if objects from the bucket can be destroyed without error.<br/>If set to true and bucket is destroyed, objects are not recoverable.<br/><br/>Note: With the default of `false`, you need to empty the bucket if there are objects before `terraform destroy` can be completed succesfully.<br/><br/>ex:<pre>anyscale_s3_force_destroy = true</pre> | `bool` | `false` | no |
@@ -259,6 +276,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | <a name="output_anyscale_iam_instance_profile_role_arn"></a> [anyscale\_iam\_instance\_profile\_role\_arn](#output\_anyscale\_iam\_instance\_profile\_role\_arn) | Anyscale IAM instance profile role arn. |
 | <a name="output_anyscale_iam_role_arn"></a> [anyscale\_iam\_role\_arn](#output\_anyscale\_iam\_role\_arn) | Anyscale IAM access role arn. |
 | <a name="output_anyscale_iam_role_cluster_node_arn"></a> [anyscale\_iam\_role\_cluster\_node\_arn](#output\_anyscale\_iam\_role\_cluster\_node\_arn) | Anyscale IAM cluster node role arn. |
+| <a name="output_anyscale_iam_role_external_id"></a> [anyscale\_iam\_role\_external\_id](#output\_anyscale\_iam\_role\_external\_id) | External ID of Anyscale IAM access role |
 | <a name="output_anyscale_memorydb_cluster_arn"></a> [anyscale\_memorydb\_cluster\_arn](#output\_anyscale\_memorydb\_cluster\_arn) | Anyscale MemoryDB Cluster ARN. If a MemoryDB cluster was not created, return an empty string. |
 | <a name="output_anyscale_memorydb_cluster_endpoint_address"></a> [anyscale\_memorydb\_cluster\_endpoint\_address](#output\_anyscale\_memorydb\_cluster\_endpoint\_address) | Anyscale MemoryDB Cluster Endpoint Address. If a MemoryDB cluster was not created, return an empty string. |
 | <a name="output_anyscale_memorydb_cluster_endpoint_port"></a> [anyscale\_memorydb\_cluster\_endpoint\_port](#output\_anyscale\_memorydb\_cluster\_endpoint\_port) | Anyscale MemoryDB Cluster Endpoint Port. If a MemoryDB cluster was not created, return an empty string. |

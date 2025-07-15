@@ -55,6 +55,11 @@ output "anyscale_iam_role_arn" {
   value       = try(module.aws_anyscale_iam.iam_anyscale_access_role_arn, "")
 }
 
+output "anyscale_iam_role_external_id" {
+  description = "External ID of Anyscale IAM access role"
+  value       = try(module.aws_anyscale_iam.iam_anyscale_access_role_external_id, "")
+}
+
 output "anyscale_iam_role_cluster_node_arn" {
   description = "Anyscale IAM cluster node role arn."
   value       = try(module.aws_anyscale_iam.iam_cluster_node_role_arn, "")

@@ -4,7 +4,13 @@ This **example** will build the resources necessary to run Anyscale in an AWS ac
 [Direct Networking](https://docs.anyscale.com/cloud-deployment/aws/manage-clouds#anyscale-clouds-on-aws) solution.
 The resources built by this Terraform will all have a common name prefix.
 
-This also adds additional IAM policies to the Cluster role.
+This also adds additional IAM policies to the data plane role.
+
+This will build:
+- A VPC Network with an IGW
+- Security Groups to be used by EC2 instances
+- IAM Roles for the data plane and the control plane
+- S3 bucket & bucket policy
 
 ## To execute
 A general understanding of Terraform and AWS are useful for executing this Terraform. For a high level overview of both,
@@ -18,7 +24,7 @@ The outputs from this Terraform can be used to build an anyscale cloud with the 
 
 example:
 
-```
+```sh
 anyscale cloud register --provider aws \
   --name <CUSTOMER_DEFINED_NAME> \
   --region <VPC_REGION> \
@@ -28,7 +34,8 @@ anyscale cloud register --provider aws \
   --anyscale-iam-role-id <ANYSCALE_IAM_ROLE_ARN> \
   --instance-iam-role-id <INSTANCE_IAM_ROLE_ARN> \
   --security-group-ids <SECURITY_GROUP_ID> \
-  --s3-bucket-id <S3_BUCKET_NAME>
+  --s3-bucket-id <S3_BUCKET_NAME> \
+  --external-id <EXTERNAL_ID>
 
 anyscale cloud verify --name <CUSTOMER_DEFINED_NAME>
 anyscale cloud delete --name <CUSTOMER_DEFINED_NAME>
@@ -60,11 +67,13 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_anyscale_external_id"></a> [anyscale\_external\_id](#input\_anyscale\_external\_id) | (Required) A string that will be used for the IAM trust policy.<br/>The trust policy for the control plane IAM role will be locked down to the provided external ID.<br/><br/>If provided, you must also set `anyscale_org_id` which will be prepended to the external ID.<br/><br/>ex:<pre>anyscale_external_id = "external-id-12345"</pre> | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | The AWS region in which all resources will be created.<br/>ex:<pre>aws_region = "us-east-2"</pre> | `string` | n/a | yes |
 | <a name="input_customer_ingress_cidr_ranges"></a> [customer\_ingress\_cidr\_ranges](#input\_customer\_ingress\_cidr\_ranges) | The IPv4 CIDR block that is allowed to access the clusters.<br/>This provides the ability to lock down the v1 stack to just the public IPs of a corporate network.<br/>This is added to the security group and allows port 443 (https) and 22 (ssh) access.<br/><br/>While not recommended, you can set this to `0.0.0.0/0` to allow access from anywhere.<br/>ex:<pre>customer_ingress_cidr_ranges = "52.1.1.23/32,10.1.0.0/16"</pre> | `string` | n/a | yes |
 | <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID.<br/>This is used to lock down the cross account access role by Cloud ID. Because the Cloud ID is unique to each<br/>customer, this ensures that only the customer can access their own resources. The Cloud ID is not known until the<br/>Cloud is created, so this is an optional variable.<br/>ex:<pre>anyscale_cloud_id = "cld_abcdefghijklmnop1234567890"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_deploy_env"></a> [anyscale\_deploy\_env](#input\_anyscale\_deploy\_env) | (Optional) Anyscale deployment environment. Used in resource names and tags.<br/>ex:<pre>anyscale_deploy_env = "production"</pre> | `string` | `"production"` | no |
 | <a name="input_anyscale_org_id"></a> [anyscale\_org\_id](#input\_anyscale\_org\_id) | (Optional) Anyscale Organization ID.<br/><br/>This is used to lock down the cross account access role by Organization ID. Because the Organization ID is unique to each<br/>customer, this ensures that only the customer can access their own resources.<br/><br/>ex:<pre>anyscale_org_id = "org_abcdefghijklmn1234567890"</pre> | `string` | `null` | no |
+| <a name="input_anyscale_s3_force_destroy"></a> [anyscale\_s3\_force\_destroy](#input\_anyscale\_s3\_force\_destroy) | This is used to set the S3 force destroy value for testing purposes | `bool` | `false` | no |
 | <a name="input_common_prefix"></a> [common\_prefix](#input\_common\_prefix) | (Optional)<br/>Default for this EXAMPLE is `anyscale-pfx-test-` | `string` | `"anyscale-pfx-test-"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags.<br/>These tags will be added to all cloud resources that accept tags.<br/>ex:<pre>tags = {<br/>  "environment" = "test",<br/>  "team" = "anyscale"<br/>}</pre> | `map(string)` | <pre>{<br/>  "environment": "test",<br/>  "test": true<br/>}</pre> | no |
 

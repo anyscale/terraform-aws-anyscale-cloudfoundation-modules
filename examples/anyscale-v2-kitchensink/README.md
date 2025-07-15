@@ -1,10 +1,18 @@
 # Anyscale v2 - Kitchen Sink
 
 This **example** will build the resources necessary to run Anyscale in an AWS account. This example will build a
-[Private Networking](https://docs.anyscale.com/cloud-deployment/aws/manage-clouds#anyscale-clouds-on-aws) solution.
+[Private Networking](https://docs.anyscale.com/administration/cloud-deployment/deploy-aws-cloud) solution.
 The resources built by this Terraform will all have a common name prefix.
 
 This also adds additional IAM policies to the Cluster role and utilizes as many parameters as possible that don't conflict with one another.
+
+This will build:
+- A VPC Network with NatGW and Private Networking
+- Elastic Filestore (NFS) for shared storage
+- Security Groups to be used by EC2 instances and EFS
+- IAM Roles for the data plane and the control plane
+- S3 bucket & bucket policy
+- MemoryDB for Anyscale Services head node HA
 
 ## To execute
 A general understanding of Terraform and AWS are useful for executing this Terraform. For a high level overview of both,
@@ -18,7 +26,7 @@ The outputs from this Terraform can be used to build an anyscale cloud with the 
 
 example:
 
-```
+```sh
 anyscale cloud register --provider aws \
   --name <CUSTOMER_DEFINED_NAME> \
   --region <VPC_REGION> \
@@ -28,7 +36,9 @@ anyscale cloud register --provider aws \
   --anyscale-iam-role-id <ANYSCALE_IAM_ROLE_ARN> \
   --instance-iam-role-id <INSTANCE_IAM_ROLE_ARN> \
   --security-group-ids <SECURITY_GROUP_ID> \
-  --s3-bucket-id <S3_BUCKET_NAME>
+  --s3-bucket-id <S3_BUCKET_NAME> \
+  --external-id <EXTERNAL_ID> \
+  --private-network
 
 anyscale cloud verify --name <CUSTOMER_DEFINED_NAME>
 anyscale cloud delete --name <CUSTOMER_DEFINED_NAME>
@@ -64,6 +74,7 @@ anyscale cloud delete --name <CUSTOMER_DEFINED_NAME>
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_anyscale_external_id"></a> [anyscale\_external\_id](#input\_anyscale\_external\_id) | (Required) A string that will be used for the IAM trust policy.<br/>The trust policy for the control plane IAM role will be locked down to the provided external ID.<br/><br/>If provided, you must also set `anyscale_org_id` which will be prepended to the external ID.<br/><br/>ex:<pre>anyscale_external_id = "external-id-12345"</pre> | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | (Required) The AWS region in which all resources will be created.<br/><br/>ex:<pre>aws_region = "us-east-2"</pre> | `string` | n/a | yes |
 | <a name="input_customer_ingress_cidr_ranges"></a> [customer\_ingress\_cidr\_ranges](#input\_customer\_ingress\_cidr\_ranges) | The IPv4 CIDR block that is allowed to access the clusters.<br/>This provides the ability to lock down the v1 stack to just the public IPs of a corporate network.<br/>This is added to the security group and allows port 443 (https) and 22 (ssh) access.<br/><br/>While not recommended, you can set this to `0.0.0.0/0` to allow access from anywhere.<br/><br/>ex:<pre>customer_ingress_cidr_ranges = "52.1.1.23/32,10.1.0.0/16"</pre> | `string` | n/a | yes |
 | <a name="input_s3_bucket_name"></a> [s3\_bucket\_name](#input\_s3\_bucket\_name) | (Optional) The name of the S3 bucket to use for the kitchen sink. | `string` | n/a | yes |
@@ -71,6 +82,7 @@ anyscale cloud delete --name <CUSTOMER_DEFINED_NAME>
 | <a name="input_anyscale_cluster_node_byod_secret_arns"></a> [anyscale\_cluster\_node\_byod\_secret\_arns](#input\_anyscale\_cluster\_node\_byod\_secret\_arns) | (Optional) A list of Secrets Manager ARNs.<br/>The Secrets Manager secret ARNs that the cluster node role needs access to for BYOD clusters.<br/><br/>ex:<pre>anyscale_cluster_node_secret_arns = [<br/>  "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",<br/>  "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",<br/>]</pre> | `list(string)` | `[]` | no |
 | <a name="input_anyscale_cluster_node_byod_secret_kms_arn"></a> [anyscale\_cluster\_node\_byod\_secret\_kms\_arn](#input\_anyscale\_cluster\_node\_byod\_secret\_kms\_arn) | (Optional) The KMS key ARN that the Secrets Manager secrets are encrypted with.<br/>This is only used if `anyscale_cluster_node_byod_secret_arns` is also provided.<br/><br/>ex:<pre>anyscale_cluster_node_secret_arns = [<br/>  "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-1",<br/>  "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-2",<br/>]<br/>anyscale_cluster_node_secret_kms_arn = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"<br/># checkov:skip=CKV_SECRET_6</pre> | `string` | `null` | no |
 | <a name="input_anyscale_org_id"></a> [anyscale\_org\_id](#input\_anyscale\_org\_id) | (Optional) Anyscale Organization ID.<br/><br/>This is used to lock down the cross account access role by Organization ID. Because the Organization ID is unique to each<br/>customer, this ensures that only the customer can access their own resources.<br/><br/>ex:<pre>anyscale_org_id = "org_abcdefghijklmn1234567890"</pre> | `string` | `null` | no |
+| <a name="input_anyscale_s3_force_destroy"></a> [anyscale\_s3\_force\_destroy](#input\_anyscale\_s3\_force\_destroy) | This is used to set the S3 force destroy value for testing purposes | `bool` | `false` | no |
 | <a name="input_security_group_enable_ssh_access"></a> [security\_group\_enable\_ssh\_access](#input\_security\_group\_enable\_ssh\_access) | (Optional) Determines if SSH access (port 22) should be enabled in the security group.<br/><br/>When set to true, SSH access will be allowed from the CIDR ranges specified in<br/>`customer_ingress_cidr_ranges`. When false, only HTTPS access (port 443) will be allowed.<br/><br/>ex:<pre>security_group_enable_ssh_access = false</pre> | `bool` | `true` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags.<br/>These tags will be added to all cloud resources that accept tags.<br/>ex:<pre>tags = {<br/>  "environment" = "test",<br/>  "team" = "anyscale"<br/>}</pre> | `map(string)` | <pre>{<br/>  "environment": "test",<br/>  "test": true<br/>}</pre> | no |
 

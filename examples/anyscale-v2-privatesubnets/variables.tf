@@ -22,28 +22,25 @@ variable "aws_region" {
   type        = string
 }
 
+variable "anyscale_external_id" {
+  description = <<-EOF
+    (Required) A string that will be used for the IAM trust policy.
+    The trust policy for the control plane IAM role will be locked down to the provided external ID.
+
+    If provided, you must also set `anyscale_org_id` which will be prepended to the external ID.
+
+    ex:
+    ```
+    anyscale_external_id = "external-id-12345"
+    ```
+  EOF
+  type        = string
+}
+
 # ------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These variables have defaults, but may be overridden.
 # ------------------------------------------------------------------------------
-variable "anyscale_deploy_env" {
-  description = <<-EOF
-    (Optional) Anyscale deployment environment.
-    Used in resource names and tags.
-    ex:
-    ```
-    anyscale_deploy_env = "production"
-    ```
-  EOF
-  type        = string
-  validation {
-    condition = (
-      var.anyscale_deploy_env == "production" || var.anyscale_deploy_env == "development" || var.anyscale_deploy_env == "test"
-    )
-    error_message = "The anyscale_deploy_env only allows `production`, `test`, or `development`"
-  }
-  default = "production"
-}
 
 variable "anyscale_cloud_id" {
   description = <<-EOF
@@ -69,6 +66,8 @@ variable "anyscale_cloud_id" {
   }
 }
 
+
+
 variable "tags" {
   description = <<-EOF
     (Optional) A map of tags.
@@ -92,4 +91,10 @@ variable "s3_tag_value" {
   description = "This is used to set the S3 tag value for testing purposes"
   type        = string
   default     = "testing"
+}
+
+variable "anyscale_s3_force_destroy" {
+  description = "This is used to set the S3 force destroy value for testing purposes"
+  type        = bool
+  default     = false
 }

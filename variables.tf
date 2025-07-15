@@ -47,9 +47,13 @@ variable "anyscale_cloud_id" {
   description = <<-EOT
     (Optional) Anyscale Cloud ID.
 
-    This is used to lock down the cross account access role by Cloud ID. Because the Cloud ID is unique to each
-    customer, this ensures that only the customer can access their own resources. The Cloud ID is not known until the
-    Cloud is created, so this is an optional variable.
+    This is used to tag resources and lock down the cross account access role by Cloud ID. The Cloud ID is not known until the
+    Cloud is created, so this is an optional variable. If this is provided, the trust policy for the control plane IAM
+    role will be locked down to the provided Cloud ID. If not provided, the trust policy will be updated to the Anyscale
+    cloud ID during cloud registration at which point you should re-run this module to update the trust policy and avoid
+    drift.
+
+    If `anyscale_external_id` is provided, this variable is not required except for tagging resources.
 
     ex:
     ```
@@ -73,8 +77,7 @@ variable "anyscale_org_id" {
   description = <<-EOT
     (Optional) Anyscale Organization ID.
 
-    This is used to lock down the cross account access role by Organization ID. Because the Organization ID is unique to each
-    customer, this ensures that only the customer can access their own resources.
+    This is used to tag resources with the organization ID.
 
     ex:
     ```
@@ -111,6 +114,25 @@ variable "tags" {
   EOT
   type        = map(string)
   default     = {}
+}
+
+variable "anyscale_external_id" {
+  description = <<-EOT
+    (Optional) A string that will be used for the IAM trust policy.
+
+    If this is provided, the trust policy for the control plane IAM role will be locked down to the provided external ID.
+    If not provided, the trust policy will be updated to the Anyscale cloud ID during cloud registration
+    at which point you should re-run this module to update the trust policy and avoid drift.
+
+    If this is provided, you must also set `anyscale_org_id` which will be prepended to the external ID.
+
+    ex:
+    ```
+    anyscale_external_id = "external-id-12345"
+    ```
+  EOT
+  type        = string
+  default     = null
 }
 
 variable "common_prefix" {

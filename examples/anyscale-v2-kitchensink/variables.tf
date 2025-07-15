@@ -46,6 +46,21 @@ variable "s3_bucket_name" {
   type        = string
 }
 
+variable "anyscale_external_id" {
+  description = <<-EOF
+    (Required) A string that will be used for the IAM trust policy.
+    The trust policy for the control plane IAM role will be locked down to the provided external ID.
+
+    If provided, you must also set `anyscale_org_id` which will be prepended to the external ID.
+
+    ex:
+    ```
+    anyscale_external_id = "external-id-12345"
+    ```
+  EOF
+  type        = string
+}
+
 # ------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These variables have defaults, but may be overridden.
@@ -171,4 +186,10 @@ variable "security_group_enable_ssh_access" {
   EOT
   type        = bool
   default     = true
+}
+
+variable "anyscale_s3_force_destroy" {
+  description = "This is used to set the S3 force destroy value for testing purposes"
+  type        = bool
+  default     = false
 }

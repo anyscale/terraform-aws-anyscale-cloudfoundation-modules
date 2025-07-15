@@ -4,6 +4,8 @@ This **example** will build the resources necessary to run Anyscale in an AWS ac
 [Private/Customer Defined Networking](https://docs.anyscale.com/cloud-deployment/aws/manage-clouds#anyscale-clouds-on-aws) solution.
 The resources built by this Terraform will all have a common name prefix.
 
+This example will also use a custom external id used by the Anyscale control plane IAM role trust policy.
+
 ## To execute
 A general understanding of Terraform and AWS are useful for executing this Terraform. For a high level overview of both,
 please see the [getting started guide](https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/blob/main/getting-started.md).
@@ -16,7 +18,7 @@ The outputs from this Terraform can be used to build an anyscale cloud with the 
 
 example:
 
-```
+```sh
 anyscale cloud register --provider aws \
   --name <CUSTOMER_DEFINED_NAME> \
   --region <VPC_REGION> \
@@ -26,13 +28,16 @@ anyscale cloud register --provider aws \
   --anyscale-iam-role-id <ANYSCALE_IAM_ROLE_ARN> \
   --instance-iam-role-id <INSTANCE_IAM_ROLE_ARN> \
   --security-group-ids <SECURITY_GROUP_ID> \
-  --s3-bucket-id <S3_BUCKET_NAME>
+  --s3-bucket-id <S3_BUCKET_NAME> \
+  --memorydb-cluster-id <MEMORYDB_CLUSTER_ID> \
+  --external-id <EXTERNAL_ID> \
+  --private-network
 
 anyscale cloud verify --name <CUSTOMER_DEFINED_NAME>
 anyscale cloud delete --name <CUSTOMER_DEFINED_NAME>
 ```
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -58,11 +63,12 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | (Required) The AWS region in which all resources will be created.<br>ex:<pre>aws_region = "us-east-2"</pre> | `string` | n/a | yes |
-| <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID.<br>This is used to lock down the cross account access role by Cloud ID. Because the Cloud ID is unique to each<br>customer, this ensures that only the customer can access their own resources. The Cloud ID is not known until the<br>Cloud is created, so this is an optional variable.<br>ex:<pre>anyscale_cloud_id = "cld_abcdefghijklmnop1234567890"</pre> | `string` | `null` | no |
-| <a name="input_anyscale_deploy_env"></a> [anyscale\_deploy\_env](#input\_anyscale\_deploy\_env) | (Optional) Anyscale deployment environment.<br>Used in resource names and tags.<br>ex:<pre>anyscale_deploy_env = "production"</pre> | `string` | `"production"` | no |
+| <a name="input_anyscale_external_id"></a> [anyscale\_external\_id](#input\_anyscale\_external\_id) | (Required) A string that will be used for the IAM trust policy.<br/>The trust policy for the control plane IAM role will be locked down to the provided external ID.<br/><br/>If provided, you must also set `anyscale_org_id` which will be prepended to the external ID.<br/><br/>ex:<pre>anyscale_external_id = "external-id-12345"</pre> | `string` | n/a | yes |
+| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | (Required) The AWS region in which all resources will be created.<br/>ex:<pre>aws_region = "us-east-2"</pre> | `string` | n/a | yes |
+| <a name="input_anyscale_cloud_id"></a> [anyscale\_cloud\_id](#input\_anyscale\_cloud\_id) | (Optional) Anyscale Cloud ID.<br/>This is used to lock down the cross account access role by Cloud ID. Because the Cloud ID is unique to each<br/>customer, this ensures that only the customer can access their own resources. The Cloud ID is not known until the<br/>Cloud is created, so this is an optional variable.<br/>ex:<pre>anyscale_cloud_id = "cld_abcdefghijklmnop1234567890"</pre> | `string` | `null` | no |
+| <a name="input_anyscale_s3_force_destroy"></a> [anyscale\_s3\_force\_destroy](#input\_anyscale\_s3\_force\_destroy) | This is used to set the S3 force destroy value for testing purposes | `bool` | `false` | no |
 | <a name="input_s3_tag_value"></a> [s3\_tag\_value](#input\_s3\_tag\_value) | This is used to set the S3 tag value for testing purposes | `string` | `"testing"` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags.<br>These tags will be added to all cloud resources that accept tags.<br>ex:<pre>tags = {<br>  "environment" = "test",<br>  "team" = "anyscale"<br>}</pre> | `map(string)` | <pre>{<br>  "environment": "test",<br>  "test": true<br>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags.<br/>These tags will be added to all cloud resources that accept tags.<br/>ex:<pre>tags = {<br/>  "environment" = "test",<br/>  "team" = "anyscale"<br/>}</pre> | `map(string)` | <pre>{<br/>  "environment": "test",<br/>  "test": true<br/>}</pre> | no |
 
 ## Outputs
 
@@ -78,4 +84,4 @@ No resources.
 | <a name="output_anyscale_v2_security_group_id"></a> [anyscale\_v2\_security\_group\_id](#output\_anyscale\_v2\_security\_group\_id) | Anyscale Security Group ID. If a security group was not created, return an empty string. |
 | <a name="output_anyscale_v2_vpc_id"></a> [anyscale\_v2\_vpc\_id](#output\_anyscale\_v2\_vpc\_id) | Anyscale VPC ID. If there was not one created, return the one that was used during other resource creation. |
 | <a name="output_memorydb_address_for_anyscaleservices"></a> [memorydb\_address\_for\_anyscaleservices](#output\_memorydb\_address\_for\_anyscaleservices) | Anyscale MemoryDB Cluster Address. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
