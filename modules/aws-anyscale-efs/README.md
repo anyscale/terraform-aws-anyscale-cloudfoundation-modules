@@ -91,7 +91,6 @@ No modules.
 <!-- END_TF_DOCS -->
 
 <!-- References -->
-<!-- References -->
 [Terraform]: https://www.terraform.io
 [Anyscale]: https://www.anyscale.com
 [Issues]: https://github.com/anyscale/terraform-aws-anyscale-cloudfoundation-modules/issues
