@@ -7,6 +7,7 @@ BREAKING CHANGES:
 - The Anyscale AWS Terraform Modules now require Terraform v1.9 or newer
   - This will help support AWS Provider v6.0 and newer.
   - Tested with AWS Provider v5.100.
+- Removed deprecated EKS sub-modules. These were replaced in the [Anyscale Kuberentes TF Module](https://github.com/anyscale/terraform-kubernetes-anyscale-foundation-modules) examples and are no longer supported
 
 NOTES:
 - Updated to include the tested/validated Anyscale CLI as new functionality requires specific versions of the Anyscale CLI.
