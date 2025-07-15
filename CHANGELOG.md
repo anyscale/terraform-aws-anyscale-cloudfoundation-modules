@@ -1,3 +1,16 @@
+## 0.30.0 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+- The Anyscale AWS Terraform Modules now require Terraform v1.9 or newer
+  - This will help support AWS Provider v6.0 and newer.
+  - Tested with AWS Provider v5.100.
+
+NOTES:
+- Updated to include the tested/validated Anyscale CLI as new functionality requires specific versions of the Anyscale CLI.
+
 ## 0.29.0 (Released)
 FEATURES:
 - Add support for custom external ID for the Control Plane IAM role.
