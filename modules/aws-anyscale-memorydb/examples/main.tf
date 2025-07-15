@@ -22,7 +22,7 @@ locals {
   all_defaults_public_subnets = ["172.24.101.0/24", "172.24.102.0/24", "172.24.103.0/24"]
 }
 module "all_defaults_vpc" {
-  source = "../../../aws-anyscale-vpc"
+  source = "../../aws-anyscale-vpc"
 
   anyscale_vpc_name = "tftest-memorydb"
   cidr_block        = "172.24.0.0/16"
@@ -31,7 +31,7 @@ module "all_defaults_vpc" {
 }
 
 module "all_defaults_securitygroups" {
-  source = "../../../aws-anyscale-securitygroups"
+  source = "../../aws-anyscale-securitygroups"
 
   vpc_id = module.all_defaults_vpc.vpc_id
 
@@ -43,7 +43,7 @@ module "all_defaults_securitygroups" {
 }
 
 module "all_defaults" {
-  source         = "../../"
+  source         = "../"
   module_enabled = true
 
   # MemoryDB
@@ -62,7 +62,7 @@ locals {
   kitchensink_private_subnets = ["172.24.20.0/24", "172.24.21.0/24", "172.24.22.0/24"]
 }
 module "kitchensink_vpc" {
-  source = "../../../aws-anyscale-vpc"
+  source = "../../aws-anyscale-vpc"
 
   anyscale_vpc_name = "tftest-memorydb"
   cidr_block        = "172.24.0.0/16"
@@ -72,7 +72,7 @@ module "kitchensink_vpc" {
 }
 
 module "kitchensink_securitygroups" {
-  source = "../../../aws-anyscale-securitygroups"
+  source = "../../aws-anyscale-securitygroups"
 
   vpc_id = module.kitchensink_vpc.vpc_id
 
@@ -92,7 +92,7 @@ resource "random_password" "password" {
 }
 
 module "kitchen_sink" {
-  source         = "../.."
+  source         = "../"
   module_enabled = true
 
   # MemoryDB
@@ -184,7 +184,7 @@ module "kitchen_sink" {
 # Do not create any resources
 # ---------------------------------------------------------------------------------------------------------------------
 module "test_no_resources" {
-  source         = "../.."
+  source         = "../"
   module_enabled = false
 
   memorydb_subnet_ids         = []

@@ -2,10 +2,10 @@ locals {
   memorydb_name        = try(var.anyscale_memorydb_name, null)
   memorydb_name_prefix = local.memorydb_name != null ? null : var.anyscale_memorydb_name_prefix != null ? var.anyscale_memorydb_name_prefix : "anyscale-mdb-"
 
-  create_parameter_group = var.module_enabled && var.create_memorydb_parameter_group
-  # memorydb_parameter_group_prefix = var.memorydb_parameter_group_name_prefix != null ? var.memorydb_parameter_group_name_prefix : "anyscale-mdb-pg-"
-  memorydb_parameter_group_name = coalesce(var.memorydb_parameter_group_name, try(random_id.parameter_group_suffix[0].hex, null), "anyscale-mdb-pg-default")
-  memorydb_parameter_group      = local.create_parameter_group ? aws_memorydb_parameter_group.anyscale_memorydb[0].id : var.existing_memorydb_parameter_group_name
+  create_parameter_group          = var.module_enabled && var.create_memorydb_parameter_group
+  memorydb_parameter_group_prefix = coalesce(var.memorydb_parameter_group_name_prefix, "anyscale-mdb-pg-")
+  memorydb_parameter_group_name   = coalesce(var.memorydb_parameter_group_name, try(random_id.parameter_group_suffix[0].hex, null), "anyscale-mdb-pg-default")
+  memorydb_parameter_group        = local.create_parameter_group ? aws_memorydb_parameter_group.anyscale_memorydb[0].id : var.existing_memorydb_parameter_group_name
 
   create_acl               = var.module_enabled && var.create_memorydb_acl
   memorydb_acl_name        = try(var.memorydb_acl_name, null)
@@ -151,5 +151,5 @@ resource "random_id" "parameter_group_suffix" {
   count = local.create_random_pg_suffix
 
   byte_length = 16
-  prefix      = var.memorydb_parameter_group_name_prefix
+  prefix      = local.memorydb_parameter_group_prefix
 }
