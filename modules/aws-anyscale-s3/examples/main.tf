@@ -15,7 +15,7 @@ locals {
 # Create an S3 bucket with no optional parameters
 # ---------------------------------------------------------------------------------------------------------------------
 module "all_defaults" {
-  source = "../.."
+  source = "../"
 
   module_enabled = true
   tags           = local.full_tags
@@ -25,7 +25,7 @@ module "all_defaults" {
 # Use all params and build an S3 bucket.
 # ---------------------------------------------------------------------------------------------------------------------
 module "kitchen_sink" {
-  source = "../.."
+  source = "../"
 
   module_enabled = true
 
@@ -96,7 +96,7 @@ module "kitchen_sink" {
 # Do not create any resources
 # ---------------------------------------------------------------------------------------------------------------------
 module "test_no_resources" {
-  source = "../.."
+  source = "../"
 
   module_enabled = false
 }
