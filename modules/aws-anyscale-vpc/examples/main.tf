@@ -17,7 +17,7 @@ locals {
 #   Should be executed in us-east-2
 # ---------------------------------------------------------------------------------------------------------------------
 module "all_defaults" {
-  source = "../.."
+  source = "../"
 
   cidr_block = "172.20.0.0/16"
 
@@ -31,7 +31,7 @@ module "all_defaults" {
 #   Should be executed in us-east-2
 # ---------------------------------------------------------------------------------------------------------------------
 module "minimum_anyscale_vpc_requirements" {
-  source = "../../"
+  source = "../"
 
   anyscale_vpc_name = "tftest-minimum_anyscale_vpc"
   cidr_block        = "172.21.0.0/16"
@@ -47,7 +47,7 @@ module "minimum_anyscale_vpc_requirements" {
 #   Should be executed in us-east-2
 # ---------------------------------------------------------------------------------------------------------------------
 module "public_private_vpc" {
-  source = "../../"
+  source = "../"
 
   anyscale_vpc_name = "tftest-publicprivate_anyscale_vpc"
   cidr_block        = "172.22.0.0/16"
@@ -65,7 +65,7 @@ module "public_private_vpc" {
 #   Do not create a new VPC Endpoint and related resources
 # ---------------------------------------------------------------------------------------------------------------------
 module "existing_vpc_new_subnets" {
-  source = "../../"
+  source = "../"
 
   existing_vpc_id = "vpc-086408b268f481027"
 
@@ -86,7 +86,7 @@ module "existing_vpc_new_subnets" {
 #   Create a new VPC Endpoint and related resources
 # ---------------------------------------------------------------------------------------------------------------------
 module "existing_vpc_create_endpoints" {
-  source = "../../"
+  source = "../"
 
   existing_vpc_id                  = "vpc-01e570eea1c7258ae"
   existing_private_route_table_ids = ["rtb-0745f6378288c2836"]
@@ -102,7 +102,7 @@ module "existing_vpc_create_endpoints" {
 # Use all params and build a VPC
 # ---------------------------------------------------------------------------------------------------------------------
 module "kitchen_sink" {
-  source = "../.."
+  source = "../"
 
   module_enabled = true
 
@@ -156,7 +156,7 @@ module "kitchen_sink" {
 # Do not create any resources
 # ---------------------------------------------------------------------------------------------------------------------
 module "test_no_resources" {
-  source = "../.."
+  source = "../"
 
   module_enabled = false
 }

@@ -18,7 +18,7 @@ locals {
   public_subnets = ["172.24.101.0/24", "172.24.102.0/24", "172.24.103.0/24"]
 }
 module "security_groups_tftest_vpc" {
-  source = "../../../aws-anyscale-vpc"
+  source = "../../aws-anyscale-vpc"
 
   anyscale_vpc_name = "tftest-securitygroups"
   cidr_block        = "172.24.0.0/16"
@@ -30,7 +30,7 @@ module "security_groups_tftest_vpc" {
 # Create a Security Group resource with no optional parameters
 # ---------------------------------------------------------------------------------------------------------------------
 module "all_defaults" {
-  source         = "../.."
+  source         = "../"
   module_enabled = true
 
   vpc_id = module.security_groups_tftest_vpc.vpc_id
@@ -50,7 +50,7 @@ module "all_defaults" {
 #  Specifying name_prefix as well for ease of finding resource in console.
 # ---------------------------------------------------------------------------------------------------------------------
 module "anyscale_amp" {
-  source         = "../.."
+  source         = "../"
   module_enabled = true
 
   vpc_id = module.security_groups_tftest_vpc.vpc_id
@@ -67,7 +67,7 @@ module "anyscale_amp" {
 # Use all params and build a Security Group
 # ---------------------------------------------------------------------------------------------------------------------
 module "kitchen_sink" {
-  source         = "../.."
+  source         = "../"
   module_enabled = true
 
   vpc_id = module.security_groups_tftest_vpc.vpc_id
@@ -132,7 +132,7 @@ module "kitchen_sink" {
 # Do not create any resources
 # ---------------------------------------------------------------------------------------------------------------------
 module "test_no_resources" {
-  source         = "../.."
+  source         = "../"
   module_enabled = false
 
   vpc_id = module.security_groups_tftest_vpc.vpc_id

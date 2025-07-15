@@ -130,20 +130,6 @@ data "aws_iam_policy_document" "anyscale_cluster_node_custom_policy" {
     actions   = ["s3:ListAllMyBuckets"]
     resources = ["*"]
   }
-
-  statement {
-    sid       = "assumerole"
-    effect    = "Allow"
-    actions   = ["sts:AssumeRole"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/testclusternodepath/anyscale-cluster-node-kitchensink-tftest*"]
-  }
-
-  statement {
-    sid       = "getRole"
-    effect    = "Allow"
-    actions   = ["iam:GetRole"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/testclusternodepath/anyscale-cluster-node-kitchensink-tftest"]
-  }
 }
 
 data "aws_iam_policy_document" "anyscale_cluster_node_custom_assume_role_policy" {
@@ -154,11 +140,6 @@ data "aws_iam_policy_document" "anyscale_cluster_node_custom_assume_role_policy"
     principals {
       type        = "Service"
       identifiers = ["ec2.amazonaws.com"]
-    }
-    # Self reference
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/testclusternodepath/anyscale-cluster-node-kitchensink-tftest"]
     }
   }
 }
