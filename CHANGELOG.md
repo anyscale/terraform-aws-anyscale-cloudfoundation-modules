@@ -1,5 +1,6 @@
 ## 0.30.1 (Released)
 FEATURES:
+- Removed null provider and updated validation of required variables to variables.tf
 
 BUG FIXES:
 - When passing in an organization id as well as the external id, if a cloud ID was also provided, it would not prioritize the correct local value for the external ID.
