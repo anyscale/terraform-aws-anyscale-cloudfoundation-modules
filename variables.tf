@@ -133,6 +133,12 @@ variable "anyscale_external_id" {
   EOT
   type        = string
   default     = null
+  validation {
+    condition = (
+      var.anyscale_external_id == null || var.anyscale_org_id != null
+    )
+    error_message = "If `anyscale_external_id` is provided, `anyscale_org_id` must also be provided."
+  }
 }
 
 variable "common_prefix" {
