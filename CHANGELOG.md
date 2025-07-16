@@ -1,3 +1,14 @@
+FEATURES:
+- Removed null provider and updated validation of required variables to variables.tf
+
+BUG FIXES:
+- When passing in an organization id as well as the external id, if a cloud ID was also provided, it would not prioritize the correct local value for the external ID.
+- The privatesubnets example was updated to use the external id, but did not also include the Organization ID. Both are now included.
+
+BREAKING CHANGES:
+
+NOTES:
+
 ## 0.29.0 (Released)
 FEATURES:
 - Add support for custom external ID for the Control Plane IAM role.
