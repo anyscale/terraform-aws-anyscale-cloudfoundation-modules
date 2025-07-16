@@ -61,8 +61,10 @@ locals {
   iam_cluster_node_secrets_plcy_name  = var.anyscale_cluster_node_byod_secrets_policy_name != null ? var.anyscale_cluster_node_byod_secrets_policy_name : local.common_name != null ? "${local.common_name}-clusternode-secrets-policy" : null
   iam_cluster_node_secrets_plcy_prfx  = var.anyscale_cluster_node_byod_secrets_policy_prefix != null ? var.anyscale_cluster_node_byod_secrets_policy_prefix : local.common_name != null ? "${local.common_name}-clusternode-secrets-" : null
 
+  # Construct external ID with org prefix if both are provided
+  external_id_with_org_id = var.anyscale_external_id != null && var.anyscale_org_id != null ? "${var.anyscale_org_id}-${var.anyscale_external_id}" : null
   # Prioritize external_id over cloud_id for trust policy
-  iam_assume_role_external_id = var.anyscale_external_id != null ? [var.anyscale_external_id] : (var.anyscale_cloud_id != null && var.anyscale_cloud_id != "" ? [var.anyscale_cloud_id] : [])
+  iam_assume_role_external_id = var.anyscale_external_id != null ? [local.external_id_with_org_id] : (var.anyscale_cloud_id != null && var.anyscale_cloud_id != "" ? [var.anyscale_cloud_id] : [])
 }
 
 # ------------------------------
@@ -85,17 +87,6 @@ module "aws_anyscale_s3" {
 # ------------------------------
 # IAM Module
 # ------------------------------
-locals {
-  external_id_with_org_id = var.anyscale_external_id != null && var.anyscale_org_id != null ? "${var.anyscale_org_id}-${var.anyscale_external_id}" : null
-}
-
-resource "null_resource" "validate_external_id_variables" {
-  count = var.anyscale_external_id != null && var.anyscale_org_id == null ? 1 : 0
-
-  provisioner "local-exec" {
-    command = "echo 'Error: If `anyscale_external_id` is set, `anyscale_org_id` must also be set.' && exit 1"
-  }
-}
 module "aws_anyscale_iam" {
   source = "./modules/aws-anyscale-iam"
   tags   = local.iam_tags
