@@ -77,7 +77,6 @@ No modules.
 | [aws_iam_policy_document.iam_anyscale_s3_bucket_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.iam_anyscale_services_v2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.iam_anyscale_steadystate_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
@@ -157,6 +156,7 @@ No modules.
 | <a name="input_create_cluster_node_instance_profile"></a> [create\_cluster\_node\_instance\_profile](#input\_create\_cluster\_node\_instance\_profile) | (Optional) Determines whether to create an instance profile role.<br/><br/>ex:<pre>create_cluster_node_instance_profile = true</pre> | `bool` | `true` | no |
 | <a name="input_create_eks_ebs_csi_driver_role"></a> [create\_eks\_ebs\_csi\_driver\_role](#input\_create\_eks\_ebs\_csi\_driver\_role) | (Optional) Determines whether to create the EKS EBS CSI driver role.<br/><br/>ex:<pre>create_eks_ebs_csi_driver_role = true</pre> | `bool` | `false` | no |
 | <a name="input_create_eks_efs_csi_driver_role"></a> [create\_eks\_efs\_csi\_driver\_role](#input\_create\_eks\_efs\_csi\_driver\_role) | (Optional) Determines whether to create the EKS EFS CSI driver role.<br/><br/>ex:<pre>create_eks_efs_csi_driver_role = true</pre> | `bool` | `false` | no |
+| <a name="input_create_elb_service_linked_role"></a> [create\_elb\_service\_linked\_role](#input\_create\_elb\_service\_linked\_role) | (Optional) Determines if the ELB service linked role is created.<br/><br/>ex:<pre>create_elb_service_linked_role = true</pre> | `bool` | `true` | no |
 | <a name="input_create_iam_s3_policy"></a> [create\_iam\_s3\_policy](#input\_create\_iam\_s3\_policy) | (Optional) Determines whether to create the S3 Access Policy for IAM roles.<br/>Requires anyscale\_s3\_bucket\_arn (below).<br/><br/>ex:<pre>create_iam_s3_policy = true</pre> | `bool` | `true` | no |
 | <a name="input_efs_file_system_arn"></a> [efs\_file\_system\_arn](#input\_efs\_file\_system\_arn) | (Optional) The EFS File System ARN that the IAM Roles need access to.<br/><br/>Required if `create_eks_efs_csi_driver_role` is set to `true`.<br/><br/>ex:<pre>efs_file_system_arn = "arn:aws:efs:us-east-1:123456789012:file-system/fs-12345678"</pre> | `string` | `null` | no |
 | <a name="input_eks_ebs_csi_role_description"></a> [eks\_ebs\_csi\_role\_description](#input\_eks\_ebs\_csi\_role\_description) | (Optional) IAM Role description.<br/><br/>If left `null`, will default to `Anyscale EKS EBS CSI Role`.<br/><br/>ex:<pre>eks_ebs_csi_role_description = "Anyscale EKS EBS CSI Role"</pre> | `string` | `null` | no |

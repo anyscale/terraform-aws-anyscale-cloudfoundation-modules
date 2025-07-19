@@ -353,211 +353,7 @@ data "aws_iam_policy_document" "iam_anyscale_cluster_node_assumerole_policy" {
 }
 
 
-data "aws_iam_policy_document" "iam_anyscale_services_v2" {
-  #checkov:skip=CKV_AWS_356:Policy requires wildcards in resource permissions'
-  statement {
-    sid    = "CloudformationCreateDescribe"
-    effect = "Allow"
-    actions = [
-      "cloudformation:CreateStack",
-      "cloudformation:DescribeStackEvents",
-      "cloudformation:DescribeStackResources",
-      "cloudformation:DescribeStacks",
-      "cloudformation:GetTemplate"
-    ]
-    resources = [
-      "arn:aws:cloudformation:*:${local.account_id}:stack/*"
-    ]
-  }
 
-  statement {
-    sid    = "EC2Describe"
-    effect = "Allow"
-    actions = [
-      # VPC Describe Resources
-      "ec2:DescribeVpcs",
-      "ec2:DescribeInternetGateways",
-    ]
-    resources = ["*"]
-  }
-
-  dynamic "statement" {
-    for_each = local.cloud_id_provided ? [] : [1]
-    content {
-      sid    = "CloudformationWrite"
-      effect = "Allow"
-      actions = [
-        "cloudformation:TagResource",
-        "cloudformation:UntagResource",
-        "cloudformation:UpdateStack",
-      ]
-      resources = [
-        "arn:aws:cloudformation:*:${local.account_id}:stack/*"
-      ]
-    }
-  }
-
-  dynamic "statement" {
-    for_each = local.cloud_id_provided ? [1] : []
-    content {
-      sid    = "CloudformationWrite"
-      effect = "Allow"
-      actions = [
-        "cloudformation:TagResource",
-        "cloudformation:UntagResource",
-        "cloudformation:UpdateStack",
-        "cloudformation:DeleteStack",
-      ]
-      resources = [
-        "arn:aws:cloudformation:*:${local.account_id}:stack/*"
-      ]
-      condition {
-        test     = "StringEquals"
-        variable = "aws:ResourceTag/anyscale-cloud-id"
-        values   = [var.anyscale_cloud_id]
-      }
-    }
-  }
-
-  statement {
-    sid    = "CloudformationDelete"
-    effect = "Allow"
-    actions = [
-      "cloudformation:DeleteStack",
-    ]
-    resources = [
-      "arn:aws:cloudformation:*:${local.account_id}:stack/anyscale*"
-    ]
-  }
-
-  statement {
-    sid    = "CreateELBServiceLinkedRole"
-    effect = "Allow"
-    actions = [
-      "iam:CreateServiceLinkedRole"
-    ]
-    resources = [
-      "arn:aws:iam::${local.account_id}:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing"
-    ]
-    condition {
-      test     = "StringLike"
-      variable = "iam:AWSServiceName"
-      values   = ["elasticloadbalancing.amazonaws.com"]
-    }
-  }
-
-  statement {
-    sid    = "ELBRead"
-    effect = "Allow"
-    actions = [
-      "elasticloadbalancing:DescribeListeners",
-      "elasticloadbalancing:DescribeLoadBalancers",
-      "elasticloadbalancing:DescribeLoadBalancerAttributes",
-      "elasticloadbalancing:DescribeRules",
-      "elasticloadbalancing:DescribeTargetGroups",
-      "elasticloadbalancing:DescribeTargetGroupAttributes",
-      "elasticloadbalancing:DescribeTargetHealth",
-      "elasticloadbalancing:DescribeListenerCertificates",
-      "elasticloadbalancing:DescribeTags"
-    ]
-    resources = ["*"]
-  }
-
-  #trivy:ignore:avd-aws-0057:Wildcard required for these actions
-  statement {
-    sid    = "ACMAllResources"
-    effect = "Allow"
-    actions = [
-      "acm:ListCertificates",
-      "acm:RequestCertificate",
-      "acm:DescribeCertificate",
-    ]
-    resources = ["*"]
-  }
-
-  dynamic "statement" {
-    for_each = local.cloud_id_provided ? [] : [1]
-    content {
-      sid    = "ACMWrite"
-      effect = "Allow"
-      actions = [
-        "acm:DeleteCertificate",
-        "acm:RenewCertificate",
-        "acm:AddTagsToCertificate",
-        "acm:GetCertificate",
-        "acm:ListTagsForCertificate"
-      ]
-      resources = ["arn:aws:acm:*:${local.account_id}:certificate/*"]
-    }
-  }
-
-  dynamic "statement" {
-    for_each = local.cloud_id_provided ? [1] : []
-    content {
-      sid    = "ACMWrite"
-      effect = "Allow"
-      actions = [
-        "acm:DeleteCertificate",
-        "acm:RenewCertificate",
-        "acm:AddTagsToCertificate",
-        "acm:GetCertificate",
-        "acm:ListTagsForCertificate"
-      ]
-      resources = ["arn:aws:acm:*:${local.account_id}:certificate/*"]
-      condition {
-        test     = "StringEquals"
-        variable = "aws:RequestTag/anyscale-cloud-id"
-        values   = [var.anyscale_cloud_id]
-      }
-      condition {
-        test     = "ForAnyValue:StringEquals"
-        variable = "aws:TagKeys"
-        values   = ["anyscale-cloud-id"]
-      }
-    }
-  }
-
-  statement {
-    sid    = "ELBWrite"
-    effect = "Allow"
-    actions = [
-      "elasticloadbalancing:AddTags",
-      "elasticloadbalancing:RemoveTags",
-      "elasticloadbalancing:CreateRule",
-      "elasticloadbalancing:ModifyRule",
-      "elasticloadbalancing:DeleteRule",
-      "elasticloadbalancing:SetRulePriorities",
-      "elasticloadbalancing:CreateListener",
-      "elasticloadbalancing:ModifyListener",
-      "elasticloadbalancing:DeleteListener",
-      "elasticloadbalancing:CreateLoadBalancer",
-      "elasticloadbalancing:DeleteLoadBalancer",
-      "elasticloadbalancing:ModifyLoadBalancerAttributes",
-      "elasticloadbalancing:CreateTargetGroup",
-      "elasticloadbalancing:ModifyTargetGroup",
-      "elasticloadbalancing:DeleteTargetGroup",
-      "elasticloadbalancing:ModifyTargetGroupAttributes",
-      "elasticloadbalancing:RegisterTargets",
-      "elasticloadbalancing:DeregisterTargets",
-      "elasticloadbalancing:AddListenerCertificates",
-      "elasticloadbalancing:RemoveListenerCertificates",
-      "elasticloadbalancing:SetIpAddressType",
-      "elasticloadbalancing:SetSecurityGroups",
-      "elasticloadbalancing:SetSubnets"
-    ]
-    resources = [
-      "arn:aws:elasticloadbalancing:*:${local.account_id}:loadbalancer/app/Anyscale*",
-      "arn:aws:elasticloadbalancing:*:${local.account_id}:listener/app/Anyscale*",
-      "arn:aws:elasticloadbalancing:*:${local.account_id}:listener-rule/app/Anyscale*",
-      "arn:aws:elasticloadbalancing:*:${local.account_id}:targetgroup/AnyscaleTarget*"
-    ]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:CalledViaFirst"
-      values   = ["cloudformation.amazonaws.com"]
-    }
-  }
-}
 
 data "aws_iam_policy_document" "cluster_node_cloudwatch_access" {
   #checkov:skip=CKV_AWS_356:Policy requires wildcards in resource permissions
@@ -630,6 +426,25 @@ data "aws_iam_policy_document" "cluster_node_secretmanager_read_access" {
   source_policy_documents = [local.secrets_policy_doc]
 }
 
+
+#---------------------
+# Anyscale Services V2 Policy
+#---------------------
+locals {
+  anyscale_services_v2_policy_body = templatefile(
+    "${path.module}/anyscale-control_plane-services-v2.tmpl",
+    {
+      account_id                     = local.account_id
+      cloud_id_provided              = local.cloud_id_provided
+      anyscale_cloud_id              = var.anyscale_cloud_id
+      create_elb_service_linked_role = var.create_elb_service_linked_role
+    }
+  )
+}
+
+data "aws_iam_policy_document" "iam_anyscale_services_v2" {
+  source_policy_documents = [local.anyscale_services_v2_policy_body]
+}
 
 #---------------------
 # S3 Bucket Access

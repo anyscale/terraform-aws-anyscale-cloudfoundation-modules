@@ -1,3 +1,16 @@
+## 0.31.0 (Released)
+FEATURES:
+- Added additional IAM policies for CloudKeeper deployments of Anyscale Services
+  - Anyscale Services v2 originally managed the deployment and load balancers via Cloudformation. This had inherrent limitations.
+  - Anyscale Services will now be fully managed via the Control Plane via AWS APIs. This requires small adjustments to the IAM policies in use.
+  - A future version will remove the Cloudformation IAM policies.
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
 ## 0.30.1 (Released)
 FEATURES:
 - Removed null provider and updated validation of required variables to variables.tf

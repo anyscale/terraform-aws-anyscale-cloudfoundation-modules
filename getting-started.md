@@ -119,8 +119,14 @@ anyscale cloud register --provider aws  \
 --s3-bucket-id anyscale-tf-test-1-fw  \
 --external-id org_1234567890abcdef-example_id
 ```
+### 12. Re-run the Terraform Module with Anyscale cloud ID (optional):
+To enable consistent tagging for billing or to support tag-based conditions in the
+IAM policies for the control plane, set the `anyscale_cloud_id` variable and re-run the Terraform modules.
+This will:
+- Apply consistent tags to all newly created resources
+- Add tag-based conditions and restrictions to IAM policies
 
-### 12. Clean up resources (optional):
+### Clean up resources (optional):
 Once you are done, you can destroy the resources created by Terraform:
 ```
 terraform destroy -var-file="terraform.tfvars"

@@ -5,7 +5,7 @@
 locals {
   create_eks_cluster_role = var.create_anyscale_eks_cluster_role && var.module_enabled
 
-  eks_cluster_role_desc   = var.anyscale_eks_cluster_role_description != null ? var.anyscale_eks_cluster_role_description : var.anyscale_cloud_id != null ? "Anyscale EKS Cluster Role for cloud ${var.anyscale_cloud_id} in region ${local.region_name}" : "Anyscale EKS cluster role"
+  eks_cluster_role_desc   = var.anyscale_eks_cluster_role_description != null ? var.anyscale_eks_cluster_role_description : var.anyscale_cloud_id != null ? "Anyscale EKS Cluster Role for cloud ${var.anyscale_cloud_id}" : "Anyscale EKS cluster role"
   eks_cluster_role_name   = try(var.anyscale_eks_cluster_role_name, null)
   eks_cluster_role_prefix = local.eks_cluster_role_name != null ? null : var.anyscale_eks_cluster_role_name_prefix != null ? var.anyscale_eks_cluster_role_name_prefix : "anyscale-eks-cluster-"
 
@@ -53,7 +53,7 @@ resource "aws_iam_role_policy_attachment" "anyscale_eks_cluster_amazonekscnipoli
 locals {
   create_eks_node_role = var.create_anyscale_eks_node_role && var.module_enabled
 
-  eks_node_role_desc   = var.anyscale_eks_node_role_description != null ? var.anyscale_eks_node_role_description : var.anyscale_cloud_id != null ? "Anyscale EKS Node Role for cloud ${var.anyscale_cloud_id} in region ${local.region_name}" : "Anyscale EKS node role"
+  eks_node_role_desc   = var.anyscale_eks_node_role_description != null ? var.anyscale_eks_node_role_description : var.anyscale_cloud_id != null ? "Anyscale EKS Node Role for cloud ${var.anyscale_cloud_id}" : "Anyscale EKS node role"
   eks_node_role_name   = try(var.anyscale_eks_node_role_name, null)
   eks_node_role_prefix = local.eks_node_role_name != null ? null : var.anyscale_eks_node_role_name_prefix != null ? var.anyscale_eks_node_role_name_prefix : "anyscale-eks-node-"
 }
@@ -129,7 +129,7 @@ resource "aws_iam_role_policy_attachment" "anyscale_eks_node_s3access" {
 locals {
   create_ebs_csi_driver_role = var.create_eks_ebs_csi_driver_role && var.module_enabled
 
-  eks_ebs_csi_role_desc        = var.eks_ebs_csi_role_description != null ? var.eks_ebs_csi_role_description : var.anyscale_cloud_id != null ? "Anyscale EKS EBS CSI Role for cloud ${var.anyscale_cloud_id} in region ${local.region_name}" : "Anyscale EKS EBS CBI role"
+  eks_ebs_csi_role_desc        = var.eks_ebs_csi_role_description != null ? var.eks_ebs_csi_role_description : var.anyscale_cloud_id != null ? "Anyscale EKS EBS CSI Role for cloud ${var.anyscale_cloud_id}" : "Anyscale EKS EBS CBI role"
   eks_ebs_csi_role_name        = try(var.eks_ebs_csi_role_name, null)
   eks_ebs_csi_role_name_prefix = local.eks_ebs_csi_role_name != null ? null : var.eks_ebs_csi_role_name_prefix != null ? var.eks_ebs_csi_role_name_prefix : "anyscale-eks-ebs-csi-"
 }
@@ -162,7 +162,7 @@ resource "aws_iam_role_policy_attachment" "anyscale_eks_ebs_csi_driver_amazonebs
 locals {
   create_efs_csi_driver_role = var.create_eks_efs_csi_driver_role && var.module_enabled
 
-  eks_efs_csi_role_desc        = var.eks_efs_csi_role_description != null ? var.eks_efs_csi_role_description : var.anyscale_cloud_id != null ? "Anyscale EKS EFS CSI Role for cloud ${var.anyscale_cloud_id} in region ${local.region_name}" : "Anyscale EKS EBS CBI role"
+  eks_efs_csi_role_desc        = var.eks_efs_csi_role_description != null ? var.eks_efs_csi_role_description : var.anyscale_cloud_id != null ? "Anyscale EKS EFS CSI Role for cloud ${var.anyscale_cloud_id}" : "Anyscale EKS EBS CBI role"
   eks_efs_csi_role_name        = try(var.eks_efs_csi_role_name, null)
   eks_efs_csi_role_name_prefix = local.eks_efs_csi_role_name != null ? null : var.eks_efs_csi_role_name_prefix != null ? var.eks_efs_csi_role_name_prefix : "anyscale-eks-efs-csi-"
 }
