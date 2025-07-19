@@ -102,6 +102,7 @@ module "aws_anyscale_iam" {
   anyscale_access_servicesv2_policy_name        = local.iam_servicesv2_policy_name
   anyscale_access_servicesv2_policy_prefix      = local.iam_servicesv2_policy_prefix
   anyscale_access_servicesv2_policy_description = var.anyscale_access_servicesv2_policy_description
+  create_elb_service_linked_role                = var.anyscale_servicesv2_create_elb_service_linked_role
 
   anyscale_trusted_role_arns = var.anyscale_access_role_trusted_role_arns
 
