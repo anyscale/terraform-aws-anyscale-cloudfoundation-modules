@@ -582,6 +582,19 @@ variable "anyscale_access_servicesv2_policy_description" {
   default     = "Anyscale Services v2 IAM Policy which is used by the Anyscale IAM Access Role"
 }
 
+variable "anyscale_servicesv2_create_elb_service_linked_role" {
+  description = <<-EOT
+    (Optional) Determines if the ELB service linked role is created.
+
+    ex:
+    ```
+    anyscale_servicesv2_create_elb_service_linked_role = true
+    ```
+  EOT
+  type        = bool
+  default     = true
+}
+
 # Anyscale Access Role Custom Policy
 variable "anyscale_accessrole_custom_policy_name" {
   description = <<-EOT

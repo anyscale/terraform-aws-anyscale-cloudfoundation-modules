@@ -1,17 +1,14 @@
 #----------------------------
 #- Creates Anyscale IAM Roles and Policies
 data "aws_caller_identity" "current" {}
-# data "aws_partition" "current" {}
-data "aws_region" "current" {}
 
 locals {
-  account_id  = data.aws_caller_identity.current.account_id
-  region_name = data.aws_region.current.name
+  account_id = data.aws_caller_identity.current.account_id
 
   # Prioritize external_id over cloud_id for trust policy
   trust_policy_external_id  = var.anyscale_external_id != null ? [var.anyscale_external_id] : (var.anyscale_cloud_id != null ? [var.anyscale_cloud_id] : [])
   role_sts_externalid       = length(var.anyscale_trusted_role_sts_externalid) > 0 ? flatten([var.anyscale_trusted_role_sts_externalid]) : local.trust_policy_external_id
-  anyscale_access_role_desc = var.anyscale_access_role_description != null ? var.anyscale_access_role_description : var.anyscale_cloud_id != null ? "Anyscale access role for cloud ${var.anyscale_cloud_id} in region ${local.region_name}" : "Anyscale access role"
+  anyscale_access_role_desc = var.anyscale_access_role_description != null ? var.anyscale_access_role_description : var.anyscale_cloud_id != null ? "Anyscale Control Plane Role  for cloud ${var.anyscale_cloud_id}" : "Anyscale Control Plane role"
   anyscale_access_role_name = try(var.anyscale_access_role_name, null)
   anyscale_role_prefix      = local.anyscale_access_role_name != null ? null : var.anyscale_access_role_name_prefix != null ? var.anyscale_access_role_name_prefix : "anyscale-"
 

@@ -7,6 +7,7 @@ plugin "aws" {
 config {
   call_module_type = "local"
   force            = false
+  exclude = ["**/*.tmpl"]
 }
 
 rule "terraform_required_providers" {
