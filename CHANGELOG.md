@@ -1,3 +1,15 @@
+## 0.31.1 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+- Cleanup of unused IAM Roles for EKS Clusters
+  - Removed the unused IAM roles TF files for EKS related resources from the IAM sub-module. These were originally created before Anyscale refactored the kubernetes examples to use AWS provided modules.
+  - There are no functional differences for the VM stack resources.
+
 ## 0.31.0 (Released)
 FEATURES:
 - Added additional IAM policies for CloudKeeper deployments of Anyscale Services
