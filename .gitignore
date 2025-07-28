@@ -42,6 +42,9 @@ terraform.rc
 # Example script
 example-anyscale-cloud-register.sh
 
+# Anyscale private examples
+examples/_anyscale*
+
 # VSCode settings directory
 .vscode
 

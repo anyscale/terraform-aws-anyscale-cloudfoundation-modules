@@ -1,4 +1,14 @@
-## 0.31.1 (Released)
+## 0.33.0 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+- Updated AWS Terraform Provider support to include v6.x
+
+## 0.32.0 (Released)
 FEATURES:
 
 BUG FIXES:
