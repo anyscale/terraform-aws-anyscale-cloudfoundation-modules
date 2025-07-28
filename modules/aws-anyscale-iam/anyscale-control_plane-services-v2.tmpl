@@ -1,0 +1,287 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CloudformationDescribeGet",
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:CreateStack",
+        "cloudformation:DescribeStackEvents",
+        "cloudformation:DescribeStackResources",
+        "cloudformation:DescribeStacks",
+        "cloudformation:GetTemplate"
+      ],
+      "Resource": [
+        "arn:aws:cloudformation:*:${account_id}:stack/*"
+      ]
+    },
+    {
+      "Sid": "EC2Describe",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeVpcs",
+        "ec2:DescribeInternetGateways"
+      ],
+      "Resource": ["*"]
+    },
+%{ if cloud_id_provided == false ~}
+    {
+      "Sid": "CloudformationWrite",
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:TagResource",
+        "cloudformation:UntagResource",
+        "cloudformation:UpdateStack"
+      ],
+      "Resource": [
+        "arn:aws:cloudformation:*:${account_id}:stack/*"
+      ]
+    },
+%{ endif ~}
+%{ if cloud_id_provided == true ~}
+    {
+      "Sid": "CloudformationWrite",
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:TagResource",
+        "cloudformation:UntagResource",
+        "cloudformation:UpdateStack",
+        "cloudformation:DeleteStack"
+      ],
+      "Resource": [
+        "arn:aws:cloudformation:*:${account_id}:stack/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/anyscale-cloud-id": "${anyscale_cloud_id}"
+        }
+      }
+    },
+%{ endif ~}
+%{ if cloud_id_provided == false ~}
+    {
+      "Sid": "CloudformationDelete",
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:DeleteStack"
+      ],
+      "Resource": [
+        "arn:aws:cloudformation:*:${account_id}:stack/anyscale*"
+      ]
+    },
+%{ endif ~}
+%{ if create_elb_service_linked_role == true ~}
+    {
+      "Sid": "CreateELBServiceLinkedRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateServiceLinkedRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::${account_id}:role/aws-service-role/elasticloadbalancing.amazonaws.com/AWSServiceRoleForElasticLoadBalancing"
+      ],
+      "Condition": {
+        "StringLike": {
+          "iam:AWSServiceName": ["elasticloadbalancing.amazonaws.com"]
+        }
+      }
+    },
+%{ endif ~}
+    {
+      "Sid": "ELBRead",
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:DescribeListeners",
+        "elasticloadbalancing:DescribeLoadBalancers",
+        "elasticloadbalancing:DescribeLoadBalancerAttributes",
+        "elasticloadbalancing:DescribeRules",
+        "elasticloadbalancing:DescribeTargetGroups",
+        "elasticloadbalancing:DescribeTargetGroupAttributes",
+        "elasticloadbalancing:DescribeTargetHealth",
+        "elasticloadbalancing:DescribeListenerCertificates",
+        "elasticloadbalancing:DescribeTags"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ACMAllResources",
+      "Effect": "Allow",
+      "Action": [
+        "acm:ListCertificates",
+        "acm:RequestCertificate",
+        "acm:DescribeCertificate"
+      ],
+      "Resource": "*"
+    },
+%{ if cloud_id_provided == false ~}
+    {
+      "Sid": "ACMWrite",
+      "Effect": "Allow",
+      "Action": [
+        "acm:DeleteCertificate",
+        "acm:RenewCertificate",
+        "acm:AddTagsToCertificate",
+        "acm:GetCertificate",
+        "acm:ListTagsForCertificate"
+      ],
+      "Resource": ["arn:aws:acm:*:${account_id}:certificate/*"]
+    },
+%{ endif ~}
+%{ if cloud_id_provided == true ~}
+    {
+      "Sid": "ACMWrite",
+      "Effect": "Allow",
+      "Action": [
+        "acm:DeleteCertificate",
+        "acm:RenewCertificate",
+        "acm:AddTagsToCertificate",
+        "acm:GetCertificate",
+        "acm:ListTagsForCertificate"
+      ],
+      "Resource": ["arn:aws:acm:*:${account_id}:certificate/*"],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/anyscale-cloud-id": "${anyscale_cloud_id}"
+        },
+        "ForAnyValue:StringEquals": {
+          "aws:TagKeys": ["anyscale-cloud-id"]
+        }
+      }
+    },
+%{ endif ~}
+    {
+      "Sid": "ELBWrite",
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:AddTags",
+        "elasticloadbalancing:RemoveTags",
+        "elasticloadbalancing:CreateRule",
+        "elasticloadbalancing:ModifyRule",
+        "elasticloadbalancing:DeleteRule",
+        "elasticloadbalancing:SetRulePriorities",
+        "elasticloadbalancing:CreateListener",
+        "elasticloadbalancing:ModifyListener",
+        "elasticloadbalancing:DeleteListener",
+        "elasticloadbalancing:CreateLoadBalancer",
+        "elasticloadbalancing:DeleteLoadBalancer",
+        "elasticloadbalancing:ModifyLoadBalancerAttributes",
+        "elasticloadbalancing:CreateTargetGroup",
+        "elasticloadbalancing:ModifyTargetGroup",
+        "elasticloadbalancing:DeleteTargetGroup",
+        "elasticloadbalancing:ModifyTargetGroupAttributes",
+        "elasticloadbalancing:AddListenerCertificates",
+        "elasticloadbalancing:RemoveListenerCertificates",
+        "elasticloadbalancing:SetIpAddressType",
+        "elasticloadbalancing:SetSecurityGroups",
+        "elasticloadbalancing:SetSubnets"
+      ],
+      "Resource": [
+        "arn:aws:elasticloadbalancing:*:${account_id}:loadbalancer/app/Anyscale*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:listener/app/Anyscale*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:listener-rule/app/Anyscale*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:targetgroup/AnyscaleTarget*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:CalledViaFirst": ["cloudformation.amazonaws.com"]
+        }
+      }
+    },
+    {
+      "Sid": "ELBTargetRegistration",
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:RegisterTargets",
+        "elasticloadbalancing:DeregisterTargets"
+      ],
+      "Resource": [
+        "arn:aws:elasticloadbalancing:*:${account_id}:targetgroup/AnyscaleTarget*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:targetgroup/anyscale*"
+      ]
+    },
+    {
+      "Sid": "ELBDirectCreate",
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:CreateRule",
+        "elasticloadbalancing:CreateListener",
+        "elasticloadbalancing:CreateLoadBalancer",
+        "elasticloadbalancing:CreateTargetGroup"
+      ],
+      "Resource": [
+        "arn:aws:elasticloadbalancing:*:${account_id}:loadbalancer/app/anyscale*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:listener/app/anyscale*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:listener-rule/app/anyscale*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:targetgroup/anyscale*"
+      ]
+    },
+%{ if cloud_id_provided == false ~}
+    {
+      "Sid": "ELBDirectWrite",
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:AddTags",
+        "elasticloadbalancing:RemoveTags",
+        "elasticloadbalancing:ModifyRule",
+        "elasticloadbalancing:DeleteRule",
+        "elasticloadbalancing:SetRulePriorities",
+        "elasticloadbalancing:ModifyListener",
+        "elasticloadbalancing:DeleteListener",
+        "elasticloadbalancing:DeleteLoadBalancer",
+        "elasticloadbalancing:ModifyLoadBalancerAttributes",
+        "elasticloadbalancing:ModifyTargetGroup",
+        "elasticloadbalancing:DeleteTargetGroup",
+        "elasticloadbalancing:ModifyTargetGroupAttributes",
+        "elasticloadbalancing:AddListenerCertificates",
+        "elasticloadbalancing:RemoveListenerCertificates",
+        "elasticloadbalancing:SetIpAddressType",
+        "elasticloadbalancing:SetSecurityGroups",
+        "elasticloadbalancing:SetSubnets"
+      ],
+      "Resource": [
+        "arn:aws:elasticloadbalancing:*:${account_id}:loadbalancer/app/anyscale*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:listener/app/anyscale*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:listener-rule/app/anyscale*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:targetgroup/anyscale*"
+      ]
+    }
+%{ endif ~}
+%{ if cloud_id_provided == true ~}
+
+    {
+      "Sid": "ELBDirectModifyDelete",
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:AddTags",
+        "elasticloadbalancing:RemoveTags",
+        "elasticloadbalancing:ModifyRule",
+        "elasticloadbalancing:DeleteRule",
+        "elasticloadbalancing:SetRulePriorities",
+        "elasticloadbalancing:ModifyListener",
+        "elasticloadbalancing:DeleteListener",
+        "elasticloadbalancing:DeleteLoadBalancer",
+        "elasticloadbalancing:ModifyLoadBalancerAttributes",
+        "elasticloadbalancing:ModifyTargetGroup",
+        "elasticloadbalancing:DeleteTargetGroup",
+        "elasticloadbalancing:ModifyTargetGroupAttributes",
+        "elasticloadbalancing:AddListenerCertificates",
+        "elasticloadbalancing:RemoveListenerCertificates",
+        "elasticloadbalancing:SetIpAddressType",
+        "elasticloadbalancing:SetSecurityGroups",
+        "elasticloadbalancing:SetSubnets"
+      ],
+      "Resource": [
+        "arn:aws:elasticloadbalancing:*:${account_id}:loadbalancer/app/anyscale*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:listener/app/anyscale*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:listener-rule/app/anyscale*",
+        "arn:aws:elasticloadbalancing:*:${account_id}:targetgroup/anyscale*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/anyscale-cloud-id": "${anyscale_cloud_id}"
+        }
+      }
+    }
+%{ endif ~}
+  ]
+}

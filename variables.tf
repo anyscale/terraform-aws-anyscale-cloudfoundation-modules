@@ -133,6 +133,12 @@ variable "anyscale_external_id" {
   EOT
   type        = string
   default     = null
+  validation {
+    condition = (
+      var.anyscale_external_id == null || var.anyscale_org_id != null
+    )
+    error_message = "If `anyscale_external_id` is provided, `anyscale_org_id` must also be provided."
+  }
 }
 
 variable "common_prefix" {
@@ -580,6 +586,19 @@ variable "anyscale_access_servicesv2_policy_description" {
   EOT
   type        = string
   default     = "Anyscale Services v2 IAM Policy which is used by the Anyscale IAM Access Role"
+}
+
+variable "anyscale_servicesv2_create_elb_service_linked_role" {
+  description = <<-EOT
+    (Optional) Determines if the ELB service linked role is created.
+
+    ex:
+    ```
+    anyscale_servicesv2_create_elb_service_linked_role = true
+    ```
+  EOT
+  type        = bool
+  default     = true
 }
 
 # Anyscale Access Role Custom Policy

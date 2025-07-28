@@ -135,7 +135,6 @@ We use GitHub [Issues] to track community reported issues and missing features.
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
-| <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.0 |
 
 ## Providers
@@ -143,7 +142,6 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.7.2 |
 
 ## Modules
@@ -162,7 +160,6 @@ We use GitHub [Issues] to track community reported issues and missing features.
 
 | Name | Type |
 |------|------|
-| [null_resource.validate_external_id_variables](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [random_id.common_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
 | [aws_subnet.existing_subnets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
 
@@ -237,6 +234,7 @@ We use GitHub [Issues] to track community reported issues and missing features.
 | <a name="input_anyscale_s3_server_side_encryption"></a> [anyscale\_s3\_server\_side\_encryption](#input\_anyscale\_s3\_server\_side\_encryption) | (Optional) S3 Bucket Server Side Encryption.<br/><br/>Configuration to enforce server side encryption (KMS or AES256).<br/>If you are using KMS, you must proivde the KMS Key ID.<br/><br/>ex using KMS:<pre>anyscale_s3_server_side_encryption = {<br/>  kms_master_key_id = "1234abcd-12ab-34cd-56ef-1234567890ab"<br/>  sse_algorithm     = "aws:kms"<br/>}</pre>ex using AES256:<pre>anyscale_s3_server_side_encryption = {<br/>  sse_algorithm = "AES256"<br/>}</pre> | `map(string)` | <pre>{<br/>  "sse_algorithm": "AES256"<br/>}</pre> | no |
 | <a name="input_anyscale_s3_tags"></a> [anyscale\_s3\_tags](#input\_anyscale\_s3\_tags) | (Optional) A map of tags for S3 resources.<br/><br/>Duplicate tags found in the "tags" variable will get duplicated on the resource.<br/><br/>ex:<pre>anyscale_iam_tags = {<br/>  "purpose" : "storage",<br/>  "criticality" : "critical"<br/>}</pre> | `map(string)` | `{}` | no |
 | <a name="input_anyscale_securitygroup_tags"></a> [anyscale\_securitygroup\_tags](#input\_anyscale\_securitygroup\_tags) | (Optional) A map of tags for Security Group resources.<br/><br/>Duplicate tags found in the "tags" variable will get duplicated on the resource.<br/><br/>ex:<pre>anyscale_securitygroup_tags = {<br/>  "purpose" : "security",<br/>  "criticality" : "critical"<br/>}</pre>Default is an empty map. | `map(string)` | `{}` | no |
+| <a name="input_anyscale_servicesv2_create_elb_service_linked_role"></a> [anyscale\_servicesv2\_create\_elb\_service\_linked\_role](#input\_anyscale\_servicesv2\_create\_elb\_service\_linked\_role) | (Optional) Determines if the ELB service linked role is created.<br/><br/>ex:<pre>anyscale_servicesv2_create_elb_service_linked_role = true</pre> | `bool` | `true` | no |
 | <a name="input_anyscale_vpc_cidr_block"></a> [anyscale\_vpc\_cidr\_block](#input\_anyscale\_vpc\_cidr\_block) | (Optional) The IPv4 CIDR block for the VPC.<br/>The CIDR block can be explicitly set or it can be derived from IPAM using `ipv4_netmask_length` & `ipv4_ipam_pool_id`.<br/><br/>ex:<pre>anyscale_vpc_cidr_block = "10.0.0.0/16"</pre> | `string` | `"10.0.0.0/16"` | no |
 | <a name="input_anyscale_vpc_name"></a> [anyscale\_vpc\_name](#input\_anyscale\_vpc\_name) | (Optional) VPC name.<br/><br/>If provided, will create a VPC with this name.<br/>Defaults to `vpc_<anyscale_cloud_id>` in a local variable if not provided.<br/><br/>ex:<pre>anyscale_vpc_name = "anyscale-vpc"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_vpc_private_subnet_tags"></a> [anyscale\_vpc\_private\_subnet\_tags](#input\_anyscale\_vpc\_private\_subnet\_tags) | (Optional) A map of tags for private subnets.<br/><br/>Duplicate tags found in the `tags` or `anyscale_vpc_tags` variables will get duplicated on the resource.<br/><br/>ex:<pre>anyscale_vpc_private_subnet_tags = {<br/>  "purpose" : "networking",<br/>  "criticality" : "critical"<br/>}</pre> | `map(string)` | `{}` | no |

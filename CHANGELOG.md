@@ -1,3 +1,40 @@
+## 0.31.1 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+- Cleanup of unused IAM Roles for EKS Clusters
+  - Removed the unused IAM roles TF files for EKS related resources from the IAM sub-module. These were originally created before Anyscale refactored the kubernetes examples to use AWS provided modules.
+  - There are no functional differences for the VM stack resources.
+
+## 0.31.0 (Released)
+FEATURES:
+- Added additional IAM policies for CloudKeeper deployments of Anyscale Services
+  - Anyscale Services v2 originally managed the deployment and load balancers via Cloudformation. This had inherrent limitations.
+  - Anyscale Services will now be fully managed via the Control Plane via AWS APIs. This requires small adjustments to the IAM policies in use.
+  - A future version will remove the Cloudformation IAM policies.
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+
+## 0.30.1 (Released)
+FEATURES:
+- Removed null provider and updated validation of required variables to variables.tf
+
+BUG FIXES:
+- When passing in an organization id as well as the external id, if a cloud ID was also provided, it would not prioritize the correct local value for the external ID.
+- The privatesubnets example was updated to use the external id, but did not also include the Organization ID. Both are now included.
+
+BREAKING CHANGES:
+
+NOTES:
+
 ## 0.30.0 (Released)
 FEATURES:
 

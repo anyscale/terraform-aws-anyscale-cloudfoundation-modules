@@ -21,6 +21,7 @@ module "aws_anyscale_v2_private_vpc" {
   common_prefix = "private-vpc-"
 
   anyscale_cloud_id    = var.anyscale_cloud_id
+  anyscale_org_id      = var.anyscale_org_id
   anyscale_external_id = var.anyscale_external_id
 
   # --------------------------
