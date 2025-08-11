@@ -61,6 +61,30 @@ variable "anyscale_external_id" {
   type        = string
 }
 
+variable "anyscale_org_id" {
+  description = <<-EOT
+    (Optional) Anyscale Organization ID.
+
+    This is used to lock down the cross account access role by Organization ID. Because the Organization ID is unique to each
+    customer, this ensures that only the customer can access their own resources.
+
+    ex:
+    ```
+    anyscale_org_id = "org_abcdefghijklmn1234567890"
+    ```
+  EOT
+  type        = string
+  validation {
+    condition = (
+      var.anyscale_org_id == null ? true : (
+        length(var.anyscale_org_id) > 4 &&
+        substr(var.anyscale_org_id, 0, 4) == "org_"
+      )
+    )
+    error_message = "The anyscale_org_id value must start with \"org_\"."
+  }
+}
+
 # ------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These variables have defaults, but may be overridden.
@@ -88,31 +112,6 @@ variable "anyscale_cloud_id" {
       )
     )
     error_message = "The anyscale_cloud_id value must start with \"cld_\"."
-  }
-}
-
-variable "anyscale_org_id" {
-  description = <<-EOT
-    (Optional) Anyscale Organization ID.
-
-    This is used to lock down the cross account access role by Organization ID. Because the Organization ID is unique to each
-    customer, this ensures that only the customer can access their own resources.
-
-    ex:
-    ```
-    anyscale_org_id = "org_abcdefghijklmn1234567890"
-    ```
-  EOT
-  type        = string
-  default     = null
-  validation {
-    condition = (
-      var.anyscale_org_id == null ? true : (
-        length(var.anyscale_org_id) > 4 &&
-        substr(var.anyscale_org_id, 0, 4) == "org_"
-      )
-    )
-    error_message = "The anyscale_org_id value must start with \"org_\"."
   }
 }
 
