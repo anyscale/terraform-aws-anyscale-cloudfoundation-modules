@@ -37,6 +37,30 @@ variable "anyscale_external_id" {
   type        = string
 }
 
+variable "anyscale_org_id" {
+  description = <<-EOF
+    (Required) Anyscale Organization ID.
+    This is used for tagging resources.
+    If the variable `anyscale_external_id` is provided, this is also
+    prepended to the external ID for the control plane IAM role trust policy.
+
+    ex:
+    ```
+    anyscale_org_id = "org_1234567890"
+    ```
+  EOF
+  type        = string
+  validation {
+    condition = (
+      var.anyscale_org_id == null ? true : (
+        length(var.anyscale_org_id) > 4 &&
+        substr(var.anyscale_org_id, 0, 4) == "org_"
+      )
+    )
+    error_message = "The anyscale_org_id value must start with \"org_\"."
+  }
+}
+
 
 # ------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
@@ -67,30 +91,7 @@ variable "anyscale_cloud_id" {
   }
 }
 
-variable "anyscale_org_id" {
-  description = <<-EOF
-    (Required) Anyscale Organization ID.
-    This is used for tagging resources.
-    If the variable `anyscale_external_id` is provided, this is also
-    prepended to the external ID for the control plane IAM role trust policy.
 
-    ex:
-    ```
-    anyscale_org_id = "org_1234567890"
-    ```
-  EOF
-  type        = string
-  default     = null
-  validation {
-    condition = (
-      var.anyscale_org_id == null ? true : (
-        length(var.anyscale_org_id) > 4 &&
-        substr(var.anyscale_org_id, 0, 4) == "org_"
-      )
-    )
-    error_message = "The anyscale_org_id value must start with \"org_\"."
-  }
-}
 
 variable "tags" {
   description = <<-EOF
