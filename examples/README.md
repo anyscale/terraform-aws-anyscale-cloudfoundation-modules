@@ -8,7 +8,6 @@ This builds the foundational Anyscale Cloud Resources with a Common Name includi
   - S3 Bucket
   - VPC with publicly routed subnets (no internal)
   - VPC Security Groups allowing public from Anyscale
-  - EFS
 
 ### anyscale-v2-existing-s3
 This builds the resources required to run Anyscale, but requires an Existing S3 bucket:
@@ -16,6 +15,7 @@ This builds the resources required to run Anyscale, but requires an Existing S3 
   - VPC with publicly routed subnets
   - VPC Security Groups
   - S3 Policy on an existing S3 Bucket
+  - EFS
 
 ### anysale-v2-existing-vpc
 This builds foundational Anyscale Cloud Resources but expects an existing VPC. It creates:

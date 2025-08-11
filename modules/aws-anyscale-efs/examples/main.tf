@@ -22,7 +22,7 @@ data "aws_caller_identity" "current" {}
 #   Should be executed in us-east-2
 # ---------------------------------------------------------------------------------------------------------------------
 module "all_defaults" {
-  source = "../.."
+  source = "../"
 
   tags = local.full_tags
 }
@@ -36,7 +36,7 @@ locals {
   private_subnets = ["172.24.20.0/24", "172.24.21.0/24", "172.24.22.0/24"]
 }
 module "efs_vpc" {
-  source = "../../../aws-anyscale-vpc"
+  source = "../../aws-anyscale-vpc"
 
   anyscale_vpc_name = "tftest-efs"
   cidr_block        = "172.24.0.0/16"
@@ -46,7 +46,7 @@ module "efs_vpc" {
 }
 
 module "efs_securitygroups" {
-  source = "../../../aws-anyscale-securitygroups"
+  source = "../../aws-anyscale-securitygroups"
 
   vpc_id = module.efs_vpc.vpc_id
 
@@ -62,7 +62,7 @@ locals {
 }
 
 module "kitchen_sink" {
-  source = "../.."
+  source = "../"
 
   # File system
   anyscale_efs_name  = "tftest-kitchen_sink"
@@ -138,7 +138,7 @@ module "kitchen_sink" {
 # Do not create any resources
 # ---------------------------------------------------------------------------------------------------------------------
 module "test_no_resources" {
-  source = "../.."
+  source = "../"
 
   module_enabled = false
 }
