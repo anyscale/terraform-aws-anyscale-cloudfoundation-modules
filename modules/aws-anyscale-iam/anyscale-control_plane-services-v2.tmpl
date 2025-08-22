@@ -200,13 +200,14 @@
       ]
     },
     {
-      "Sid": "ELBDirectCreate",
+      "Sid": "ELBDirectCreateUpdate",
       "Effect": "Allow",
       "Action": [
         "elasticloadbalancing:CreateRule",
         "elasticloadbalancing:CreateListener",
         "elasticloadbalancing:CreateLoadBalancer",
-        "elasticloadbalancing:CreateTargetGroup"
+        "elasticloadbalancing:CreateTargetGroup",
+        "elasticloadbalancing:SetRulePriorities"
       ],
       "Resource": [
         "arn:aws:elasticloadbalancing:*:${account_id}:loadbalancer/app/anyscale*",
@@ -224,7 +225,6 @@
         "elasticloadbalancing:RemoveTags",
         "elasticloadbalancing:ModifyRule",
         "elasticloadbalancing:DeleteRule",
-        "elasticloadbalancing:SetRulePriorities",
         "elasticloadbalancing:ModifyListener",
         "elasticloadbalancing:DeleteListener",
         "elasticloadbalancing:DeleteLoadBalancer",
@@ -247,7 +247,6 @@
     }
 %{ endif ~}
 %{ if cloud_id_provided == true ~}
-
     {
       "Sid": "ELBDirectModifyDelete",
       "Effect": "Allow",
@@ -256,7 +255,6 @@
         "elasticloadbalancing:RemoveTags",
         "elasticloadbalancing:ModifyRule",
         "elasticloadbalancing:DeleteRule",
-        "elasticloadbalancing:SetRulePriorities",
         "elasticloadbalancing:ModifyListener",
         "elasticloadbalancing:DeleteListener",
         "elasticloadbalancing:DeleteLoadBalancer",
