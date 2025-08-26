@@ -3,21 +3,9 @@
 # These variables must be set when using this module.
 # ------------------------------------------------------------------------------
 
-variable "security_group_ingress_allow_access_from_cidr_range" {
-  description = <<-EOT
-    (Required) Comma delimited string of IPv4 CIDR range to allow access to anyscale resources.
-    This should be the list of CIDR ranges that have access to the clusters. Public or private IPs are supported.
-    This is added to the security group and allows port 443 (https) and 22 (ssh) access.
-
-    While not recommended, you can set this to `0.0.0.0/0` to allow access from anywhere.
-
-    ex:
-    ```
-    security_group_ingress_allow_access_from_cidr_range = "10.0.1.0/24,24.1.24.24/32"
-    ```
-  EOT
-  type        = string
-}
+# Note: At least one of the following security group variables must be provided:
+# - security_group_ingress_allow_access_from_cidr_range
+# - security_group_ingress_with_existing_security_groups_map
 
 # ------------------------------------------------------------------------------
 # OPTIONAL VARIABLES
@@ -1112,20 +1100,6 @@ variable "security_group_name_prefix" {
   default     = null
 }
 
-# This was for Anyscale v1 stack which is no longer supported.
-# variable "security_group_create_anyscale_public_ingress" {
-#   type        = bool
-#   description = <<-EOT
-#     (Optional) Determines if public ingress rules should be created.
-
-#     ex:
-#     ```
-#     security_group_create_anyscale_public_ingress = true
-#     ```
-#   EOT
-#   default     = false
-# }
-
 variable "security_group_enable_ssh_access" {
   type        = bool
   description = <<-EOT
@@ -1143,6 +1117,33 @@ variable "security_group_enable_ssh_access" {
   default     = false
 }
 
+variable "security_group_ingress_allow_access_from_cidr_range" {
+  description = <<-EOT
+    (Optional) Comma delimited string of IPv4 CIDR range to allow access to anyscale resources.
+    This should be the list of CIDR ranges that have access to the clusters. Public or private IPs are supported.
+    This is added to the security group and allows port 443 (https) and 22 (ssh) access.
+
+    While not recommended, you can set this to `0.0.0.0/0` to allow access from anywhere.
+
+    Note: At least one of this variable or `security_group_ingress_with_existing_security_groups_map` must be provided.
+
+    ex:
+    ```
+    security_group_ingress_allow_access_from_cidr_range = "10.0.1.0/24,24.1.24.24/32"
+    ```
+  EOT
+  type        = string
+  default     = null
+
+  validation {
+    condition = (
+      var.security_group_ingress_allow_access_from_cidr_range != null ||
+      length(var.security_group_ingress_with_existing_security_groups_map) > 0
+    )
+    error_message = "At least one of `security_group_ingress_allow_access_from_cidr_range` or `security_group_ingress_with_existing_security_groups_map` must be provided."
+  }
+}
+
 variable "security_group_ingress_with_existing_security_groups_map" {
   type        = list(map(string))
   description = <<-EOT
@@ -1150,6 +1151,8 @@ variable "security_group_ingress_with_existing_security_groups_map" {
 
     If this is provided, the security groups will be added to the ingress rules with the
     ports in the `rule` section.
+
+    Note: At least one of this variable or `security_group_ingress_allow_access_from_cidr_range` must be provided.
 
     ex:
     ```
@@ -1173,7 +1176,7 @@ variable "security_group_override_ingress_from_cidr_map" {
   description = <<-EOT
     (Optional) List of ingress rules to create with cidr ranges.
 
-    If this variable is provided/populated, the default rules will not be created. At a minimum, https and ssh need
+    If this variable is provided/populated, the default rules will not be created. At a minimum, https needs
     to be allowed from a IPv4 CIDR block that allows access for the users who are using Anyscale.
 
     ex:
