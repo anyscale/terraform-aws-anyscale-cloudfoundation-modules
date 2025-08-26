@@ -211,7 +211,7 @@ module "aws_anyscale_vpc" {
 # Security Group Module
 # ------------------------------
 locals {
-  ingress_cidr_block_defined = length(var.security_group_ingress_allow_access_from_cidr_range) > 1 ? true : false
+  ingress_cidr_block_defined = var.security_group_ingress_allow_access_from_cidr_range != null && length(var.security_group_ingress_allow_access_from_cidr_range) > 1 ? true : false
   ingress_from_cidr_map = concat([
     {
       rule        = "https-443-tcp"
@@ -225,9 +225,7 @@ locals {
   ] : [])
   ingress_from_cidr_range_override_defined = length(var.security_group_override_ingress_from_cidr_map) > 1 ? true : false
 
-  ingress_existing_sg_defined = length(var.security_group_ingress_with_existing_security_groups_map) > 1 ? true : false
-
-  security_group_name            = var.security_group_name != null ? var.security_group_name : local.common_name
+  security_group_name            = coalesce(var.security_group_name, local.common_name, null)
   security_group_name_prefix     = coalesce(var.security_group_name_prefix, var.common_prefix, "anyscale-security-group-")
   amp_security_group_name        = var.anyscale_machine_pool_security_group_name != null ? var.anyscale_machine_pool_security_group_name : local.common_name != null ? "${local.common_name}-machine-pool-sg" : null
   amp_security_group_name_prefix = coalesce(var.anyscale_machine_pool_security_group_name_prefix, var.common_prefix, "anyscale-machine-pool-sg-")
@@ -238,11 +236,10 @@ module "aws_anyscale_securitygroup_self" {
   tags   = local.securitygroup_tags
   vpc_id = coalesce(var.existing_vpc_id, module.aws_anyscale_vpc.vpc_id)
 
-  security_group_name        = local.security_group_name
-  security_group_name_prefix = local.security_group_name_prefix
-  # create_anyscale_public_ingress            = var.security_group_create_anyscale_public_ingress # This was for Anyscale Control Plane v1 and is no longer applicable. Commenting out before removal in a future version.
-  ingress_from_cidr_map                     = local.ingress_from_cidr_range_override_defined ? var.security_group_override_ingress_from_cidr_map : local.ingress_cidr_block_defined ? local.ingress_from_cidr_map : [{}]
-  ingress_with_existing_security_groups_map = local.ingress_existing_sg_defined ? var.security_group_ingress_with_existing_security_groups_map : []
+  security_group_name                       = local.security_group_name
+  security_group_name_prefix                = local.security_group_name_prefix
+  ingress_from_cidr_map                     = local.ingress_from_cidr_range_override_defined ? var.security_group_override_ingress_from_cidr_map : local.ingress_cidr_block_defined ? local.ingress_from_cidr_map : []
+  ingress_with_existing_security_groups_map = var.security_group_ingress_with_existing_security_groups_map
 
   machine_pool_security_group_name        = local.amp_security_group_name
   machine_pool_security_group_name_prefix = local.amp_security_group_name_prefix

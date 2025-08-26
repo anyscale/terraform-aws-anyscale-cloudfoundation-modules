@@ -142,20 +142,6 @@ variable "revoke_rules_on_delete" {
   default     = false
 }
 
-# Deprecated Anyscale v1 Stack
-# variable "create_anyscale_public_ingress" {
-#   type        = bool
-#   description = <<-EOT
-#     (Optional) Determines if public ingress rules should be created.
-
-#     ex:
-#     ```
-#     create_anyscale_public_ingress = true
-#     ```
-#   EOT
-#   default     = false
-# }
-
 # ---------------------
 # Security Group Rules
 # ---------------------
@@ -204,34 +190,6 @@ variable "ingress_with_existing_security_groups_map" {
   type        = list(map(string))
   default     = []
 }
-
-# Anyscale v1 Stack Related
-# variable "anyscale_public_ips_cidr" {
-#   description = <<-EOT
-#     (Deprecated) List of Anyscale Public IPs in CIDR format.
-
-#     While optional, this is required for Anyscale v1 stack.
-#   EOT
-#   type        = list(string)
-#   default = [
-#     "35.162.67.121/32",
-#     "44.226.216.241/32",
-#     "44.232.121.23/32",
-#     "44.237.42.239/32",
-#     "52.33.0.137/32"
-#   ]
-# }
-
-# variable "anyscale_ingress_rules_v1" {
-#   description = <<-EOT
-#     (Deprecated) List of ingress rules to create. This is only used for Anyscale v1 stacks.
-#   EOT
-#   type        = list(string)
-#   default = [
-#     "https-443-tcp",
-#     "ssh-tcp"
-#   ]
-# }
 
 # Default CIDR Range to allow access from
 variable "default_ingress_cidr_range" {

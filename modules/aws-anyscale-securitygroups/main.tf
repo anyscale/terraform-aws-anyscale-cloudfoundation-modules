@@ -38,24 +38,6 @@ resource "aws_security_group" "anyscale_security_group" {
 }
 
 
-# -----------------------------
-# Default Anyscale Security Group Ingress Rules
-# -----------------------------
-# Commenting out - this was for Anyscale v1 stack which is no longer supported.
-# resource "aws_security_group_rule" "anyscale_public_ingress_rules" {
-#   count = var.module_enabled && var.create_anyscale_public_ingress ? length(var.anyscale_ingress_rules_v1) : 0
-
-#   security_group_id = local.security_group_id
-#   type              = "ingress"
-
-#   cidr_blocks = var.anyscale_public_ips_cidr
-#   description = var.predefined_rules[var.anyscale_ingress_rules_v1[count.index]].description
-
-#   from_port = var.predefined_rules[var.anyscale_ingress_rules_v1[count.index]].from_port
-#   to_port   = var.predefined_rules[var.anyscale_ingress_rules_v1[count.index]].to_port
-#   protocol  = var.predefined_rules[var.anyscale_ingress_rules_v1[count.index]].protocol
-# }
-
 # Security group rules with "cidr_blocks"
 #trivy:ignore:avd-aws-0124
 resource "aws_security_group_rule" "ingress_from_cidr_blocks" {
