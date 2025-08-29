@@ -9,6 +9,8 @@ FEATURES:
 BUG FIXES:
 - When passing in an organization id as well as the external id, if a cloud ID was also provided, it would not prioritize the correct local value for the external ID.
 - The privatesubnets example was updated to use the external id, but did not also include the Organization ID. Both are now included.
+- fix: IAM - Remove constraint on SetRulePriorities for ELBs
+- fix: IAM - Cleaning up ACM Certificates was failing due to tagging constraint. Modified.
 
 BREAKING CHANGES:
 
