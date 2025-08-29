@@ -1,3 +1,34 @@
+## 0.33.3 (Released)
+FEATURES:
+
+BUG FIXES:
+- fix: IAM - Cleaning up ACM Certificates was failing due to tagging constraint. Modified.
+
+BREAKING CHANGES:
+
+NOTES:
+
+## 0.33.2 (Released)
+FEATURES:
+
+BUG FIXES:
+
+BREAKING CHANGES:
+
+NOTES:
+- Updated getting-started.md
+
+## 0.33.1 (Released)
+FEATURES:
+
+BUG FIXES:
+- fix: IAM - Remove constraint on SetRulePriorities for ELBs
+
+BREAKING CHANGES:
+
+NOTES:
+- Updated getting-started.md
+
 ## 0.33.0 (Released)
 FEATURES:
 

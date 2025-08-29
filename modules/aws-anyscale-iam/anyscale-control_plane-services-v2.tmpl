@@ -132,7 +132,6 @@
       "Sid": "ACMWrite",
       "Effect": "Allow",
       "Action": [
-        "acm:DeleteCertificate",
         "acm:RenewCertificate",
         "acm:AddTagsToCertificate",
         "acm:GetCertificate",
@@ -145,6 +144,19 @@
         },
         "ForAnyValue:StringEquals": {
           "aws:TagKeys": ["anyscale-cloud-id"]
+        }
+      }
+    },
+    {
+      "Sid": "ACMDelete",
+      "Effect": "Allow",
+      "Action": [
+        "acm:DeleteCertificate"
+      ],
+      "Resource": ["arn:aws:acm:*:${account_id}:certificate/*"],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/anyscale-cloud-id": "${anyscale_cloud_id}"
         }
       }
     },
