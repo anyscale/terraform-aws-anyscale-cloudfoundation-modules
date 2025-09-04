@@ -225,7 +225,7 @@ locals {
   ] : [])
   ingress_from_cidr_range_override_defined = length(var.security_group_override_ingress_from_cidr_map) > 1 ? true : false
 
-  security_group_name            = coalesce(var.security_group_name, local.common_name, null)
+  security_group_name            = try(coalesce(var.security_group_name, local.common_name), null)
   security_group_name_prefix     = coalesce(var.security_group_name_prefix, var.common_prefix, "anyscale-security-group-")
   amp_security_group_name        = var.anyscale_machine_pool_security_group_name != null ? var.anyscale_machine_pool_security_group_name : local.common_name != null ? "${local.common_name}-machine-pool-sg" : null
   amp_security_group_name_prefix = coalesce(var.anyscale_machine_pool_security_group_name_prefix, var.common_prefix, "anyscale-machine-pool-sg-")
