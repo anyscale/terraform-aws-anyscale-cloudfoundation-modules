@@ -129,13 +129,10 @@
 %{ endif ~}
 %{ if cloud_id_provided == true ~}
     {
-      "Sid": "ACMWrite",
+      "Sid": "ACMModifyTags",
       "Effect": "Allow",
       "Action": [
-        "acm:RenewCertificate",
         "acm:AddTagsToCertificate",
-        "acm:GetCertificate",
-        "acm:ListTagsForCertificate"
       ],
       "Resource": ["arn:aws:acm:*:${account_id}:certificate/*"],
       "Condition": {
@@ -148,10 +145,13 @@
       }
     },
     {
-      "Sid": "ACMDelete",
+      "Sid": "ACMWrite",
       "Effect": "Allow",
       "Action": [
         "acm:DeleteCertificate"
+        "acm:RenewCertificate",
+        "acm:GetCertificate",
+        "acm:ListTagsForCertificate"
       ],
       "Resource": ["arn:aws:acm:*:${account_id}:certificate/*"],
       "Condition": {
