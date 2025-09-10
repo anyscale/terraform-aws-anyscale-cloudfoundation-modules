@@ -1,4 +1,4 @@
-## NEXT
+## 0.29.1 (Released)
 FEATURES:
 - Removed null provider and updated validation of required variables to variables.tf
 - Added additional IAM policies for CloudKeeper deployments of Anyscale Services
