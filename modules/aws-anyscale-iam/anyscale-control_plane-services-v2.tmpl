@@ -132,7 +132,7 @@
       "Sid": "ACMModifyTags",
       "Effect": "Allow",
       "Action": [
-        "acm:AddTagsToCertificate",
+        "acm:AddTagsToCertificate"
       ],
       "Resource": ["arn:aws:acm:*:${account_id}:certificate/*"],
       "Condition": {
@@ -148,7 +148,7 @@
       "Sid": "ACMWrite",
       "Effect": "Allow",
       "Action": [
-        "acm:DeleteCertificate"
+        "acm:DeleteCertificate",
         "acm:RenewCertificate",
         "acm:GetCertificate",
         "acm:ListTagsForCertificate"
