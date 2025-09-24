@@ -24,3 +24,31 @@ output "anyscale_register_command" {
     --functional-verify workspace
   EOT
 }
+
+output "anyscale_cloud_resource_yaml" {
+  description = <<-EOF
+    Anyscale cloud resource YAML configuration for kitchen sink example.
+    This output can be saved to a file and used with `anyscale cloud resource add` command.
+    The name is auto-generated as vm-aws-$${var.aws_region} but can be updated in the YAML file if needed.
+  EOF
+  value = <<-EOT
+name: vm-aws-${var.aws_region}
+provider: AWS
+compute_stack: VM
+region: ${var.aws_region}
+networking_mode: PRIVATE
+object_storage:
+  bucket_name: s3://${module.aws_anyscale_v2_kitchen_sink.anyscale_s3_bucket_id}
+file_storage:
+  file_storage_id: ${module.aws_anyscale_v2_kitchen_sink.anyscale_efs_id}
+aws_config:
+  vpc_id: ${module.aws_anyscale_v2_kitchen_sink.anyscale_vpc_id}
+  subnet_ids:
+    - ${join("\n    - ", module.aws_anyscale_v2_kitchen_sink.anyscale_vpc_private_subnet_ids)}
+  security_group_ids:
+    - ${module.aws_anyscale_v2_kitchen_sink.anyscale_security_group_id}
+  anyscale_iam_role_id: ${module.aws_anyscale_v2_kitchen_sink.anyscale_iam_role_arn}
+  cluster_iam_role_id: ${module.aws_anyscale_v2_kitchen_sink.anyscale_iam_role_cluster_node_arn}
+  memorydb_cluster_name: ${module.aws_anyscale_v2_kitchen_sink.anyscale_memorydb_cluster_id}
+EOT
+}
