@@ -28,7 +28,7 @@ output "anyscale_register_command" {
 output "anyscale_cloud_resource_yaml" {
   description = <<-EOF
     Anyscale cloud resource YAML configuration for kitchen sink example.
-    This output can be saved to a file and used with `anyscale cloud resource add` command.
+    This output can be saved to a file and used with `anyscale cloud resource create` command.
     The name is auto-generated as vm-aws-$${var.aws_region} but can be updated in the YAML file if needed.
   EOF
   value = <<-EOT
