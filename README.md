@@ -104,6 +104,10 @@ module "aws_anyscale_v2" {
 }
 ```
 
+### Cloud Registration Command
+
+Each example includes an example `anyscale cloud register` command for creating the Cloud.
+
 Example Anyscale Cloud registration command for AWS:
 ```bash
 anyscale cloud register --provider aws \
@@ -120,6 +124,38 @@ anyscale cloud register --provider aws \
 --external-id org_1234567890abcdef-abcdefgh1234
 --private-network \
 --functional-verify workspace,service
+```
+
+### Cloud Resource Creation Command
+
+All example modules now include an `anyscale_cloud_resource_yaml` output that generates a YAML configuration file compatible with the `anyscale cloud resource create` command to enable multi-resource Clouds. 
+
+Once a Cloud is initialized using `anyscale cloud register`, additional resources can be added using the following command:
+
+```bash
+anyscale cloud resource create --cloud <existing-cloud-name> --file cloud-resource.yaml
+```
+
+Example Anyscale Cloud resource YAML for AWS:
+```yaml
+name: vm-aws-us-west-2
+provider: AWS
+compute_stack: VM
+region: us-west-2
+networking_mode: PUBLIC
+object_storage:
+  bucket_name: s3://anyscale-bucket-name
+file_storage:
+  file_storage_id: fs-12345678
+aws_config:
+  vpc_id: vpc-12345678
+  subnet_ids:
+    - subnet-12345678
+    - subnet-87654321
+  security_group_ids:
+    - sg-12345678
+  anyscale_iam_role_id: arn:aws:iam::123456789012:role/anyscale-role
+  cluster_iam_role_id: arn:aws:iam::123456789012:role/cluster-role
 ```
 
 ## Reporting Issues
