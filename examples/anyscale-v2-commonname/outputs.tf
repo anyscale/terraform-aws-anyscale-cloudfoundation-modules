@@ -86,5 +86,6 @@ aws_config:
     - ${module.aws_anyscale_v2_common_name.anyscale_security_group_id}
   anyscale_iam_role_id: ${module.aws_anyscale_v2_common_name.anyscale_iam_role_arn}
   cluster_iam_role_id: ${module.aws_anyscale_v2_common_name.anyscale_iam_role_cluster_node_arn}
+  external_id: ${module.aws_anyscale_v2_common_name.anyscale_iam_role_external_id}
 EOT
 }
