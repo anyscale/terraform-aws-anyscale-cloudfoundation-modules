@@ -68,10 +68,10 @@ output "anyscale_register_command" {
 output "anyscale_cloud_resource_yaml" {
   description = <<-EOF
     Anyscale cloud resource YAML configuration for private subnets.
-    This output can be saved to a file and used with `anyscale cloud resource create` command.
+    This output can be saved to a YAML file and used with `anyscale cloud resource create` command.
     The name is auto-generated as vm-aws-$${var.aws_region} but can be updated in the YAML file if needed.
   EOF
-  value = <<-EOT
+  value       = <<-EOT
 name: vm-aws-${var.aws_region}
 provider: AWS
 compute_stack: VM
@@ -90,5 +90,6 @@ aws_config:
   anyscale_iam_role_id: ${module.aws_anyscale_v2_private_vpc.anyscale_iam_role_arn}
   cluster_iam_role_id: ${module.aws_anyscale_v2_private_vpc.anyscale_iam_role_cluster_node_arn}
   memorydb_cluster_name: ${module.aws_anyscale_v2_private_vpc.anyscale_memorydb_cluster_id}
+  external_id: ${module.aws_anyscale_v2_private_vpc.anyscale_iam_role_external_id}
 EOT
 }

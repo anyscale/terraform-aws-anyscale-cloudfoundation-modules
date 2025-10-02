@@ -79,6 +79,7 @@ No resources.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_anyscale_cloud_resource_yaml"></a> [anyscale\_cloud\_resource\_yaml](#output\_anyscale\_cloud\_resource\_yaml) | Anyscale cloud resource YAML configuration for private subnets.<br/>This output can be saved to a YAML file and used with `anyscale cloud resource create` command.<br/>The name is auto-generated as vm-aws-${var.aws\_region} but can be updated in the YAML file if needed. |
 | <a name="output_anyscale_register_command"></a> [anyscale\_register\_command](#output\_anyscale\_register\_command) | Anyscale register command. |
 | <a name="output_anyscale_v2_efs_id"></a> [anyscale\_v2\_efs\_id](#output\_anyscale\_v2\_efs\_id) | Anyscale Elastic File System ID. |
 | <a name="output_anyscale_v2_iam_instance_role_arn"></a> [anyscale\_v2\_iam\_instance\_role\_arn](#output\_anyscale\_v2\_iam\_instance\_role\_arn) | Anyscale IAM instance role arn. |
