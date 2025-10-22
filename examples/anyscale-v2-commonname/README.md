@@ -81,6 +81,7 @@ No resources.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_anyscale_cloud_resource_yaml"></a> [anyscale\_cloud\_resource\_yaml](#output\_anyscale\_cloud\_resource\_yaml) | Anyscale cloud resource YAML configuration for common name example.<br/>This output can be saved to a YAML file and used with `anyscale cloud resource create` command.<br/>The name is auto-generated as vm-aws-${var.common\_prefix}${var.aws\_region} but can be updated in the YAML file if needed. |
 | <a name="output_anyscale_register_command"></a> [anyscale\_register\_command](#output\_anyscale\_register\_command) | Anyscale register command.<br/>This output can be used with the Anyscale CLI to register a new Anyscale Cloud.<br/>You will need to replace `<CUSTOMER_DEFINED_NAME>` with a name of your choosing before running the Anyscale CLI command. |
 | <a name="output_anyscale_v2_iam_instance_role_arn"></a> [anyscale\_v2\_iam\_instance\_role\_arn](#output\_anyscale\_v2\_iam\_instance\_role\_arn) | Anyscale IAM instance role arn. |
 | <a name="output_anyscale_v2_iam_role_arn"></a> [anyscale\_v2\_iam\_role\_arn](#output\_anyscale\_v2\_iam\_role\_arn) | Anyscale IAM access role arn. |
