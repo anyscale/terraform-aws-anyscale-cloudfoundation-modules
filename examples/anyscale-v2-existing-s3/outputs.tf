@@ -43,11 +43,6 @@ output "anyscale_v2_iam_instance_role_arn" {
   value       = try(module.aws_anyscale_v2_existing_s3.anyscale_iam_role_cluster_node_arn, "")
 }
 
-output "anyscale_v2_efs_id" {
-  description = "Anyscale Elastic File System ID."
-  value       = try(module.aws_anyscale_v2_existing_s3.anyscale_efs_id, "")
-}
-
 output "anyscale_register_command" {
   description = <<-EOF
     Anyscale register command.
@@ -64,7 +59,6 @@ output "anyscale_register_command" {
     --s3-bucket-id ${split(":", var.existing_s3_bucket_arn)[5]} \
     --anyscale-iam-role-id ${module.aws_anyscale_v2_existing_s3.anyscale_iam_role_arn} \
     --instance-iam-role-id ${module.aws_anyscale_v2_existing_s3.anyscale_iam_role_cluster_node_arn} \
-    --efs-id ${module.aws_anyscale_v2_existing_s3.anyscale_efs_id} \
     --functional-verify workspace
   EOT
 }
@@ -83,8 +77,6 @@ region: ${var.aws_region}
 networking_mode: PUBLIC
 object_storage:
   bucket_name: s3://${split(":", var.existing_s3_bucket_arn)[5]}
-file_storage:
-  file_storage_id: ${module.aws_anyscale_v2_existing_s3.anyscale_efs_id}
 aws_config:
   vpc_id: ${module.aws_anyscale_v2_existing_s3.anyscale_vpc_id}
   subnet_ids:

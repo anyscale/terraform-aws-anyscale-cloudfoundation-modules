@@ -25,6 +25,7 @@ module "aws_anyscale_v2_existing_s3" {
   anyscale_org_id     = var.anyscale_org_id
 
   create_cluster_node_cloudwatch_policy = true
+  create_efs_resources = true
 
   existing_s3_bucket_arn = var.existing_s3_bucket_arn
 
