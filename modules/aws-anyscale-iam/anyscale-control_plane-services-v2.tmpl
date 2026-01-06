@@ -129,14 +129,10 @@
 %{ endif ~}
 %{ if cloud_id_provided == true ~}
     {
-      "Sid": "ACMWrite",
+      "Sid": "ACMModifyTags",
       "Effect": "Allow",
       "Action": [
-        "acm:DeleteCertificate",
-        "acm:RenewCertificate",
-        "acm:AddTagsToCertificate",
-        "acm:GetCertificate",
-        "acm:ListTagsForCertificate"
+        "acm:AddTagsToCertificate"
       ],
       "Resource": ["arn:aws:acm:*:${account_id}:certificate/*"],
       "Condition": {
@@ -145,6 +141,22 @@
         },
         "ForAnyValue:StringEquals": {
           "aws:TagKeys": ["anyscale-cloud-id"]
+        }
+      }
+    },
+    {
+      "Sid": "ACMWrite",
+      "Effect": "Allow",
+      "Action": [
+        "acm:DeleteCertificate",
+        "acm:RenewCertificate",
+        "acm:GetCertificate",
+        "acm:ListTagsForCertificate"
+      ],
+      "Resource": ["arn:aws:acm:*:${account_id}:certificate/*"],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/anyscale-cloud-id": "${anyscale_cloud_id}"
         }
       }
     },

@@ -3,6 +3,11 @@ FEATURES:
 - Update Security Group configuration to allow either CIDR or Existing Security Group configurations.
 
 BUG FIXES:
+## 0.33.3 (Released)
+FEATURES:
+
+BUG FIXES:
+- fix: IAM - Cleaning up ACM Certificates was failing due to tagging constraint. Modified.
 
 BREAKING CHANGES:
 
@@ -12,11 +17,12 @@ NOTES:
 FEATURES:
 
 BUG FIXES:
-- IAM Policy fix for new Anyscale Services managed via CloudKeeper
+- fix: IAM - Remove constraint on SetRulePriorities for ELBs
 
 BREAKING CHANGES:
 
 NOTES:
+- Updated getting-started.md
 
 ## 0.33.0 (Released)
 FEATURES:
