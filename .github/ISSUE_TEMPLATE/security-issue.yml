@@ -2,7 +2,7 @@ name: Security Issue
 description: General security issue
 title: '[Security]: '
 labels: ["security", "P0", "terraform-modules"]
-assignees: ["brent-anyscale"]
+assignees: ["anyscale/public-terraform-owners"]
 
 body:
   - type: markdown

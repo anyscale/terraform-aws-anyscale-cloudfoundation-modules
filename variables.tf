@@ -439,7 +439,7 @@ variable "anyscale_iam_access_role_name" {
   description = <<-EOT
     (Optional, forces creation of new resource) The name of the Anyscale IAM access role.
 
-    If left `null`, the name will default to `anyscale_iam_access_role_name_prefix` or `general_prefix`.
+    If left `null`, the name will default to `anyscale_iam_access_role_name_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_iam_access_role_name_prefix` variable.
 
     ex:
@@ -456,7 +456,7 @@ variable "anyscale_iam_access_role_name_prefix" {
     (Optional, forces creation of new resource) The prefix for the Anyscale IAM access role.
 
     If `anyscale_iam_access_role_name_prefix` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
 
     Default is `null` but is set to `anyscale-iam-role-` in a local variable.
 
@@ -500,7 +500,7 @@ variable "anyscale_access_steadystate_policy_name" {
   description = <<-EOT
     (Optional) Name for the Anyscale default steady state IAM policy.
 
-    If left `null`, will default to `anyscale_access_steadystate_policy_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_access_steadystate_policy_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_access_steadystate_policy_prefix` variable.
 
     ex:
@@ -517,7 +517,7 @@ variable "anyscale_access_steadystate_policy_prefix" {
     (Optional) Name prefix for the Anyscale default steady state IAM policy.
 
     If `anyscale_access_steadystate_policy_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-steady_state-` in a local variable.
 
     ex:
@@ -546,7 +546,7 @@ variable "anyscale_access_servicesv2_policy_name" {
   description = <<-EOT
     (Optional) Name for the Anyscale default servicesv2 IAM policy.
 
-    If left `null`, will default to `anyscale_access_servicesv2_policy_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_access_servicesv2_policy_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_access_servicesv2_policy_prefix` variable.
 
     ex:
@@ -563,7 +563,7 @@ variable "anyscale_access_servicesv2_policy_prefix" {
     (Optional) Name prefix for the Anyscale default servicesv2 IAM policy.
 
     If `anyscale_access_servicesv2_policy_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-servicesv2-` in a local variable.
 
     ex:
@@ -606,7 +606,7 @@ variable "anyscale_accessrole_custom_policy_name" {
   description = <<-EOT
     (Optional) Name for an Anyscale custom IAM policy.
 
-    If left `null`, will default to `anyscale_custom_policy_name_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_custom_policy_name_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_accessrole_custom_policy_name_prefix` variable.
 
     ex:
@@ -622,7 +622,7 @@ variable "anyscale_accessrole_custom_policy_name_prefix" {
   description = <<-EOT
     (Optional) Name prefix for the Anyscale custom IAM policy.
     If `anyscale_accessrole_custom_policy_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-crossacct-custom-policy-` in a local variable.
 
     ex:
@@ -681,7 +681,7 @@ variable "anyscale_iam_cluster_node_role_name" {
   description = <<-EOT
     (Optional, forces creation of new resource) The name of the Anyscale IAM cluster node role.
 
-    If left `null`, will default to `anyscale_iam_access_role_name_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_iam_access_role_name_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_iam_cluster_node_role_name_prefix` variable.
 
     ex:
@@ -697,7 +697,7 @@ variable "anyscale_iam_cluster_node_role_name_prefix" {
     (Optional, forces creation of new resource) The prefix of the Anyscale Cluster Node IAM role.
 
     If `anyscale_iam_cluster_node_role_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-cluster-node-` in a local variable.
 
     ex:
@@ -728,7 +728,7 @@ variable "anyscale_cluster_node_custom_policy_name" {
   description = <<-EOT
     (Optional) Name for the Anyscale cluster node custom IAM policy.
 
-    If left `null`, will default to `anyscale_cluster_node_custom_policy_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_cluster_node_custom_policy_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_cluster_node_custom_policy_name_prefix` variable.
 
     ex:
@@ -745,7 +745,7 @@ variable "anyscale_cluster_node_custom_policy_prefix" {
     (Optional) Name prefix for the Anyscale cluster node custom IAM policy.
 
     If `anyscale_cluster_node_custom_policy_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-clusternode-custom-policy-` in a local variable.
 
     ex:
@@ -849,7 +849,7 @@ variable "anyscale_cluster_node_cloudwatch_policy_name" {
   description = <<-EOT
     (Optional) Name for the Anyscale cluster node CloudWatch IAM policy.
 
-    If left `null`, will default to `anyscale_cluster_node_cloudwatch_policy_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_cluster_node_cloudwatch_policy_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_cluster_node_cloudwatch_policy_name_prefix` variable.
 
     ex:
@@ -866,7 +866,7 @@ variable "anyscale_cluster_node_cloudwatch_policy_prefix" {
     (Optional) Name prefix for the Anyscale cluster node CloudWatch IAM policy.
 
     If `anyscale_cluster_node_cloudwatch_policy_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-cluster-node-cloudwatch-policy-` in a local variable.
 
     ex:
@@ -883,7 +883,7 @@ variable "anyscale_cluster_node_byod_secrets_policy_name" {
   description = <<-EOT
     (Optional) Name for the Anyscale cluster node Secrets IAM policy.
 
-    If left `null`, will default to `anyscale_cluster_node_secrets_policy_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_cluster_node_secrets_policy_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_cluster_node_secrets_policy_prefix` variable.
 
     ex:
@@ -900,7 +900,7 @@ variable "anyscale_cluster_node_byod_secrets_policy_prefix" {
     (Optional) Name prefix for the Anyscale cluster node Secrets IAM policy.
 
     If `anyscale_cluster_node_secrets_policy_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-cluster-node-secrets-` in a local variable.
 
     ex:
@@ -1018,7 +1018,7 @@ variable "anyscale_iam_s3_policy_name" {
   description = <<-EOT
     (Optional) Name for the Anyscale S3 access IAM policy.
 
-    If left `null`, will default to `anyscale_iam_s3_policy_name_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_iam_s3_policy_name_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_iam_s3_policy_name_prefix` variable.
 
     ex:
@@ -1034,7 +1034,7 @@ variable "anyscale_iam_s3_policy_name_prefix" {
     (Optional) Name prefix for the Anyscale S3 access IAM policy.
 
     If `anyscale_iam_s3_policy_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-iam-s3-` in a local variable.
 
     ex:
@@ -1083,7 +1083,7 @@ variable "security_group_name" {
   description = <<-EOT
     (Optional) The name for the security group.
 
-    If left `null`, will default to `security_group_name_prefix` or `general_prefix`.
+    If left `null`, will default to `security_group_name_prefix` or `common_prefix`.
     If provided, overrides `security_group_name_prefix`.
 
     ex:
@@ -1100,7 +1100,7 @@ variable "security_group_name_prefix" {
     (Optional) The name prefix for the security group.
 
     If `security_group_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-security-group-` in a local variable.
 
     ex:
@@ -1224,7 +1224,7 @@ variable "anyscale_machine_pool_security_group_name" {
   description = <<-EOT
     (Optional) Name for the machine pool security group.
 
-    If left `null`, will default to `anyscale_machine_pool_security_group_name_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_machine_pool_security_group_name_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_machine_pool_security_group_name_prefix` variable.
 
     ex:
@@ -1241,7 +1241,7 @@ variable "anyscale_machine_pool_security_group_name_prefix" {
     (Optional) Name prefix for the machine pool security group.
 
     If `anyscale_machine_pool_security_group_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-machine-pool-sg-` in a local variable.
 
     ex:
@@ -1432,7 +1432,7 @@ variable "anyscale_s3_bucket_name" {
     (Optional - forces new resource) S3 Bucket Name.
 
     The name of the bucket used to store Anyscale related logs and other shared resources.
-    If left `null`, will default to `anyscale_s3_bucket_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_s3_bucket_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_s3_bucket_prefix` variable.
 
     ex:
@@ -1450,7 +1450,7 @@ variable "anyscale_s3_bucket_prefix" {
 
     Creates a unique bucket name beginning with the specified prefix.
     If `anyscale_s3_bucket_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-` in a local variable.
 
     ex:
@@ -1655,7 +1655,7 @@ variable "anyscale_memorydb_cluster_name" {
   description = <<-EOT
     (Optional) The name of the MemoryDB cluster.
 
-    If left `null`, will default to `anyscale_memorydb_cluster_name` or `general_prefix`.
+    If left `null`, will default to `anyscale_memorydb_cluster_name` or `common_prefix`.
     If provided, overrides the `anyscale_memorydb_cluster_name` variable.
 
     ex:
@@ -1672,7 +1672,7 @@ variable "anyscale_memorydb_cluster_name_prefix" {
     (Optional) The prefix of the MemoryDB cluster.
 
     If `anyscale_memorydb_cluster_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-memorydb-cluster-` in a local variable.
 
     ex:
@@ -1701,7 +1701,7 @@ variable "anyscale_memorydb_parameter_group_name" {
   description = <<-EOT
     (Optional) The name of the MemoryDB parameter group.
 
-    If left `null`, will default to `anyscale_memorydb_parameter_group_name_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_memorydb_parameter_group_name_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_memorydb_parameter_group_name_prefix` variable.
 
     ex:
@@ -1718,7 +1718,7 @@ variable "anyscale_memorydb_parameter_group_name_prefix" {
     (Optional) The prefix of the MemoryDB parameter group.
 
     If `anyscale_memorydb_parameter_group_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `anyscale-memorydb-parameter-group-` in a local variable.
 
     ex:
@@ -1747,7 +1747,7 @@ variable "anyscale_memorydb_subnet_group_name" {
   description = <<-EOT
     (Optional) The name of the MemoryDB subnet group.
 
-    If left `null`, will default to `anyscale_memorydb_subnet_group_name_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_memorydb_subnet_group_name_prefix` or `common_prefix`.
     If provided, overrides the `memorydb_subnet_group_name_prefix` variable.
 
     ex:
@@ -1764,7 +1764,7 @@ variable "anyscale_memorydb_subnet_group_name_prefix" {
     (Optional) The prefix of the MemoryDB subnet group.
 
     If `anyscale_memorydb_subnet_group_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `memorydb-subnet-group-` in a local variable.
 
     ex:
@@ -1793,7 +1793,7 @@ variable "anyscale_memorydb_acl_name" {
   description = <<-EOT
     (Optional) The name of the MemoryDB ACL.
 
-    If left `null`, will default to `anyscale_memorydb_acl_name_prefix` or `general_prefix`.
+    If left `null`, will default to `anyscale_memorydb_acl_name_prefix` or `common_prefix`.
     If provided, overrides the `anyscale_memorydb_acl_name_prefix` variable.
 
     ex:
@@ -1810,7 +1810,7 @@ variable "anyscale_memorydb_acl_name_prefix" {
     (Optional) The prefix of the MemoryDB ACL.
 
     If `anyscale_memorydb_acl_name` is provided, it will override this variable.
-    The variable `general_prefix` is a fall-back prefix if this is not provided.
+    The variable `common_prefix` is a fall-back prefix if this is not provided.
     Default is `null` but is set to `memorydb-acl-` in a local variable.
 
     ex:
