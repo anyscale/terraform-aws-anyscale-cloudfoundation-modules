@@ -2,7 +2,7 @@ name: Bug Report
 description: Issue/Bug with the Terraform Modules. Please include repro steps!
 title: "[bug]: "
 labels: ["bug", "P1", "terraform-modules"]
-assignees: ["brent-anyscale"]
+assignees: ["anyscale/public-terraform-owners"]
 
 body:
   - type: markdown
@@ -40,14 +40,10 @@ body:
         - label: aws-anyscale-s3-policy
         - label: aws-anyscale-securitygroups
         - label: aws-anyscale-vpc
-  - type: dropdown
+  - type: textarea
     attributes:
       label: Anyscale Terraform Module version
       description: What version of the modules are you using?
-      multiple: false
-      options:
-        - v0.2.x (Default)
-        - v0.1.x
     validations:
       required: true
   - type: dropdown
@@ -56,7 +52,14 @@ body:
       description: What version of Terraform are you using?
       multiple: false
       options:
-        - 1.3.x (Default)
+        - 1.10.x
+        - 1.9.x (Default)
+        - 1.8.x
+        - 1.7.x
+        - 1.6.x
+        - 1.5.x
+        - 1.4.x
+        - 1.3.x
         - 1.2.x
         - 1.1.x
         - 1.0.x
