@@ -33,6 +33,21 @@ output "anyscale_amp_name" {
   description = "The name of the anyscale resource."
   value       = module.anyscale_amp.security_group_name
 }
+
+# -----------------------------
+# Ingress From Existing Security Group
+# -----------------------------
+output "ingress_from_existing_security_group_arn" {
+  description = "The arn of the anyscale resource."
+  value       = module.ingress_from_existing_security_group.security_group_arn
+}
+
+output "ingress_from_existing_security_group_id" {
+  description = "The ID of the anyscale resource."
+  value       = module.ingress_from_existing_security_group.security_group_id
+}
+
+
 # ------------------
 # Kitchen Sink Test
 # ------------------

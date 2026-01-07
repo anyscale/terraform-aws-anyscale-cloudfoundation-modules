@@ -1,3 +1,8 @@
+## 0.34.0 (Released)
+FEATURES:
+- Update Security Group configuration to allow either CIDR or Existing Security Group configurations.
+
+BUG FIXES:
 ## 0.33.3 (Released)
 FEATURES:
 
@@ -7,16 +12,6 @@ BUG FIXES:
 BREAKING CHANGES:
 
 NOTES:
-
-## 0.33.2 (Released)
-FEATURES:
-
-BUG FIXES:
-
-BREAKING CHANGES:
-
-NOTES:
-- Updated getting-started.md
 
 ## 0.33.1 (Released)
 FEATURES:

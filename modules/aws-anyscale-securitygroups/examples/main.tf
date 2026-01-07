@@ -64,6 +64,23 @@ module "anyscale_amp" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Ingress From Existing Security Group
+# ---------------------------------------------------------------------------------------------------------------------
+module "ingress_from_existing_security_group" {
+  source         = "../"
+  module_enabled = true
+
+  vpc_id = module.security_groups_tftest_vpc.vpc_id
+
+  ingress_with_existing_security_groups_map = [
+    {
+      rule              = "https-443-tcp"
+      security_group_id = module.anyscale_amp.security_group_id
+    }
+  ]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # Use all params and build a Security Group
 # ---------------------------------------------------------------------------------------------------------------------
 module "kitchen_sink" {
