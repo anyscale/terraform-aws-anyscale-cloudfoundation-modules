@@ -137,7 +137,7 @@ variable "lifecycle_policy_transition_to_primary_storage_class" {
 # File System Policy
 # -------------------
 variable "attach_policy" {
-  description = "(Optional) Determines whether a policy is attached to the file system. Default is `true`."
+  description = "(Optional) Determines whether a policy is attached to the file system. Default is `false`."
   type        = bool
   default     = false
 }
