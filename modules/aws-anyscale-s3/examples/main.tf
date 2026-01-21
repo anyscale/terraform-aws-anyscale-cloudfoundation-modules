@@ -35,7 +35,7 @@ module "kitchen_sink" {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "POST"]
     allowed_origins = ["https://console.anyscale.com"]
-    expose_headers  = []
+    expose_headers  = ["Accept-Ranges", "Content-Range", "Content-Length"]
   }
 
   object_versioning      = true
