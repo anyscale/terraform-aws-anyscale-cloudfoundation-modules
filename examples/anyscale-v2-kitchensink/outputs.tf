@@ -20,8 +20,7 @@ output "anyscale_register_command" {
     --efs-id ${module.aws_anyscale_v2_kitchen_sink.anyscale_efs_id} \
     --memorydb-cluster-id ${module.aws_anyscale_v2_kitchen_sink.anyscale_memorydb_cluster_id} \
     --external-id ${module.aws_anyscale_v2_kitchen_sink.anyscale_iam_role_external_id} \
-    --private-network \
-    --functional-verify workspace
+    --private-network
   EOT
 }
 

@@ -64,8 +64,7 @@ output "anyscale_register_command" {
     --s3-bucket-id ${split(":", var.existing_s3_bucket_arn)[5]} \
     --anyscale-iam-role-id ${module.aws_anyscale_v2_existing_s3.anyscale_iam_role_arn} \
     --instance-iam-role-id ${module.aws_anyscale_v2_existing_s3.anyscale_iam_role_cluster_node_arn} \
-    --efs-id ${module.aws_anyscale_v2_existing_s3.anyscale_efs_id} \
-    --functional-verify workspace
+    --efs-id ${module.aws_anyscale_v2_existing_s3.anyscale_efs_id}
   EOT
 }
 
