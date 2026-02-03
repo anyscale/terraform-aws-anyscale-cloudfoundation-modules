@@ -59,8 +59,7 @@ output "anyscale_register_command" {
     --s3-bucket-id ${module.aws_anyscale_v2_common_name.anyscale_s3_bucket_id} \
     --anyscale-iam-role-id ${module.aws_anyscale_v2_common_name.anyscale_iam_role_arn} \
     --instance-iam-role-id ${module.aws_anyscale_v2_common_name.anyscale_iam_role_cluster_node_arn} \
-    --external-id ${module.aws_anyscale_v2_common_name.anyscale_iam_role_external_id} \
-    --functional-verify workspace
+    --external-id ${module.aws_anyscale_v2_common_name.anyscale_iam_role_external_id}
   EOT
 }
 
