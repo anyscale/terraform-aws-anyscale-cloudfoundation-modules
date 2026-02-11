@@ -73,6 +73,7 @@ variable "cors_rule" {
       allowed_headers = ["*"]
       allowed_methods = [GET", "POST", "PUT", "HEAD", "DELETE"]
       allowed_origins = ["https://*.anyscale.com"]
+      expose_headers  = ["Accept-Ranges", "Content-Range", "Content-Length"]
     }
     ```
   EOT
