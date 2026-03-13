@@ -238,6 +238,8 @@ module "aws_anyscale_securitygroup_self" {
 
   security_group_name                       = local.security_group_name
   security_group_name_prefix                = local.security_group_name_prefix
+  allow_all_egress                          = true
+  egress_to_self                            = [{ rule = "all-all" }]
   ingress_from_cidr_map                     = local.ingress_from_cidr_range_override_defined ? var.security_group_override_ingress_from_cidr_map : local.ingress_cidr_block_defined ? local.ingress_from_cidr_map : []
   ingress_with_existing_security_groups_map = var.security_group_ingress_with_existing_security_groups_map
 
