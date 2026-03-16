@@ -73,7 +73,7 @@ Create a `terraform.tfvars` file in the example directory to store your project-
 ```
 aws_region           = "<aws_region_you_want_to_use>"
 common_prefix        = "anyscale-tf-"
-anyscale_external_id = "<anyscale_org_id>-<custom_external_id>"
+anyscale_external_id = "<custom_external_id>"
 
 customer_ingress_cidr_ranges = "0.0.0.0/0"
 ```
