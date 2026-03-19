@@ -28,6 +28,22 @@ variable "module_enabled" {
   default     = true
 }
 
+variable "bucket_namespace" {
+  description = <<-EOT
+    (Optional) The namespace for the bucket. Valid values are `global` and `account-regional`.
+    When set to `account-regional`, the bucket is created in your account's regional namespace,
+    where names are guaranteed unique within your account. AWS appends the account-regional suffix
+    (`-{account_id}-{region}-an`) to the bucket name.
+    Default is `account-regional`.
+  EOT
+  type        = string
+  default     = "account-regional"
+  validation {
+    condition     = contains(["global", "account-regional"], var.bucket_namespace)
+    error_message = "Valid values for bucket_namespace are: global, account-regional."
+  }
+}
+
 variable "anyscale_bucket_name" {
   description = "(Optional - forces new resource) The name of the bucket. Conflicts with anyscale_bucket_prefix. Default is `null`."
   type        = string
