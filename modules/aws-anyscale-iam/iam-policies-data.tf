@@ -242,11 +242,12 @@ data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
   dynamic "statement" {
     for_each = local.cloud_id_provided ? [1] : []
     content {
-      sid    = "RestrictEc2Termination"
+      sid    = "RestrictedInstanceManagement"
       effect = "Allow"
       actions = [
         "ec2:TerminateInstances",
-        "ec2:StopInstances"
+        "ec2:StopInstances",
+        "ec2:ModifyInstanceAttribute",
       ]
       resources = [
         "arn:aws:ec2:*:${local.account_id}:instance/*"
@@ -295,17 +296,54 @@ data "aws_iam_policy_document" "iam_anyscale_steadystate_policy" {
     }
   }
 
-  statement {
-    sid    = "InstanceManagementSpot"
-    effect = "Allow"
-    actions = [
-      # Extended Permissions to Run Instances on Anyscale.
-      "ec2:CancelSpotInstanceRequests",
-      "ec2:ModifyImageAttribute",
-      "ec2:ModifyInstanceAttribute",
-      "ec2:RequestSpotInstances",
-    ]
-    resources = ["*"]
+  dynamic "statement" {
+    for_each = local.cloud_id_provided ? [] : [1]
+    content {
+      sid    = "InstanceManagementSpot"
+      effect = "Allow"
+      actions = [
+        # Extended Permissions to Run Instances on Anyscale.
+        "ec2:CancelSpotInstanceRequests",
+        "ec2:ModifyImageAttribute",
+        "ec2:ModifyInstanceAttribute",
+        "ec2:RequestSpotInstances",
+      ]
+      resources = ["*"]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = local.cloud_id_provided ? [1] : []
+    content {
+      sid    = "RestrictedInstanceManagementSpot"
+      effect = "Allow"
+      actions = [
+        "ec2:CancelSpotInstanceRequests",
+        "ec2:ModifyImageAttribute",
+      ]
+      resources = [
+        "arn:aws:ec2:*::image/*",
+        "arn:aws:ec2:*:${local.account_id}:spot-instances-request/*",
+      ]
+      condition {
+        test     = "StringEquals"
+        variable = "aws:ResourceTag/anyscale-cloud-id"
+        values   = [var.anyscale_cloud_id]
+      }
+    }
+  }
+
+  # ec2:RequestSpotInstances does not support resource-level permissions or
+  # tag conditions per the AWS Service Authorization Reference, so it must
+  # remain on resources = ["*"].
+  dynamic "statement" {
+    for_each = local.cloud_id_provided ? [1] : []
+    content {
+      sid       = "InstanceManagementSpotRequest"
+      effect    = "Allow"
+      actions   = ["ec2:RequestSpotInstances"]
+      resources = ["*"]
+    }
   }
 
   #trivy:ignore:avd-aws-0057
