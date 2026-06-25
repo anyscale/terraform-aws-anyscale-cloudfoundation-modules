@@ -9,14 +9,14 @@ This sub-module creates the default IAM resources needed for Anyscale to work in
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0, < 7.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
 
 ## Modules
@@ -26,7 +26,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_iam_instance_profile.anyscale_cluster_node_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_policy.anyscale_cluster_node_cloudwatch_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.anyscale_cluster_node_custom_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
@@ -61,7 +61,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_anyscale_access_managed_policy_arns"></a> [anyscale\_access\_managed\_policy\_arns](#input\_anyscale\_access\_managed\_policy\_arns) | (Optional) List of IAM custom or managed policy ARNs to attach to the role. Default is an empty list. | `list(string)` | `[]` | no |
 | <a name="input_anyscale_access_role_description"></a> [anyscale\_access\_role\_description](#input\_anyscale\_access\_role\_description) | (Optional) IAM Role description. Default is `null`.<br/><br/>ex:<pre>anyscale_access_role_description = "Anyscale IAM Role"</pre> | `string` | `null` | no |
 | <a name="input_anyscale_access_role_name"></a> [anyscale\_access\_role\_name](#input\_anyscale\_access\_role\_name) | (Optional, forces creation of new resource) The name of the Anyscale IAM access role.<br/><br/>Overrides/conflicts with `anyscale_access_role_name_prefix`.<br/><br/>ex:<pre>anyscale_access_role_name = "anyscale-iam-role"</pre> | `string` | `null` | no |
@@ -128,7 +128,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_anyscale_cluster_node_custom_policy_arn"></a> [anyscale\_cluster\_node\_custom\_policy\_arn](#output\_anyscale\_cluster\_node\_custom\_policy\_arn) | ARN of Anyscale cluster node custom policy |
 | <a name="output_anyscale_cluster_node_custom_policy_id"></a> [anyscale\_cluster\_node\_custom\_policy\_id](#output\_anyscale\_cluster\_node\_custom\_policy\_id) | Policy ID of Anyscale cluster node custom policy |
 | <a name="output_anyscale_cluster_node_custom_policy_name"></a> [anyscale\_cluster\_node\_custom\_policy\_name](#output\_anyscale\_cluster\_node\_custom\_policy\_name) | Name of Anyscale cluster node custom policy |
