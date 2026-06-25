@@ -29,9 +29,10 @@ resource "aws_s3_bucket" "anyscale_managed_s3_bucket" {
   #checkov:skip=CKV2_AWS_61:Bucket policy is managed below as a customer choice
   count = var.module_enabled ? 1 : 0
 
-  bucket        = local.anyscale_bucketname
-  bucket_prefix = local.anyscale_bucket_prefix
-  force_destroy = var.force_destroy
+  bucket           = local.anyscale_bucketname
+  bucket_prefix    = local.anyscale_bucket_prefix
+  bucket_namespace = var.bucket_namespace
+  force_destroy    = var.force_destroy
   tags = merge(
     var.tags,
     local.module_tags

@@ -77,6 +77,7 @@ module "aws_anyscale_s3" {
   anyscale_cloud_id      = var.anyscale_cloud_id
   anyscale_bucket_name   = local.s3_bucket_name
   anyscale_bucket_prefix = local.s3_bucket_prefix
+  bucket_namespace       = var.anyscale_s3_bucket_namespace
   server_side_encryption = var.anyscale_s3_server_side_encryption
   force_destroy          = var.anyscale_s3_force_destroy
   lifecycle_rule         = var.anyscale_s3_lifecycle_rule

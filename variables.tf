@@ -1465,6 +1465,28 @@ variable "anyscale_s3_bucket_prefix" {
   default     = null
 }
 
+variable "anyscale_s3_bucket_namespace" {
+  description = <<-EOT
+    (Optional) S3 Bucket Namespace.
+
+    The namespace for the S3 bucket. Valid values are `global` and `account-regional`.
+    When set to `account-regional`, the bucket is created in your account's regional namespace,
+    where names are guaranteed unique within your account. AWS appends the account-regional suffix
+    to the bucket name.
+
+    ex:
+    ```
+    anyscale_s3_bucket_namespace = "account-regional"
+    ```
+  EOT
+  type        = string
+  default     = "global"
+  validation {
+    condition     = contains(["global", "account-regional"], var.anyscale_s3_bucket_namespace)
+    error_message = "Valid values for anyscale_s3_bucket_namespace are: global, account-regional."
+  }
+}
+
 variable "anyscale_s3_server_side_encryption" {
   description = <<-EOT
     (Optional) S3 Bucket Server Side Encryption.
